@@ -7,9 +7,11 @@ package chess;
  * signature of the existing methods.
  */
 public class ChessBoard {
+    private ChessPiece[][] board;
+    // question: do I need to declare this up here?
 
     public ChessBoard() {
-        
+        board = new ChessPiece[8][8];
     }
 
     /**
@@ -19,7 +21,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        throw new RuntimeException("Not implemented");
+        board[position.getRow()][position.getColumn()] = piece;
     }
 
     /**
@@ -30,7 +32,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        throw new RuntimeException("Not implemented");
+        return board[position.getRow()][position.getColumn()];
     }
 
     /**
@@ -38,6 +40,19 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        board = new ChessPiece[8][8]; // clear everything from board
+        // add the rows of pawns
+        for (int i=0;i<7;i++){
+            // add white pawns
+            ChessPosition whitePawnPos = new ChessPosition(1,i);
+            ChessPiece whitePawn = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.PAWN);
+            addPiece(whitePawnPos,whitePawn);
+
+            // add black pawns
+            ChessPosition blackPawnPos = new ChessPosition(6,i);
+            ChessPiece blackPawn = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.PAWN);
+            addPiece(blackPawnPos,blackPawn);
+        }
+
     }
 }
