@@ -81,20 +81,60 @@ public class ChessPiece {
                 }
                 break;
             case BISHOP:
+                List<Boolean> directions = new ArrayList<>(); // represents direction vectors bishop can move: (-1,-1);(-1,1);(1,-1);(1,1)
+                // add the booleans to the list
+                for (int j=0;j<4;j++) {
+                    directions.add(true);
+                }
+                // go through the possible distances the bishops can move
                 for (int i=1;i<=7;i++){
                     int currRow = myPosition.getRow();
                     int currCol = myPosition.getColumn();
                     int[] directionRow = {-1, 1};
                     int[] directionCol = {-1, 1};
+                    // go through direction vectors
+                    int ind = 0;
                     for (int diR : directionRow) {
                         for (int diC : directionCol) {
-                            ChessPosition move = new ChessPosition(currRow + i, currCol + i);
+                            ChessPosition move = new ChessPosition(currRow + i*diR, currCol + i*diC);
+                            // if off-board or friendly piece, end that direction
+                            if (!move.onBoard()||(board.getPiece(move)!=null && board.getPiece(move).pieceColor==myColor)){
+                                if (diR==-1&&diC==-1){
+                                    directions.set(0,false);
+                                }
+                                if (diR==-1&&diC==1){
+                                    directions.set(1,false);
+                                }
+                                if (diR==1&&diC==-1){
+                                    directions.set(2,false);
+                                }
+                                if (diR==1&&diC==1){
+                                    directions.set(3,false);
+                                }
+                            }
+                            // add the move if the direction hasn't been cut off
+                            if (directions.get(ind)) {
+                                moves.add(new ChessMove(myPosition,move,null));
+                            }
+                            // if it's an enemy piece, make sure you can't move any further (after taking)
+                            if (move.onBoard()&& (board.getPiece(move)!=null && board.getPiece(move).pieceColor!=myColor)) {
+                                if (diR == -1 && diC == -1) {
+                                    directions.set(0, false);
+                                }
+                                if (diR == -1 && diC == 1) {
+                                    directions.set(1, false);
+                                }
+                                if (diR == 1 && diC == -1) {
+                                    directions.set(2, false);
+                                }
+                                if (diR == 1 && diC == 1) {
+                                    directions.set(3, false);
+                                }
+                            }
+
+                            ind++;
                         }
                     }
-                    ChessPosition q1 = new ChessPosition(currRow+i,currCol+i);
-                    ChessPosition q2 = new ChessPosition(currRow-i,currCol+i);
-                    ChessPosition q3 = new ChessPosition(currRow-i,currCol-i);
-                    ChessPosition q4 = new ChessPosition(currRow+i,currCol-i);
                 }
                 break;
             case ROOK:
