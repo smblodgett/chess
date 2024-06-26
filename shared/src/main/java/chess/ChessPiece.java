@@ -81,10 +81,10 @@ public class ChessPiece {
                 }
                 break;
             case BISHOP:
-                List<Boolean> directions = new ArrayList<>(); // represents direction vectors bishop can move: (-1,-1);(-1,1);(1,-1);(1,1)
+                List<Boolean> directionsBishop = new ArrayList<>(); // represents direction vectors bishop can move: (-1,-1);(-1,1);(1,-1);(1,1)
                 // add the booleans to the list
                 for (int j=0;j<4;j++) {
-                    directions.add(true);
+                    directionsBishop.add(true);
                 }
                 // go through the possible distances the bishops can move
                 for (int i=1;i<=7;i++){
@@ -100,44 +100,91 @@ public class ChessPiece {
                             // if off-board or friendly piece, end that direction
                             if (!move.onBoard()||(board.getPiece(move)!=null && board.getPiece(move).pieceColor==myColor)){
                                 if (diR==-1&&diC==-1){
-                                    directions.set(0,false);
+                                    directionsBishop.set(0,false);
                                 }
                                 if (diR==-1&&diC==1){
-                                    directions.set(1,false);
+                                    directionsBishop.set(1,false);
                                 }
                                 if (diR==1&&diC==-1){
-                                    directions.set(2,false);
+                                    directionsBishop.set(2,false);
                                 }
                                 if (diR==1&&diC==1){
-                                    directions.set(3,false);
+                                    directionsBishop.set(3,false);
                                 }
                             }
                             // add the move if the direction hasn't been cut off
-                            if (directions.get(ind)) {
+                            if (directionsBishop.get(ind)) {
                                 moves.add(new ChessMove(myPosition,move,null));
                             }
                             // if it's an enemy piece, make sure you can't move any further (after taking)
                             if (move.onBoard()&& (board.getPiece(move)!=null && board.getPiece(move).pieceColor!=myColor)) {
                                 if (diR == -1 && diC == -1) {
-                                    directions.set(0, false);
+                                    directionsBishop.set(0, false);
                                 }
                                 if (diR == -1 && diC == 1) {
-                                    directions.set(1, false);
+                                    directionsBishop.set(1, false);
                                 }
                                 if (diR == 1 && diC == -1) {
-                                    directions.set(2, false);
+                                    directionsBishop.set(2, false);
                                 }
                                 if (diR == 1 && diC == 1) {
-                                    directions.set(3, false);
+                                    directionsBishop.set(3, false);
                                 }
                             }
-
                             ind++;
                         }
                     }
                 }
                 break;
             case ROOK:
+                List<Boolean> directionsRook = new ArrayList<>();
+                for (int j=0;j<4;j++) {
+                    directionsRook.add(true);
+                }
+                for (int i=1;i<=7;i++){
+                    int currRow = myPosition.getRow();
+                    int currCol = myPosition.getColumn();
+                    ChessPosition posRookMoveRow = new ChessPosition(currRow+i,currCol);
+                    ChessPosition posRookMoveCol = new ChessPosition(currRow,currCol+i);
+                    ChessPosition negRookMoveRow = new ChessPosition(currRow-i,currCol);
+                    ChessPosition negRookMoveCol = new ChessPosition(currRow,currCol-i);
+                    if (directionsRook.get(0) && posRookMoveRow.onBoard() && (board.noPiece(posRookMoveRow)||board.getPiece(posRookMoveRow).pieceColor!=myColor)) {
+                        moves.add(new ChessMove(myPosition, posRookMoveRow,null));
+                        if (!board.noPiece(posRookMoveRow)){
+                            directionsRook.set(0,false);
+                        }
+                    }
+                    if (directionsRook.get(1) && posRookMoveCol.onBoard() && (board.noPiece(posRookMoveCol)||board.getPiece(posRookMoveCol).pieceColor!=myColor)) {
+                        moves.add(new ChessMove(myPosition, posRookMoveCol,null));
+                        if (!board.noPiece(posRookMoveCol)){
+                            directionsRook.set(1,false);
+                        }
+                    }
+                    if (directionsRook.get(2) && negRookMoveRow.onBoard() && (board.noPiece(negRookMoveRow)||board.getPiece(negRookMoveRow).pieceColor!=myColor)) {
+                        moves.add(new ChessMove(myPosition, negRookMoveRow,null));
+                        if (!board.noPiece(negRookMoveRow)){
+                            directionsRook.set(2,false);
+                        }
+                    }
+                    if (directionsRook.get(3) && negRookMoveCol.onBoard() && (board.noPiece(negRookMoveCol)||board.getPiece(negRookMoveCol).pieceColor!=myColor)) {
+                        moves.add(new ChessMove(myPosition, negRookMoveCol,null));
+                        if (!board.noPiece(negRookMoveCol)){
+                            directionsRook.set(3,false);
+                        }
+                    }
+                    if (directionsRook.get(0) && posRookMoveRow.onBoard() && !board.noPiece(posRookMoveRow) && board.getPiece(posRookMoveRow).pieceColor==myColor) {
+                            directionsRook.set(0,false);
+                    }
+                    if (directionsRook.get(1) && posRookMoveCol.onBoard() && !board.noPiece(posRookMoveCol) && board.getPiece(posRookMoveCol).pieceColor==myColor) {
+                        directionsRook.set(1,false);
+                    }
+                    if (directionsRook.get(2) && negRookMoveRow.onBoard() && !board.noPiece(negRookMoveRow) && board.getPiece(negRookMoveRow).pieceColor==myColor) {
+                        directionsRook.set(2,false);
+                    }
+                    if (directionsRook.get(3) && negRookMoveCol.onBoard() && !board.noPiece(negRookMoveCol) && board.getPiece(negRookMoveCol).pieceColor==myColor) {
+                        directionsRook.set(3,false);
+                    }
+                }
                 break;
             case QUEEN:
                 break;

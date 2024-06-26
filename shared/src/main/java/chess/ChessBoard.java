@@ -40,6 +40,10 @@ public class ChessBoard {
         return board[position.getRow()][position.getColumn()];
     }
 
+    public boolean noPiece(ChessPosition position){
+        return getPiece(position)==null;
+    }
+
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
