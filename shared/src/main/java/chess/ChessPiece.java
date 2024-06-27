@@ -329,7 +329,10 @@ public class ChessPiece {
                         moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol),null));
                     }
                     if (!pieceInFront && promotionReached) {
-                        moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol),null));
+                        moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol), PieceType.QUEEN));
+                        moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol), PieceType.ROOK));
+                        moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol), PieceType.BISHOP));
+                        moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol), PieceType.KNIGHT));
                     }
                     if (firstMove && !pieceTwoInFront){
                         moves.add(new ChessMove(myPosition,new ChessPosition(currRow+2,currCol),null));
@@ -339,7 +342,10 @@ public class ChessPiece {
                             moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol-1),null));
                         }
                         else {
-                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol-1),null));
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol-1), PieceType.QUEEN));
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol-1), PieceType.ROOK));
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol-1), PieceType.BISHOP));
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol-1), PieceType.KNIGHT));
                         }
                     }
                     if (whiteCanCaptureR){
@@ -347,7 +353,10 @@ public class ChessPiece {
                             moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol+1),null));
                         }
                         else {
-                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol+1),null));
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol+1), PieceType.QUEEN));
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol+1), PieceType.ROOK));
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol+1), PieceType.BISHOP));
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol+1), PieceType.KNIGHT));
                         }
                     }
 
@@ -360,7 +369,10 @@ public class ChessPiece {
                         moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol),null));
                     }
                     if (!pieceInFront && promotionReached) {
-                        moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol),null));
+                        moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol), PieceType.QUEEN));
+                        moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol), PieceType.ROOK));
+                        moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol), PieceType.BISHOP));
+                        moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol), PieceType.KNIGHT));
                     }
                     if (firstMove && !pieceTwoInFront){
                         moves.add(new ChessMove(myPosition,new ChessPosition(currRow-2,currCol),null));
@@ -370,7 +382,10 @@ public class ChessPiece {
                             moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol-1),null));
                         }
                         else {
-                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol-1),null));
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol-1), PieceType.QUEEN));
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol-1), PieceType.ROOK));
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol-1), PieceType.BISHOP));
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol-1), PieceType.KNIGHT));
                         }
                     }
                     if (blackCanCaptureR){
@@ -378,7 +393,10 @@ public class ChessPiece {
                             moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol+1),null));
                         }
                         else {
-                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol+1),null));
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol+1), PieceType.QUEEN));
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol+1), PieceType.ROOK));
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol+1), PieceType.BISHOP));
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol+1), PieceType.KNIGHT));
                         }
                     }
                 }
