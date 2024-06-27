@@ -291,15 +291,99 @@ public class ChessPiece {
                 }
                 break;
             case KING:
+                int[][] moveSet = {{1,1},{1,0},{1,-1},{0,1},{0,-1},{-1,1},{-1,0},{-1,-1}};
+                for (var mv : moveSet){
+                    int currRow = myPosition.getRow();
+                    int currCol = myPosition.getColumn();
+                    ChessPosition move = new ChessPosition(currRow + mv[0], currCol + mv[1]);
+                    if (move.onBoard() && (board.noPiece(move) || board.getPiece(move).pieceColor!=myColor)){
+                        moves.add(new ChessMove(myPosition,move,null));
+                    }
+                    else if (!move.onBoard() || board.getPiece(move).pieceColor==myColor){
+                        continue;
+                    }
+                }
                 break;
             case PAWN:
+                int currRow = myPosition.getRow();
+                int currCol = myPosition.getColumn();
+                // check if pawn is on 2nd/7th rank, make 2 move flag
+                boolean firstMove = (myColor == ChessGame.TeamColor.WHITE && currRow == 2)
+                        || (myColor == ChessGame.TeamColor.BLACK && currRow == 7);
+
+                // capturing flags
+                ChessPosition whiteCapturePosR = new ChessPosition(currRow+1,currCol+1);
+                ChessPosition whiteCapturePosL = new ChessPosition(currRow+1,currCol-1);
+                ChessPosition blackCapturePosR = new ChessPosition(currRow-1,currCol+1);
+                ChessPosition blackCapturePosL = new ChessPosition(currRow-1,currCol-1);
+                boolean whiteCanCaptureR = (!board.noPiece(whiteCapturePosR) && board.getPiece(whiteCapturePosR).pieceColor!=myColor);
+                boolean whiteCanCaptureL = (!board.noPiece(whiteCapturePosL) && board.getPiece(whiteCapturePosL).pieceColor!=myColor);
+                boolean blackCanCaptureR = (!board.noPiece(blackCapturePosR) && board.getPiece(blackCapturePosR).pieceColor!=myColor);
+                boolean blackCanCaptureL = (!board.noPiece(blackCapturePosL) && board.getPiece(blackCapturePosL).pieceColor!=myColor);
+
+                if (myColor==ChessGame.TeamColor.WHITE){
+                    boolean pieceInFront = (!board.noPiece(new ChessPosition(currRow+1,currCol)));
+                    boolean pieceTwoInFront = (firstMove && (pieceInFront || !board.noPiece(new ChessPosition(currRow+2,currCol))));
+                    boolean promotionReached = (currRow+1==8);
+                    if (!pieceInFront && !promotionReached) {
+                        moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol),null));
+                    }
+                    if (!pieceInFront && promotionReached) {
+                        moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol),null));
+                    }
+                    if (firstMove && !pieceTwoInFront){
+                        moves.add(new ChessMove(myPosition,new ChessPosition(currRow+2,currCol),null));
+                    }
+                    if (whiteCanCaptureL){
+                        if (!promotionReached){
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol-1),null));
+                        }
+                        else {
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol-1),null));
+                        }
+                    }
+                    if (whiteCanCaptureR){
+                        if (!promotionReached){
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol+1),null));
+                        }
+                        else {
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol+1),null));
+                        }
+                    }
+
+                }
+                if (myColor==ChessGame.TeamColor.BLACK){
+                    boolean pieceInFront = (!board.noPiece(new ChessPosition(currRow-1,currCol)));
+                    boolean pieceTwoInFront = (firstMove && (pieceInFront || !board.noPiece(new ChessPosition(currRow-2,currCol))));
+                    boolean promotionReached = (currRow-1==1);
+                    if (!pieceInFront && !promotionReached) {
+                        moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol),null));
+                    }
+                    if (!pieceInFront && promotionReached) {
+                        moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol),null));
+                    }
+                    if (firstMove && !pieceTwoInFront){
+                        moves.add(new ChessMove(myPosition,new ChessPosition(currRow-2,currCol),null));
+                    }
+                    if (blackCanCaptureL){
+                        if (!promotionReached){
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol-1),null));
+                        }
+                        else {
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol-1),null));
+                        }
+                    }
+                    if (blackCanCaptureR){
+                        if (!promotionReached){
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol+1),null));
+                        }
+                        else {
+                            moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol+1),null));
+                        }
+                    }
+                }
                 break;
-
-
-
         }
-
-
         return moves;
     }
 
