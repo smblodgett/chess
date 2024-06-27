@@ -316,10 +316,10 @@ public class ChessPiece {
                 ChessPosition whiteCapturePosL = new ChessPosition(currRow+1,currCol-1);
                 ChessPosition blackCapturePosR = new ChessPosition(currRow-1,currCol+1);
                 ChessPosition blackCapturePosL = new ChessPosition(currRow-1,currCol-1);
-                boolean whiteCanCaptureR = (!board.noPiece(whiteCapturePosR) && board.getPiece(whiteCapturePosR).pieceColor!=myColor);
-                boolean whiteCanCaptureL = (!board.noPiece(whiteCapturePosL) && board.getPiece(whiteCapturePosL).pieceColor!=myColor);
-                boolean blackCanCaptureR = (!board.noPiece(blackCapturePosR) && board.getPiece(blackCapturePosR).pieceColor!=myColor);
-                boolean blackCanCaptureL = (!board.noPiece(blackCapturePosL) && board.getPiece(blackCapturePosL).pieceColor!=myColor);
+                boolean whiteCanCaptureR = (whiteCapturePosR.onBoard() && !board.noPiece(whiteCapturePosR) && board.getPiece(whiteCapturePosR).pieceColor!=myColor);
+                boolean whiteCanCaptureL = (whiteCapturePosL.onBoard() && !board.noPiece(whiteCapturePosL) && board.getPiece(whiteCapturePosL).pieceColor!=myColor);
+                boolean blackCanCaptureR = (blackCapturePosR.onBoard() && !board.noPiece(blackCapturePosR) && board.getPiece(blackCapturePosR).pieceColor!=myColor);
+                boolean blackCanCaptureL = (blackCapturePosL.onBoard() && !board.noPiece(blackCapturePosL) && board.getPiece(blackCapturePosL).pieceColor!=myColor);
 
                 if (myColor==ChessGame.TeamColor.WHITE){
                     boolean pieceInFront = (!board.noPiece(new ChessPosition(currRow+1,currCol)));
