@@ -13,4 +13,5 @@ _constructor:_ uses super() to call the superclass constructor
 shallow copy: creates a new reference to the data object
 
 deep copy: creates a completely new data object. DO NOT confuse shallow and deep copying!
+syntax: public Object clone() {return new Object(this)}
 
