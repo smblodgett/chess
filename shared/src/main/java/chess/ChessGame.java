@@ -176,12 +176,12 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        testBoard = currentBoard;
         boolean inCheck = isInCheck(teamColor);
         ChessPosition kingPosition = findKing(teamColor);
         if (!inCheck) return false;
         else {
             Set<ChessMove> kingMoves = (Set<ChessMove>) validMoves(kingPosition);
+            // need implementation to check every other piece and make sure they can't take or block check.
             return kingMoves.isEmpty();
         }
     }
@@ -221,6 +221,7 @@ public class ChessGame {
      */
     public void setBoard(ChessBoard board) {
         currentBoard = board;
+        testBoard = currentBoard;
     }
 
     /**
