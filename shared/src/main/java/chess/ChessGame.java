@@ -54,7 +54,7 @@ public class ChessGame {
         Set<ChessMove> finalMoves = new HashSet<ChessMove>();
         ChessBoard board = getBoard();
         ChessPiece chosenPiece = board.getPiece(startPosition);
-        TeamColor chosenColor = board.getPiece(startPosition).getTeamColor();
+        TeamColor chosenColor = chosenPiece.getTeamColor();
         // return null if chosen piece is nothing
         if (chosenPiece == null){
             return null;
@@ -81,6 +81,8 @@ public class ChessGame {
         ChessPosition start = move.getStartPosition();
         ChessPosition end = move.getEndPosition();
         ChessPiece movingPiece = board.getPiece(start);
+        Collection<ChessMove> correctMoves = validMoves(start);
+        if (correctMoves.isEmpty()) throw new InvalidMoveException("Invalid move!");
         int startRow = start.getRow();
         int startColumn = start.getColumn();
         int endRow = end.getRow();
@@ -103,7 +105,7 @@ public class ChessGame {
         pieceGrid[endRow][endCol] = movingPiece;
         pieceGrid[startRow][startColumn] = null;
         boardCopy.updateBoard(pieceGrid);
-        assert boardCopy == board : "boardCopy is board! :(";
+        //assert boardCopy == board : "boardCopy is board! :(";
         testBoard = boardCopy;
     }
 
@@ -151,7 +153,7 @@ public class ChessGame {
             }
         }
         for (var move : allMoves){
-            if (move.getEndPosition()==kingPosition){
+            if (move.getEndPosition().equals(kingPosition)){
                 return true;
             }
         }

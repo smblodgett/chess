@@ -16,8 +16,11 @@ public class ChessBoard {
     public ChessBoard() {
     }
 
-    public ChessBoard(ChessBoard copy){
-        board = copy.board;
+    public ChessBoard(ChessBoard copy) {
+        for (int i = 0; i < board.length; i++) {
+            board[i] = new ChessPiece[copy.board[i].length];
+            System.arraycopy(copy.board[i], 0, board[i], 0, board[i].length);
+        }
     }
 
     /**
