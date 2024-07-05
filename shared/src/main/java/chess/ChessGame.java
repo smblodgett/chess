@@ -17,6 +17,7 @@ public class ChessGame {
 
     public ChessGame() {
         currentBoard.resetBoard();
+        setTeamTurn(TeamColor.WHITE);
     }
 
     /**
@@ -81,9 +82,12 @@ public class ChessGame {
         ChessPosition start = move.getStartPosition();
         ChessPosition end = move.getEndPosition();
         ChessPiece movingPiece = board.getPiece(start);
-        if (movingPiece==null) throw new InvalidMoveException("Invalid move!");
+        if (movingPiece==null) throw new InvalidMoveException("Invalid move! No piece chosen");
+        TeamColor pieceColor = movingPiece.getTeamColor();
+        TeamColor currentColor = getTeamTurn();
         Collection<ChessMove> correctMoves = validMoves(start);
-        if (!correctMoves.contains(move)) throw new InvalidMoveException("Invalid move!");
+        if (currentColor!=pieceColor) throw new InvalidMoveException("Invalid move! Wrong color!");
+        if (!correctMoves.contains(move)) throw new InvalidMoveException("Invalid move! That move is illegal");
         int startRow = start.getRow();
         int startColumn = start.getColumn();
         int endRow = end.getRow();
@@ -92,6 +96,8 @@ public class ChessGame {
         else pieceGrid[endRow][endCol] = new ChessPiece(movingPiece.getTeamColor(),move.getPromotionPiece());
         pieceGrid[startRow][startColumn] = null;
         board.updateBoard(pieceGrid);
+        if (currentColor==TeamColor.WHITE) setTeamTurn(TeamColor.BLACK);
+        else setTeamTurn(TeamColor.WHITE);
     }
 
     public void makeTestMove(ChessMove move, ChessBoard board){
@@ -199,8 +205,8 @@ public class ChessGame {
                 if (piece.getTeamColor()!=teamColor){
                     continue;
                 }
-                Set<ChessMove> thisPieceMoves = (Set<ChessMove>) piece.pieceMoves(board, piecePosition);
-                allMoves.addAll(thisPieceMoves);
+                Set<ChessMove> validMoves = (Set<ChessMove>) validMoves(piecePosition);
+                allMoves.addAll(validMoves);
             }
         }
         return allMoves.isEmpty();
