@@ -18,6 +18,7 @@ public class ChessGame {
     public ChessGame() {
         currentBoard.resetBoard();
         setTeamTurn(TeamColor.WHITE);
+        testBoard = currentBoard;
     }
 
     /**
@@ -175,6 +176,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
+        testBoard = currentBoard;
         boolean inCheck = isInCheck(teamColor);
         ChessPosition kingPosition = findKing(teamColor);
         if (!inCheck) return false;
