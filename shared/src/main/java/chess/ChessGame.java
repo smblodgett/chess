@@ -81,6 +81,7 @@ public class ChessGame {
         ChessPosition start = move.getStartPosition();
         ChessPosition end = move.getEndPosition();
         ChessPiece movingPiece = board.getPiece(start);
+        if (movingPiece==null) throw new InvalidMoveException("Invalid move!");
         Collection<ChessMove> correctMoves = validMoves(start);
         if (!correctMoves.contains(move)) throw new InvalidMoveException("Invalid move!");
         int startRow = start.getRow();
