@@ -12,11 +12,11 @@ import java.util.Set;
  */
 public class ChessGame {
     private TeamColor currentTeam;
-    private ChessBoard currentBoard;
+    private ChessBoard currentBoard = new ChessBoard();
     private ChessBoard testBoard;
 
     public ChessGame() {
-
+        currentBoard.resetBoard();
     }
 
     /**
@@ -87,7 +87,8 @@ public class ChessGame {
         int startColumn = start.getColumn();
         int endRow = end.getRow();
         int endCol = end.getColumn();
-        pieceGrid[endRow][endCol] = movingPiece;
+        if (move.getPromotionPiece()==null) pieceGrid[endRow][endCol] = movingPiece;
+        else pieceGrid[endRow][endCol] = new ChessPiece(movingPiece.getTeamColor(),move.getPromotionPiece());
         pieceGrid[startRow][startColumn] = null;
         board.updateBoard(pieceGrid);
     }
