@@ -16,6 +16,10 @@ public class ChessBoard {
     public ChessBoard() {
     }
 
+    public ChessBoard(ChessBoard copy){
+        board = copy.board;
+    }
+
     /**
      * Adds a chess piece to the chessboard
      *
@@ -40,8 +44,27 @@ public class ChessBoard {
         return board[position.getRow()][position.getColumn()];
     }
 
+    /**
+     * tells if a piece is at a certain position
+     *
+     * @param position The position to get the piece from
+     * @return True if a piece isn't there, false if there is
+     */
     public boolean noPiece(ChessPosition position){
         return getPiece(position)==null;
+    }
+
+    /**
+     * returns the chess piece grid
+     *
+     * @return variable board, the 8x8 chess piece array
+     */
+    public ChessPiece[][] getPieceGrid(){
+        return board;
+    }
+
+    public void updateBoard(ChessPiece[][] newGrid){
+        board = newGrid;
     }
 
     /**
@@ -177,4 +200,6 @@ public class ChessBoard {
     public int hashCode() {
         return Arrays.deepHashCode(board);
     }
+
+
 }
