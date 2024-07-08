@@ -93,7 +93,7 @@ public class ChessGame {
         Set<ChessMove> moves = (Set<ChessMove>) board.getPiece(startPosition).pieceMoves(board,startPosition);
         for (ChessMove move : moves){
             if (kingMoving){
-                if (abs(move.getEndPosition().getColumn()-startPosition.getColumn())==2){
+                if (abs(move.getEndPosition().getColumn()-startPosition.getColumn())==2 && ((currentTeam==TeamColor.BLACK && blackKingsideValid)||(currentTeam==TeamColor.WHITE && whiteKingsideValid))){
                     if (!isInCheck(chosenColor)){
                         if (!underAttack(new ChessPosition(startPosition.getRow(),startPosition.getColumn()+1),chosenColor)){
                             makeTestMove(move,board);
@@ -104,7 +104,7 @@ public class ChessGame {
 
                     }
                 }
-                else if (abs(move.getEndPosition().getColumn()-startPosition.getColumn())==3){
+                else if (abs(move.getEndPosition().getColumn()-startPosition.getColumn())==3 && ((currentTeam==TeamColor.BLACK && blackQueensideValid)||(currentTeam==TeamColor.WHITE && whiteQueensideValid))){
                     if (!isInCheck(chosenColor)){
                         if (!underAttack(new ChessPosition(startPosition.getRow(),startPosition.getColumn()-1),chosenColor) &&
                                 !underAttack(new ChessPosition(startPosition.getRow(),startPosition.getColumn()-2),chosenColor)
@@ -166,6 +166,10 @@ public class ChessGame {
         boolean kingCastling = abs(endCol - startColumn) > 1;
         boolean kingsideCastle = endCol - startColumn > 0;
         boolean queensideCastle = endCol - startColumn < 0;
+        boolean localWKs = whiteKingsideValid;
+        boolean localWQs = whiteQueensideValid;
+        boolean localBKs = blackKingsideValid;
+        boolean localBQs = blackQueensideValid;
 
         // case: castling
         if (movingPiece.getPieceType()==chess.ChessPiece.PieceType.KING && kingCastling){
@@ -190,6 +194,10 @@ public class ChessGame {
         board.updateBoard(pieceGrid);
         // set the game board with board, update test board
         setBoard(board);
+        whiteKingsideValid = localWKs;
+        whiteQueensideValid = localWQs;
+        blackKingsideValid = localBKs;
+        blackQueensideValid = localBQs;
 
         if (currentColor==TeamColor.WHITE) setTeamTurn(TeamColor.BLACK);
         else setTeamTurn(TeamColor.WHITE);
@@ -296,7 +304,6 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         boolean inCheck = isInCheck(teamColor);
-        ChessPosition kingPosition = findKing(teamColor);
         ChessBoard board = getTestBoard();
         ChessPiece[][] pieceGrid = board.getPieceGrid();
         Set<ChessMove> everyMove = new HashSet<>();
@@ -361,7 +368,12 @@ public class ChessGame {
     public void setBoard(ChessBoard board) {
         currentBoard = board;
         testBoard = currentBoard;
+        whiteKingsideValid=true;
+        whiteQueensideValid=true;
+        blackKingsideValid=true;
+        blackQueensideValid=true;
     }
+
 
     /**
      * Gets the current chessboard
