@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.lang.Math.abs;
+
 /**
  * For a class that can manage a chess game, making moves on a board
  * <p>
@@ -14,10 +16,10 @@ public class ChessGame {
     private TeamColor currentTeam;
     private ChessBoard currentBoard = new ChessBoard();
     private ChessBoard testBoard;
-    public boolean whiteQueensideValid;
-    public boolean whiteKingsideValid;
-    public boolean blackQueensideValid;
-    public boolean blackKingsideValid;
+    private static boolean whiteQueensideValid;
+    private static boolean whiteKingsideValid;
+    private static boolean blackQueensideValid;
+    private static boolean blackKingsideValid;
 
     public ChessGame() {
         currentBoard.resetBoard();
@@ -46,9 +48,21 @@ public class ChessGame {
         currentTeam=team;
     }
 
-//    public boolean getWhiteKingsideCastle(){
-//
-//    }
+    static public boolean getWhiteKingsideCastle(){
+        return whiteKingsideValid;
+    }
+
+    static public boolean getWhiteQueensideCastle(){
+        return whiteQueensideValid;
+    }
+
+    static public boolean getBlackKingsideCastle(){
+        return blackKingsideValid;
+    }
+
+    static public boolean getBlackQueensideCastle(){
+        return blackQueensideValid;
+    }
 
     /**
      * Enum identifying the 2 possible teams in a chess game
@@ -69,17 +83,51 @@ public class ChessGame {
         Set<ChessMove> finalMoves = new HashSet<ChessMove>();
         ChessBoard board = getBoard();
         ChessPiece chosenPiece = board.getPiece(startPosition);
-
         // return null if chosen piece is nothing
         if (chosenPiece == null){
             return null;
         }
+        boolean kingMoving = chosenPiece.getPieceType() == ChessPiece.PieceType.KING;
+
         TeamColor chosenColor = chosenPiece.getTeamColor();
         Set<ChessMove> moves = (Set<ChessMove>) board.getPiece(startPosition).pieceMoves(board,startPosition);
         for (ChessMove move : moves){
-            makeTestMove(move, board);
-            if (!isInCheck(chosenColor)) {
-                finalMoves.add(move);
+            if (kingMoving){
+                if (abs(move.getEndPosition().getColumn()-startPosition.getColumn())==2){
+                    if (!isInCheck(chosenColor)){
+                        if (!underAttack(new ChessPosition(startPosition.getRow(),startPosition.getColumn()+1),chosenColor)){
+                            makeTestMove(move,board);
+                            if (!isInCheck(chosenColor)) {
+                                finalMoves.add(move);
+                            }
+                        }
+
+                    }
+                }
+                if (abs(move.getEndPosition().getColumn()-startPosition.getColumn())==3){
+                    if (!isInCheck(chosenColor)){
+                        if (!underAttack(new ChessPosition(startPosition.getRow(),startPosition.getColumn()-1),chosenColor) &&
+                                !underAttack(new ChessPosition(startPosition.getRow(),startPosition.getColumn()-2),chosenColor)
+                        ){
+                            makeTestMove(move,board);
+                            if (!isInCheck(chosenColor)) {
+                                finalMoves.add(move);
+                            }
+                        }
+
+                    }
+                }
+            }
+            else {
+                makeTestMove(move, board);
+                if (!isInCheck(chosenColor)) {
+                    finalMoves.add(move);
+                }
+            }
+        }
+        if (kingMoving){
+            if (!isInCheck(currentTeam)) {
+
             }
         }
         return finalMoves;
@@ -113,12 +161,30 @@ public class ChessGame {
         if (startRow==1 && startColumn==8) whiteKingsideValid = false;
         if (startRow==8 && startColumn==1) blackQueensideValid = false;
         if (startRow==8 && startColumn==8) blackKingsideValid = false;
+        boolean kingCastling = abs(endCol - startColumn) > 1;
+        boolean kingsideCastle = endCol - startColumn > 0;
+        boolean queensideCastle = endCol - startColumn < 0;
 
+        // case: castling
+        if (movingPiece.getPieceType()==chess.ChessPiece.PieceType.KING && kingCastling){
+            pieceGrid[endRow][endCol] = movingPiece;
+            if (kingsideCastle){
+                pieceGrid[endRow][endCol-1] = new ChessPiece(currentColor, ChessPiece.PieceType.ROOK);
+            }
+            if (queensideCastle){
+                pieceGrid[endRow][endCol+1] = new ChessPiece(currentColor, ChessPiece.PieceType.ROOK);
+            }
+        }
+
+        // case: non-king, non-promotion
         if (move.getPromotionPiece()==null) pieceGrid[endRow][endCol] = movingPiece;
+        // case: pawn promotion
         else pieceGrid[endRow][endCol] = new ChessPiece(movingPiece.getTeamColor(),move.getPromotionPiece());
-
+        // wipe the start position
         pieceGrid[startRow][startColumn] = null;
+        // update the board
         board.updateBoard(pieceGrid);
+        // set the game board with board, update test board
         setBoard(board);
 
         if (currentColor==TeamColor.WHITE) setTeamTurn(TeamColor.BLACK);
@@ -158,6 +224,31 @@ public class ChessGame {
             }
         }
         return null;
+    }
+
+    public boolean underAttack(ChessPosition position,TeamColor myColor) {
+        ChessBoard board = getTestBoard();
+        ChessPiece[][] pieceGrid = board.getPieceGrid();
+        Set<ChessMove> allMoves = new HashSet<>();
+            for (int row=1;row<9;row++){
+                for (int col=1;col<9;col++){
+                    ChessPosition piecePosition = new ChessPosition(row,col);
+                    if (board.noPiece(piecePosition)){
+                        continue;
+                    }
+                    if (board.getPiece(piecePosition).getTeamColor()==myColor) continue;
+                    ChessPiece piece = pieceGrid[row][col];
+
+                    Set<ChessMove> thisPieceMoves = (Set<ChessMove>) piece.pieceMoves(board, piecePosition);
+                    allMoves.addAll(thisPieceMoves);
+                }
+            }
+            for (var move : allMoves){
+                if (move.getEndPosition().equals(position)){
+                    return true;
+                }
+        }
+            return false;
     }
 
     /**

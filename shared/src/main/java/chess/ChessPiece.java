@@ -54,6 +54,8 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece chosenPiece = board.getPiece(myPosition); // get the piece at position
         ChessGame.TeamColor myColor = pieceColor;
+        int currRow = myPosition.getRow();
+        int currCol = myPosition.getColumn();
         // ensure there is actually a piece here...
         if (chosenPiece == null){
             return null;
@@ -66,8 +68,6 @@ public class ChessPiece {
                         if (rowadd==coladd){
                             continue;
                         }
-                        int currRow = myPosition.getRow();
-                        int currCol = myPosition.getColumn();
                         ChessPosition q1 = new ChessPosition(currRow+rowadd,currCol+coladd);
                         ChessPosition q2 = new ChessPosition(currRow-rowadd,currCol+coladd);
                         ChessPosition q3 = new ChessPosition(currRow-rowadd,currCol-coladd);
@@ -88,8 +88,6 @@ public class ChessPiece {
                 }
                 // go through the possible distances the bishops can move
                 for (int i=1;i<=7;i++){
-                    int currRow = myPosition.getRow();
-                    int currCol = myPosition.getColumn();
                     int[] directionRow = {-1, 1};
                     int[] directionCol = {-1, 1};
                     // go through direction vectors
@@ -142,8 +140,6 @@ public class ChessPiece {
                     directionsRook.add(true);
                 }
                 for (int i=1;i<=7;i++){
-                    int currRow = myPosition.getRow();
-                    int currCol = myPosition.getColumn();
                     ChessPosition posRookMoveRow = new ChessPosition(currRow+i,currCol);
                     ChessPosition posRookMoveCol = new ChessPosition(currRow,currCol+i);
                     ChessPosition negRookMoveRow = new ChessPosition(currRow-i,currCol);
@@ -192,8 +188,6 @@ public class ChessPiece {
                     directionsQueenRank.add(true);
                 }
                 for (int i=1;i<=7;i++){
-                    int currRow = myPosition.getRow();
-                    int currCol = myPosition.getColumn();
                     ChessPosition posQueenMoveRow = new ChessPosition(currRow+i,currCol);
                     ChessPosition posQueenMoveCol = new ChessPosition(currRow,currCol+i);
                     ChessPosition negQueenMoveRow = new ChessPosition(currRow-i,currCol);
@@ -242,8 +236,6 @@ public class ChessPiece {
                 }
                 // go through the possible distances the bishops can move
                 for (int i=1;i<=7;i++){
-                    int currRow = myPosition.getRow();
-                    int currCol = myPosition.getColumn();
                     int[] directionRow = {-1, 1};
                     int[] directionCol = {-1, 1};
                     // go through direction vectors
@@ -293,8 +285,6 @@ public class ChessPiece {
             case KING:
                 int[][] moveSet = {{1,1},{1,0},{1,-1},{0,1},{0,-1},{-1,1},{-1,0},{-1,-1}};
                 for (var mv : moveSet){
-                    int currRow = myPosition.getRow();
-                    int currCol = myPosition.getColumn();
                     ChessPosition move = new ChessPosition(currRow + mv[0], currCol + mv[1]);
                     if (move.onBoard() && (board.noPiece(move) || board.getPiece(move).pieceColor!=myColor)){
                         moves.add(new ChessMove(myPosition,move,null));
@@ -303,11 +293,47 @@ public class ChessPiece {
                         continue;
                     }
                 }
-                if (ChessGame.whiteKingsideValid)
+                if (myColor==ChessGame.TeamColor.WHITE){
+                    if (ChessGame.getWhiteKingsideCastle()){
+                        ChessPosition f1 = new ChessPosition(currRow,currCol+1);
+                        ChessPosition g1 = new ChessPosition(currRow,currCol+2);
+                        if (board.noPiece(f1) && board.noPiece(g1)){
+                            ChessMove kingsideCastle = new ChessMove(myPosition,g1,null);
+                            moves.add(kingsideCastle);
+                        }
+                    }
+                    if (ChessGame.getWhiteQueensideCastle()){
+                        ChessPosition b1 = new ChessPosition(currRow,currCol-3);
+                        ChessPosition c1 = new ChessPosition(currRow,currCol-2);
+                        ChessPosition d1 = new ChessPosition(currRow,currCol-1);
+                        if (board.noPiece(b1) && board.noPiece(c1) && board.noPiece(d1)){
+                            ChessMove queensideCastle = new ChessMove(myPosition,c1,null);
+                            moves.add(queensideCastle);
+                        }
+                    }
+                }
+                if (myColor==ChessGame.TeamColor.BLACK){
+                    if (ChessGame.getBlackKingsideCastle()){
+                        ChessPosition f8 = new ChessPosition(currRow,currCol+1);
+                        ChessPosition g8 = new ChessPosition(currRow,currCol+2);
+                        if (board.noPiece(f8) && board.noPiece(g8)){
+                            ChessMove kingsideCastle = new ChessMove(myPosition,g8,null);
+                            moves.add(kingsideCastle);
+                        }
+                    }
+                    if (ChessGame.getBlackQueensideCastle()){ChessPosition b8 = new ChessPosition(currRow,currCol-3);
+                        ChessPosition c8 = new ChessPosition(currRow,currCol-2);
+                        ChessPosition d8 = new ChessPosition(currRow,currCol-1);
+                        if (board.noPiece(b8) && board.noPiece(c8) && board.noPiece(d8)){
+                            ChessMove queensideCastle = new ChessMove(myPosition,c8,null);
+                            moves.add(queensideCastle);
+                        }
+                    }
+                }
+
+
                 break;
             case PAWN:
-                int currRow = myPosition.getRow();
-                int currCol = myPosition.getColumn();
                 // check if pawn is on 2nd/7th rank, make 2 move flag
                 boolean firstMove = (myColor == ChessGame.TeamColor.WHITE && currRow == 2)
                         || (myColor == ChessGame.TeamColor.BLACK && currRow == 7);
