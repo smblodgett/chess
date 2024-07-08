@@ -178,11 +178,28 @@ public class ChessGame {
     public boolean isInCheckmate(TeamColor teamColor) {
         boolean inCheck = isInCheck(teamColor);
         ChessPosition kingPosition = findKing(teamColor);
+        ChessBoard board = getTestBoard();
+        ChessPiece[][] pieceGrid = board.getPieceGrid();
+        Set<ChessMove> everyMove = new HashSet<>();
         if (!inCheck) return false;
         else {
-            Set<ChessMove> kingMoves = (Set<ChessMove>) validMoves(kingPosition);
-            // need implementation to check every other piece and make sure they can't take or block check.
-            return kingMoves.isEmpty();
+            for (int row=1;row<9;row++) {
+                for (int col = 1; col < 9; col++) {
+                    ChessPosition piecePosition = new ChessPosition(row,col);
+                    if (board.noPiece(piecePosition)){
+                        continue;
+                    }
+                    ChessPiece piece = pieceGrid[row][col];
+                    if (piece.getTeamColor()!=teamColor){
+                        continue;
+                    }
+                    Set<ChessMove> thisPieceMoves = (Set<ChessMove>) validMoves(piecePosition);
+                    everyMove.addAll(thisPieceMoves);
+                    // need implementation to check every other piece and make sure they can't take or block check.
+
+                }
+            }
+            return everyMove.isEmpty();
         }
     }
 
