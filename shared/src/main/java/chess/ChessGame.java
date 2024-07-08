@@ -14,11 +14,20 @@ public class ChessGame {
     private TeamColor currentTeam;
     private ChessBoard currentBoard = new ChessBoard();
     private ChessBoard testBoard;
+    public boolean whiteQueensideValid;
+    public boolean whiteKingsideValid;
+    public boolean blackQueensideValid;
+    public boolean blackKingsideValid;
 
     public ChessGame() {
         currentBoard.resetBoard();
         setTeamTurn(TeamColor.WHITE);
         testBoard = currentBoard;
+        whiteKingsideValid=true;
+        whiteQueensideValid=true;
+        blackKingsideValid=true;
+        blackQueensideValid=true;
+
     }
 
     /**
@@ -36,6 +45,10 @@ public class ChessGame {
     public void setTeamTurn(TeamColor team) {
         currentTeam=team;
     }
+
+//    public boolean getWhiteKingsideCastle(){
+//
+//    }
 
     /**
      * Enum identifying the 2 possible teams in a chess game
@@ -56,11 +69,12 @@ public class ChessGame {
         Set<ChessMove> finalMoves = new HashSet<ChessMove>();
         ChessBoard board = getBoard();
         ChessPiece chosenPiece = board.getPiece(startPosition);
-        TeamColor chosenColor = chosenPiece.getTeamColor();
+
         // return null if chosen piece is nothing
         if (chosenPiece == null){
             return null;
         }
+        TeamColor chosenColor = chosenPiece.getTeamColor();
         Set<ChessMove> moves = (Set<ChessMove>) board.getPiece(startPosition).pieceMoves(board,startPosition);
         for (ChessMove move : moves){
             makeTestMove(move, board);
@@ -89,14 +103,24 @@ public class ChessGame {
         Collection<ChessMove> correctMoves = validMoves(start);
         if (currentColor!=pieceColor) throw new InvalidMoveException("Invalid move! Wrong color!");
         if (!correctMoves.contains(move)) throw new InvalidMoveException("Invalid move! That move is illegal");
+
         int startRow = start.getRow();
         int startColumn = start.getColumn();
         int endRow = end.getRow();
         int endCol = end.getColumn();
+
+        if (startRow==1 && startColumn==1) whiteQueensideValid = false;
+        if (startRow==1 && startColumn==8) whiteKingsideValid = false;
+        if (startRow==8 && startColumn==1) blackQueensideValid = false;
+        if (startRow==8 && startColumn==8) blackKingsideValid = false;
+
         if (move.getPromotionPiece()==null) pieceGrid[endRow][endCol] = movingPiece;
         else pieceGrid[endRow][endCol] = new ChessPiece(movingPiece.getTeamColor(),move.getPromotionPiece());
+
         pieceGrid[startRow][startColumn] = null;
         board.updateBoard(pieceGrid);
+        setBoard(board);
+
         if (currentColor==TeamColor.WHITE) setTeamTurn(TeamColor.BLACK);
         else setTeamTurn(TeamColor.WHITE);
     }
@@ -194,6 +218,7 @@ public class ChessGame {
                         continue;
                     }
                     Set<ChessMove> thisPieceMoves = (Set<ChessMove>) validMoves(piecePosition);
+                    if (thisPieceMoves==null) continue;
                     everyMove.addAll(thisPieceMoves);
                     // need implementation to check every other piece and make sure they can't take or block check.
 
@@ -211,6 +236,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+        if (isInCheckmate(teamColor)) return false;
         ChessBoard board = getBoard();
         ChessPiece[][] pieceGrid = board.getPieceGrid();
         Set<ChessMove> allMoves = new HashSet<>();
@@ -225,6 +251,7 @@ public class ChessGame {
                     continue;
                 }
                 Set<ChessMove> validMoves = (Set<ChessMove>) validMoves(piecePosition);
+                if (validMoves==null) continue;
                 allMoves.addAll(validMoves);
             }
         }

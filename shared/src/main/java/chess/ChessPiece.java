@@ -303,6 +303,7 @@ public class ChessPiece {
                         continue;
                     }
                 }
+                if (ChessGame.whiteKingsideValid)
                 break;
             case PAWN:
                 int currRow = myPosition.getRow();
