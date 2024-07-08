@@ -293,7 +293,7 @@ public class ChessPiece {
                         continue;
                     }
                 }
-                if (myColor==ChessGame.TeamColor.WHITE){
+                if (myColor==ChessGame.TeamColor.WHITE && currRow==1 && currCol==5){
                     if (ChessGame.getWhiteKingsideCastle()){
                         ChessPosition f1 = new ChessPosition(currRow,currCol+1);
                         ChessPosition g1 = new ChessPosition(currRow,currCol+2);
@@ -312,7 +312,7 @@ public class ChessPiece {
                         }
                     }
                 }
-                if (myColor==ChessGame.TeamColor.BLACK){
+                if (myColor==ChessGame.TeamColor.BLACK && currRow==8 && currCol==5){
                     if (ChessGame.getBlackKingsideCastle()){
                         ChessPosition f8 = new ChessPosition(currRow,currCol+1);
                         ChessPosition g8 = new ChessPosition(currRow,currCol+2);

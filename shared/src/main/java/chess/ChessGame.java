@@ -21,6 +21,7 @@ public class ChessGame {
     private static boolean blackQueensideValid;
     private static boolean blackKingsideValid;
 
+
     public ChessGame() {
         currentBoard.resetBoard();
         setTeamTurn(TeamColor.WHITE);
@@ -29,7 +30,6 @@ public class ChessGame {
         whiteQueensideValid=true;
         blackKingsideValid=true;
         blackQueensideValid=true;
-
     }
 
     /**
@@ -104,7 +104,7 @@ public class ChessGame {
 
                     }
                 }
-                if (abs(move.getEndPosition().getColumn()-startPosition.getColumn())==3){
+                else if (abs(move.getEndPosition().getColumn()-startPosition.getColumn())==3){
                     if (!isInCheck(chosenColor)){
                         if (!underAttack(new ChessPosition(startPosition.getRow(),startPosition.getColumn()-1),chosenColor) &&
                                 !underAttack(new ChessPosition(startPosition.getRow(),startPosition.getColumn()-2),chosenColor)
@@ -117,6 +117,12 @@ public class ChessGame {
 
                     }
                 }
+                else {
+                    makeTestMove(move, board);
+                    if (!isInCheck(chosenColor)) {
+                        finalMoves.add(move);
+                    }
+                }
             }
             else {
                 makeTestMove(move, board);
@@ -125,11 +131,7 @@ public class ChessGame {
                 }
             }
         }
-        if (kingMoving){
-            if (!isInCheck(currentTeam)) {
 
-            }
-        }
         return finalMoves;
     }
 
@@ -157,10 +159,10 @@ public class ChessGame {
         int endRow = end.getRow();
         int endCol = end.getColumn();
 
-        if (startRow==1 && startColumn==1) whiteQueensideValid = false;
-        if (startRow==1 && startColumn==8) whiteKingsideValid = false;
-        if (startRow==8 && startColumn==1) blackQueensideValid = false;
-        if (startRow==8 && startColumn==8) blackKingsideValid = false;
+        if ((startRow==1 && startColumn==1) || (startRow==1 && startColumn==5)) whiteQueensideValid = false;
+        if ((startRow==1 && startColumn==8) || (startRow==1 && startColumn==5)) whiteKingsideValid = false;
+        if ((startRow==8 && startColumn==1) || (startRow==8 && startColumn==5)) blackQueensideValid = false;
+        if ((startRow==8 && startColumn==8) || (startRow==8 && startColumn==5)) blackKingsideValid = false;
         boolean kingCastling = abs(endCol - startColumn) > 1;
         boolean kingsideCastle = endCol - startColumn > 0;
         boolean queensideCastle = endCol - startColumn < 0;
@@ -170,9 +172,11 @@ public class ChessGame {
             pieceGrid[endRow][endCol] = movingPiece;
             if (kingsideCastle){
                 pieceGrid[endRow][endCol-1] = new ChessPiece(currentColor, ChessPiece.PieceType.ROOK);
+                pieceGrid[endRow][8] = null;
             }
             if (queensideCastle){
                 pieceGrid[endRow][endCol+1] = new ChessPiece(currentColor, ChessPiece.PieceType.ROOK);
+                pieceGrid[endRow][1] = null;
             }
         }
 
