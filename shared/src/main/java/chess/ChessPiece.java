@@ -2,6 +2,9 @@ package chess;
 
 import java.util.*;
 
+import static chess.ChessGame.*;
+import static java.lang.Math.abs;
+
 /**
  * Represents a single chess piece
  * <p>
@@ -386,6 +389,15 @@ public class ChessPiece {
                             moves.add(new ChessMove(myPosition,new ChessPosition(currRow+1,currCol+1), PieceType.KNIGHT));
                         }
                     }
+                    if (getEnPassantable()){
+                        ChessPosition passedPawnPos = getEnPassantPosition();
+                        int passedPawnRow = passedPawnPos.getRow();
+                        int passedPawnCol = passedPawnPos.getColumn();
+                        ChessPosition passantEndPos = new ChessPosition(passedPawnRow+1,passedPawnCol);
+                        if (passedPawnRow==currRow && abs(passedPawnCol-currCol)==1 && passantEndPos.onBoard() && board.noPiece(passantEndPos)){
+                            moves.add(new ChessMove(myPosition,passantEndPos,null));
+                        }
+                    }
 
                 }
                 if (myColor==ChessGame.TeamColor.BLACK){
@@ -424,6 +436,15 @@ public class ChessPiece {
                             moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol+1), PieceType.ROOK));
                             moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol+1), PieceType.BISHOP));
                             moves.add(new ChessMove(myPosition,new ChessPosition(currRow-1,currCol+1), PieceType.KNIGHT));
+                        }
+                    }
+                    if (getEnPassantable()){
+                        ChessPosition passedPawnPos = getEnPassantPosition();
+                        int passedPawnRow = passedPawnPos.getRow();
+                        int passedPawnCol = passedPawnPos.getColumn();
+                        ChessPosition passantEndPos = new ChessPosition(passedPawnRow-1,passedPawnCol);
+                        if (passedPawnRow==currRow && abs(passedPawnCol-currCol)==1 && passantEndPos.onBoard() && board.noPiece(passantEndPos)){
+                            moves.add(new ChessMove(myPosition,passantEndPos,null));
                         }
                     }
                 }

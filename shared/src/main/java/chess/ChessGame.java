@@ -20,7 +20,8 @@ public class ChessGame {
     private static boolean whiteKingsideValid;
     private static boolean blackQueensideValid;
     private static boolean blackKingsideValid;
-
+    private static boolean enPassantable;
+    private static ChessPosition enPassantPosition;
 
     public ChessGame() {
         currentBoard.resetBoard();
@@ -30,6 +31,8 @@ public class ChessGame {
         whiteQueensideValid=true;
         blackKingsideValid=true;
         blackQueensideValid=true;
+        enPassantable=false;
+        enPassantPosition=null;
     }
 
     /**
@@ -62,6 +65,14 @@ public class ChessGame {
 
     static public boolean getBlackQueensideCastle(){
         return blackQueensideValid;
+    }
+
+    static public boolean getEnPassantable(){
+        return enPassantable;
+    }
+
+    static public ChessPosition getEnPassantPosition(){
+        return enPassantPosition;
     }
 
     /**
@@ -184,6 +195,22 @@ public class ChessGame {
             }
         }
 
+        // case: en passant
+        boolean pawnEnPassanting = false;
+        if (enPassantPosition!=null) {
+            pawnEnPassanting = (movingPiece.getPieceType()==ChessPiece.PieceType.PAWN) &&
+                    (endCol==enPassantPosition.getColumn()) && (((endRow==enPassantPosition.getRow()+1) &&
+                            (movingPiece.getTeamColor()==TeamColor.WHITE)) || (((endRow==enPassantPosition.getRow()-1) &&
+                            (movingPiece.getTeamColor()==TeamColor.BLACK))));
+        }
+        if (pawnEnPassanting){
+            pieceGrid[endRow][endCol] = movingPiece;
+            switch (movingPiece.getTeamColor()){
+                case BLACK -> pieceGrid[endRow+1][endCol] = null;
+                case WHITE -> pieceGrid[endRow-1][endCol] = null;
+            }
+        }
+
         // case: non-king, non-promotion
         if (move.getPromotionPiece()==null) pieceGrid[endRow][endCol] = movingPiece;
         // case: pawn promotion
@@ -199,6 +226,14 @@ public class ChessGame {
         blackKingsideValid = localBKs;
         blackQueensideValid = localBQs;
 
+        // allow for en passant if it was a pawn that moved 2 spaces
+        enPassantable=movingPiece.getPieceType()==chess.ChessPiece.PieceType.PAWN && abs(startRow-endRow)>1;
+        // if so, save where that pawn is
+        if (enPassantable){
+            enPassantPosition= new ChessPosition(endRow,endCol);
+        }
+        else enPassantPosition=null;
+        // change whose turn it is
         if (currentColor==TeamColor.WHITE) setTeamTurn(TeamColor.BLACK);
         else setTeamTurn(TeamColor.WHITE);
     }
