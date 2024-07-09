@@ -244,10 +244,12 @@ public class ChessGame {
         ChessPosition start = move.getStartPosition();
         ChessPosition end = move.getEndPosition();
         ChessPiece movingPiece = boardCopy.getPiece(start);
+
         int startRow = start.getRow();
         int startColumn = start.getColumn();
         int endRow = end.getRow();
         int endCol = end.getColumn();
+
         pieceGrid[endRow][endCol] = movingPiece;
         pieceGrid[startRow][startColumn] = null;
         boardCopy.updateBoard(pieceGrid);
@@ -357,7 +359,6 @@ public class ChessGame {
                     Set<ChessMove> thisPieceMoves = (Set<ChessMove>) validMoves(piecePosition);
                     if (thisPieceMoves==null) continue;
                     everyMove.addAll(thisPieceMoves);
-                    // need implementation to check every other piece and make sure they can't take or block check.
 
                 }
             }
