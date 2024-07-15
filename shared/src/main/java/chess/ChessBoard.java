@@ -11,7 +11,6 @@ import java.util.Objects;
  */
 public class ChessBoard {
     private ChessPiece[][] board = new ChessPiece[9][9];
-    // question: do I need to declare this up here?
 
     public ChessBoard() {
     }
@@ -105,8 +104,6 @@ public class ChessBoard {
                 addPiece(new ChessPosition(1,i),new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING));
                 addPiece(new ChessPosition(8,i),new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING));
             }
-
-
         }
     }
 
