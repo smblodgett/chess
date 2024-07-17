@@ -1,11 +1,15 @@
 package dataaccess;
 
 import chess.ChessGame;
+import model.GameData;
+
+import java.util.HashSet;
 
 public interface GameDAO {
-    public ChessGame createGame();
-    public ChessGame getGame(String gameID);
-    public ChessGame[] listGames();
-    public void updateGame(String gameID);
+    public GameData createGame(GameData gameData);
+    public GameData getGame(int gameID) throws DataAccessException;
+    public HashSet<GameData> listGames();
+    public void updateGamePlayer(GameData gameData, ChessGame.TeamColor color, String username) throws DataAccessException;
     public void clearGames();
+    void deleteGame(int gameID);
 }

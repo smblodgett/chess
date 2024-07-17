@@ -25,10 +25,10 @@ public class AuthDataAccess implements AuthDAO {
     }
 
     @Override
-    public String getAuth(String authToken) throws DataAccessException {
+    public AuthData getAuth(String authToken) throws DataAccessException {
         for (var auth : authDatabase){
             if (Objects.equals(auth.authToken(), authToken)){
-                return auth.username();
+                return auth;
             }
         }
         throw new DataAccessException("your auth token matches no username in the data files!");

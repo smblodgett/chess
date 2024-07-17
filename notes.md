@@ -220,3 +220,82 @@ before((request, response) ->
 ```
 You can also have after() filters as well
 
+**7/17/24 - Good Coding Practice!**
+
++ Cohesion: a method should do one and one thing only. 
++ Method name: this should completely and clearly describe what the method does. 
+  + If the name is too long, that's a sign that you need to break up the function
+  + If it's void, you should make it a verb. If non void, it could be a verb or what it returns.
+  + establish conventions
+  + avoid meaningless method names
++ 3 reasons for creating methods:
+  + top-down decomposition of algorithms:
+    + if you have a super long function, it's doing too many things. You should break it up!
+    + put it into submethods that might even be part of a different class
+    + lots of comments could mean further subdividing is necessary
+  + avoid code duplication:
+    + duplication makes maintenance difficult, error-prone
+    + if you need it in multiple places, put it into a method that can be called wherever the code is needed
+    + you could also inherit from a superclass to avoid duplication
+  + deep nesting: 
+    + excessive nesting of statements is one of the chief culprits of confusing code
+    + more than 3 or 4 levels in and you've gone too far
+    + creating additional sub-methods is the best way to remove this
++ put separate conditions on separate lines for booleans
++ put boolean expressions in parantheses
++ wrap lines intelligently
++ choose good variable names, not too long, not too short (except small iterators i,j,k or math stuff...)
++ Naming conventions:
+  + UpperCamelCase, lowerCamelCase
+  + snake_Case
+  + first char of class is uppercase
+  + first char of method/function/variable is lowercase
+  + constants are ALL_CAPS with underscores
+  + avoid "Dr. Seuss" naming (e.g. "thing1" and "thing2")
+  + only abbreviate if you have to...
+    + if you do, removing nonleading vowels (computer->cmptr) OR truncate (calculus->calc)
+    + make sure it's pronouncable 
+  
+_Unit Testing_
+
+The things we're building are so complicated, we need to test each little part of our code.
+
+Write a little code, test it. Then write a little more, test it. Keep doing litle bit by bit. 
+
+Test-driven development: write test cases FIRST, then build classes to pass the test cases.
+
+Write a test driver which runs all of your small tests. 
+
+Have an expected result, then compare what you got to the expected
+
+_JUnit Testing Design_
+
+IntelliJ has a builtin thing to automake a test for your class
+```
+import static org.junit.jupiter.api.Assertions.*
+
+class StringOpsTest(){
+    
+    StringOps so;
+    
+    @Test
+    void emptyString(){
+        so = new StringOps();
+        assertEquals("",so.reverse(""));
+    }
+    
+    @Test
+    void evenLengthString(){
+        so = new StringOps();
+        assertEquals("1234",so.reverse("4321"))
+    }
+
+}
+```
+JUnit provides method @BeforeEach so you don't have to keep redeclaring objects over and over
+```
+@BeforeEach
+void setup(){
+    so = new StringOps();
+}
+```
