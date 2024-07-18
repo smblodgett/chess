@@ -9,7 +9,7 @@ import java.util.Objects;
 public class GameDataAccess implements GameDAO {
     HashSet<GameData> gameDatabase;
 
-    GameDataAccess(){
+    public GameDataAccess(){
         gameDatabase = new HashSet<>();
     }
 

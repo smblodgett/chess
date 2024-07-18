@@ -8,7 +8,7 @@ import java.util.Objects;
 public class AuthDataAccess implements AuthDAO {
     HashSet<AuthData> authDatabase;
 
-    AuthDataAccess(){
+    public AuthDataAccess(){
         authDatabase= new HashSet<>();
     }
 

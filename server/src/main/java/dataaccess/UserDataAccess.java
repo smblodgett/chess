@@ -9,7 +9,7 @@ public class UserDataAccess implements UserDAO {
 
     HashSet<UserData> userDatabase;
 
-    UserDataAccess(){
+    public UserDataAccess(){
         userDatabase = new HashSet<>();
     }
 

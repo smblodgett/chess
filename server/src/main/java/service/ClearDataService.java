@@ -8,13 +8,13 @@ public class ClearDataService {
     private final GameDAO gameData;
     private final UserDAO userData;
 
-    ClearDataService(AuthDAO authData, GameDAO gameData, UserDAO userData){
-        this.authData=authData;
-        this.gameData=gameData;
-        this.userData=userData;
+    ClearDataService(DataAccessContainer dataAccessContainer){
+        this.authData=dataAccessContainer.authData;
+        this.gameData=dataAccessContainer.gameData;
+        this.userData=dataAccessContainer.userData;
     }
 
-    public void deleteAllData() {
+    public void clearAllData() {
         authData.clearAuth();
         gameData.clearGames();
         userData.clearUsers();
