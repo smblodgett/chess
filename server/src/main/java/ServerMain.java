@@ -20,7 +20,9 @@ public class ServerMain {
             var userData = new UserDataAccess();
             var dataContainer = new DataAccessContainer(authData,gameData,userData);
             var services = new ServiceContainer(dataContainer);
-            var server = new Server(services).run(port);
+            var server = new Server();
+            server.addServices(services);
+            server.run(port);
             port = server.port();
             System.out.printf("Server started on port %d%n", port);
             return;

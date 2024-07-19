@@ -1,5 +1,7 @@
 package handler;
 
+import com.google.gson.Gson;
+import model.GameData;
 import service.CreateGameService;
 import spark.Request;
 import spark.Response;
@@ -15,6 +17,16 @@ public class CreateGameHandler implements Route {
 
     @Override
     public Object handle(Request req, Response res) throws Exception {
-        return null;
+        var game = new Gson().fromJson(req.body(), GameData.class);
+        // need to check auth token if user is verified
+        int gameID = game.gameID();
+        boolean isAddableGame = service.checkUniqueID(gameID);
+        if (isAddableGame){
+            service.createNewGame(game);
+            res.status(200);
+            return new Gson().toJson(game);
+        }
+
+
     }
 }

@@ -1,20 +1,18 @@
 package server;
 
 import handler.*;
-import service.ClearDataService;
 import service.ServiceContainer;
 import spark.*;
 
 public class Server {
 
-    private final ServiceContainer services;
+    private ServiceContainer services;
 
 
-    public Server(ServiceContainer services){
-        this.services = services;
+    public Server(){
     }
 
-    public Server run(int desiredPort) {
+    public int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
@@ -41,11 +39,15 @@ public class Server {
         Spark.init();
 
         Spark.awaitInitialization();
-        return this;
+        return Spark.port(); // possibly should be an int...?
     }
 
     public int port(){
         return Spark.port();
+    }
+
+    public void addServices(ServiceContainer services){
+        this.services=services;
     }
 
     public void stop() {

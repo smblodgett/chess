@@ -15,6 +15,8 @@ public class LogoutHandler implements Route {
 
     @Override
     public Object handle(Request req, Response res) throws Exception {
+
+        res.status(200);
         return null;
     }
 }
