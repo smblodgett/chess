@@ -9,10 +9,10 @@ import model.UserData;
 
 public class RegisterService {
 
-    private DataAccessContainer data;
+    private static DataAccessContainer data;
 
     RegisterService(DataAccessContainer dataAccessContainer) throws AlreadyTakenException, BadRequestException, DataAccessException {
-        this.data=dataAccessContainer;
+        data=dataAccessContainer;
     }
 
     public AuthData register(UserData userData) throws AlreadyTakenException, BadRequestException {

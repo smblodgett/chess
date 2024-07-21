@@ -21,12 +21,12 @@ public class CreateGameHandler implements Route {
         // need to check auth token if user is verified
         int gameID = game.gameID();
         boolean isAddableGame = service.checkUniqueID(gameID);
-        if (isAddableGame){
+        if (isAddableGame) {
             service.createNewGame(game);
             res.status(200);
             return new Gson().toJson(game);
         }
-
-
+        return null;
     }
+
 }
