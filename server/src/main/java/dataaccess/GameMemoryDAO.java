@@ -6,10 +6,10 @@ import model.GameData;
 import java.util.HashSet;
 import java.util.Objects;
 
-public class GameDataAccess implements GameDAO {
-    HashSet<GameData> gameDatabase;
+public class GameMemoryDAO implements GameDAO {
+    static HashSet<GameData> gameDatabase;
 
-    public GameDataAccess(){
+    public GameMemoryDAO(){
         gameDatabase = new HashSet<>();
     }
 

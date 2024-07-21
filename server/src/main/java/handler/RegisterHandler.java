@@ -1,5 +1,10 @@
 package handler;
 
+import com.google.gson.Gson;
+import exception.AlreadyTakenException;
+import exception.BadRequestException;
+import model.AuthData;
+import model.UserData;
 import service.RegisterService;
 import spark.Request;
 import spark.Response;
@@ -15,6 +20,23 @@ public class RegisterHandler implements Route {
 
     @Override
     public Object handle(Request req, Response res) throws Exception {
-        return null;
+        try {
+            var userData = new Gson().fromJson(req.body(), UserData.class);
+            var authData = service.register(userData);
+            res.status(200);
+            return new Gson().toJson(authData);
+        }
+        catch (BadRequestException badRequest) {
+            res.status(400);
+            return new Gson().toJson(badRequest);
+        }
+        catch (AlreadyTakenException alreadyTaken){
+            res.status(403);
+            return new Gson().toJson(alreadyTaken);
+        }
+        catch (Exception otherException){
+            res.status(500);
+            return new Gson().toJson(otherException);
+        }
     }
 }

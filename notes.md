@@ -299,3 +299,56 @@ void setup(){
     so = new StringOps();
 }
 ```
+
+**7/19/24**
+SQL Stuff
+
+Each column in a SQL table declares the type that column may contain
++ Character strings:
+  + CHARACTER(n) or CHAR(n) : fixed width n-character string, padded with spaces
+  + CHARACTER VARYING(n) or VARCHAR(n) : variable-width string with max size of n characters
+  + BIT(n) : an array of n bits
+  + INTEGER, SMALLINT
+  + FLOAT, REAL, DOUBLE PRECISION
+  + NUMERIC(precision,scale) or DECIMAL(precision,scale)
+  + BLOB : binary large object (images,sound,video,etc.)
+  + CLOB : character large object (text documents)
+  + DATE
+  + TIME
+  + TIME WITH TIME ZONE or TIMETZ : same as time but with timezone
+  + TIMESTAMP : date and time together
+  + TIMESTAMPTZ: date, time, timezone
+  
++ Creating Tables:
+```
+create table if not exists book
+{
+    id integer not null primary key auto_increment  // auto_increment: fill in ID automatically
+    title varchar(255) not null,                    // not null: signifies this can't be null
+    category_id integer not null,
+    genre varchar(32) not null,
+    foreign key(genre) references genre(genre),     // declares that column genre points to column genre in table genre
+    foreign key(category_id) references category(id)
+};
+
+drop table if exists book                           // deletion statement
+```
+
++ Insertions
+```
+insert into book
+(title, author,genre,category_id) values ('Oathbringer','Brandon Sanderson','Fantasy',3);
+```
++ Updates
+```
+UPDATE member
+SET name = 'Steve', email_address='steve@gmail.com'
+WHERE id = 3 
+```
++ Deletions
+```
+DELETE FROM table
+WHERE condition
+
+// (if you don't put a where clause, you delete the entire table)
+```

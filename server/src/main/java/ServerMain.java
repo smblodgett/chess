@@ -1,7 +1,7 @@
-import dataaccess.AuthDataAccess;
+import dataaccess.AuthMemoryDAO;
 import dataaccess.DataAccessContainer;
-import dataaccess.GameDataAccess;
-import dataaccess.UserDataAccess;
+import dataaccess.GameMemoryDAO;
+import dataaccess.UserMemoryDAO;
 import service.ServiceContainer;
 import server.Server;
 
@@ -15,9 +15,9 @@ public class ServerMain {
             if (args.length >= 1) {
                 port = Integer.parseInt(args[0]);
             }
-            var authData = new AuthDataAccess();
-            var gameData = new GameDataAccess();
-            var userData = new UserDataAccess();
+            var authData = new AuthMemoryDAO();
+            var gameData = new GameMemoryDAO();
+            var userData = new UserMemoryDAO();
             var dataContainer = new DataAccessContainer(authData,gameData,userData);
             var services = new ServiceContainer(dataContainer);
             var server = new Server();

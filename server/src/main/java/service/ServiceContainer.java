@@ -1,6 +1,9 @@
 package service;
 
 import dataaccess.DataAccessContainer;
+import dataaccess.DataAccessException;
+import exception.AlreadyTakenException;
+import exception.BadRequestException;
 
 public class ServiceContainer {
     public final ClearDataService clearService;
@@ -11,7 +14,7 @@ public class ServiceContainer {
     public final LogoutService logoutService;
     public final RegisterService registerService;
 
-    public ServiceContainer(DataAccessContainer dataAccessContainer) {
+    public ServiceContainer(DataAccessContainer dataAccessContainer) throws BadRequestException, AlreadyTakenException, DataAccessException {
         this.createService = new CreateGameService(dataAccessContainer);
         this.clearService = new ClearDataService(dataAccessContainer);
         this.joinService = new JoinGameService(dataAccessContainer);

@@ -5,11 +5,11 @@ import model.UserData;
 import java.util.HashSet;
 import java.util.Objects;
 
-public class UserDataAccess implements UserDAO {
+public class UserMemoryDAO implements UserDAO {
 
-    HashSet<UserData> userDatabase;
+    static HashSet<UserData> userDatabase;
 
-    public UserDataAccess(){
+    public UserMemoryDAO(){
         userDatabase = new HashSet<>();
     }
 
@@ -17,13 +17,13 @@ public class UserDataAccess implements UserDAO {
         return new UserData(username, password,email);
     }
 
-    public UserData getUser(String username) throws DataAccessException {
+    public UserData getUser(String username) {
         for (var user : userDatabase){
             if (Objects.equals(user.username(), username)){
                 return user;
             }
         }
-        throw new DataAccessException("sorry, that user doesn't exist in the database...");
+        return null;
 
     }
 
