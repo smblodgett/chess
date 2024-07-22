@@ -1,5 +1,16 @@
 package handler;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
+import exception.AlreadyTakenException;
+import exception.BadRequestException;
+import exception.UnauthorizedException;
+import message.CreateGameRequest;
+import message.CreateGameReturn;
+import message.ErrorMessage;
+import message.JoinGameRequest;
+import model.AuthData;
+import model.GameData;
 import service.JoinGameService;
 import spark.Request;
 import spark.Response;
@@ -15,6 +26,37 @@ public class JoinGameHandler implements Route {
 
     @Override
     public Object handle(Request req, Response res) throws Exception {
-        return null;
+        try {
+            var authToken = new Gson().fromJson(req.headers("authorization"), String.class);
+            var gameJoinReq = new Gson().fromJson(req.body(), JoinGameRequest.class);
+            String color = gameJoinReq.playerColor();
+            int gameID = gameJoinReq.gameID();
+            if (color==null) throw new BadRequestException("Error: bad request");
+            AuthData auth = service.authenticate(authToken);
+            String username = auth.username();
+            var gameData = service.findGame(gameID);
+            if (color.equals("BLACK") && gameData.blackUsername()!=null) throw new AlreadyTakenException("Error: already taken");
+            if (color.equals("WHITE") && gameData.blackUsername()!=null) throw new AlreadyTakenException("Error: already taken");
+            GameData addedGame = service.addPlayer(gameData,color, username);
+            res.status(200);
+            return "";
+
+        }
+        catch (BadRequestException badRequest) {
+            res.status(400);
+            return new Gson().toJson(new ErrorMessage(badRequest.getMessage()));
+        }
+        catch (UnauthorizedException unauthorized) {
+            res.status(401);
+            return new Gson().toJson(new ErrorMessage(unauthorized.getMessage()));
+        }
+        catch (AlreadyTakenException alreadyTaken) {
+            res.status(403);
+            return new Gson().toJson(new ErrorMessage(alreadyTaken.getMessage()));
+        }
+        catch (Exception otherException) {
+            res.status(500);
+            return new Gson().toJson(new ErrorMessage(otherException.getMessage()));
+        }
     }
 }

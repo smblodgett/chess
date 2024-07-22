@@ -24,7 +24,7 @@ public class Server {
         // create new game
         Spark.post("/game",new CreateGameHandler(services.createService));
         // join a game
-        Spark.post("/game", new JoinGameHandler(services.joinService));
+        Spark.put("/game", new JoinGameHandler(services.joinService));
         // register new user
         Spark.post("/user",new RegisterHandler(services.registerService));
         // login user

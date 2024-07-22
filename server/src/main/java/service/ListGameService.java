@@ -15,8 +15,8 @@ public class ListGameService {
         this.data=dataAccessContainer;
     }
 
-    public HashSet<GameData> list(String authData) throws DataAccessException, UnauthorizedException {
-        if (data.authData.getAuth(authData)==null){
+    public HashSet<GameData> list(String authToken) throws DataAccessException, UnauthorizedException {
+        if (data.authData.getAuth(authToken)==null){
             throw new UnauthorizedException("Error: unauthorized");
         }
         return data.gameData.listGames();

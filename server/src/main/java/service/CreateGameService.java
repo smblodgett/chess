@@ -2,6 +2,8 @@ package service;
 
 import dataaccess.DataAccessContainer;
 import dataaccess.DataAccessException;
+import exception.UnauthorizedException;
+import model.AuthData;
 import model.GameData;
 
 import java.util.Random;
@@ -36,6 +38,13 @@ public class CreateGameService {
         catch (DataAccessException e) {
             return true;
         }
+    }
+
+    public AuthData authenticate(String authToken) throws UnauthorizedException {
+        if (data.authData.getAuth(authToken)==null){
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+        return data.authData.getAuth(authToken);
     }
 
 

@@ -1,4 +1,4 @@
 package message;
 
-public record CreateGameReturn() {
+public record CreateGameReturn(int gameID) {
 }
