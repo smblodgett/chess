@@ -11,7 +11,7 @@ public class RegisterService {
 
     private static DataAccessContainer data;
 
-    RegisterService(DataAccessContainer dataAccessContainer) throws AlreadyTakenException, BadRequestException, DataAccessException {
+    RegisterService(DataAccessContainer dataAccessContainer) {
         data=dataAccessContainer;
     }
 

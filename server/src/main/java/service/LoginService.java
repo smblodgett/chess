@@ -22,6 +22,6 @@ public class LoginService {
             }
             throw new UnauthorizedException("Error: unauthorized");
         }
-        throw new Exception("Error: no user with that username");
+        throw new UnauthorizedException("Error: unauthorized");
     }
 }

@@ -14,7 +14,7 @@ public class ServiceContainer {
     public final LogoutService logoutService;
     public final RegisterService registerService;
 
-    public ServiceContainer(DataAccessContainer dataAccessContainer) throws BadRequestException, AlreadyTakenException, DataAccessException {
+    public ServiceContainer(DataAccessContainer dataAccessContainer) {
         this.createService = new CreateGameService(dataAccessContainer);
         this.clearService = new ClearDataService(dataAccessContainer);
         this.joinService = new JoinGameService(dataAccessContainer);

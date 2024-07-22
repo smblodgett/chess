@@ -1,5 +1,8 @@
 package server;
 
+import dataaccess.*;
+import exception.AlreadyTakenException;
+import exception.BadRequestException;
 import handler.*;
 import service.ServiceContainer;
 import spark.*;
@@ -17,7 +20,12 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
-        // Register your endpoints and handle exceptions here.
+        var authData = new AuthMemoryDAO();
+        var gameData = new GameMemoryDAO();
+        var userData = new UserMemoryDAO();
+        var dataContainer = new DataAccessContainer(authData, gameData, userData);
+        var services = new ServiceContainer(dataContainer); // make handler/service reference data statically
+        this.addServices(services);
 
         // list game
         Spark.get("/game",new ListGameHandler(services.listService));

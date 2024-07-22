@@ -58,7 +58,7 @@ public class GameMemoryDAO implements GameDAO {
 
     @Override
     public void clearGames() {
-            gameDatabase.clear();
+        gameDatabase.clear();
     }
 
     @Override

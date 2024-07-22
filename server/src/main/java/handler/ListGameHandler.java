@@ -6,6 +6,7 @@ import message.ErrorMessage;
 import message.ListGameReturn;
 import service.ListGameService;
 import spark.*;
+import response.ListGameResponse;
 
 public class ListGameHandler implements Route {
 
@@ -20,9 +21,9 @@ public class ListGameHandler implements Route {
         try {
             var authToken = new Gson().fromJson(req.headers("authorization"), String.class);
             var games = service.list(authToken);
-            var gamesReturn = new ListGameReturn(games).toJson();
+            var gamesReturn = new ListGameReturn(games).removeChessBoards();
             res.status(200);
-            return gamesReturn;
+            return new Gson().toJson(new ListGameResponse(gamesReturn));
         }
         catch (UnauthorizedException unauthorized) {
             res.status(401);
