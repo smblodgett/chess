@@ -7,10 +7,9 @@ import java.util.HashSet;
 import java.util.Objects;
 
 public class GameMemoryDAO implements GameDAO {
-    static HashSet<GameData> gameDatabase;
+    static HashSet<GameData> gameDatabase  = new HashSet<>();
 
     public GameMemoryDAO(){
-        gameDatabase = new HashSet<>();
     }
 
     @Override

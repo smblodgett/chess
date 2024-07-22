@@ -7,13 +7,13 @@ import java.util.Objects;
 
 public class UserMemoryDAO implements UserDAO {
 
-    static HashSet<UserData> userDatabase;
+    public static HashSet<UserData>  userDatabase  = new HashSet<>();
 
     public UserMemoryDAO(){
-        userDatabase = new HashSet<>();
     }
 
     public UserData createUser(String username, String password, String email){
+        userDatabase.add(new UserData(username, password,email));
         return new UserData(username, password,email);
     }
 

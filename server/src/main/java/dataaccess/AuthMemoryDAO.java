@@ -7,22 +7,25 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class AuthMemoryDAO implements AuthDAO {
-    static HashSet<AuthData> authDatabase;
+    public static HashSet<AuthData> authDatabase  = new HashSet<>();
 
     public AuthMemoryDAO() {
-        authDatabase = new HashSet<>();
     }
 
     @Override
     public AuthData addAuth(String username) {
-        AuthData addedAuthData = new AuthData(UUID.randomUUID().toString(), username);
+        AuthData addedAuthData = new AuthData(username, UUID.randomUUID().toString());
         authDatabase.add(addedAuthData);
         return addedAuthData;
     }
 
     @Override
-    public void clearAuth() {
+    public void clearAllAuth() {
         authDatabase.clear();
+    }
+
+    public void clearAuth(String authToken){
+        authDatabase.removeIf(auth -> Objects.equals(auth.authToken(), authToken));
     }
 
     @Override

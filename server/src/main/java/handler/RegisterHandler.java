@@ -3,6 +3,7 @@ package handler;
 import com.google.gson.Gson;
 import exception.AlreadyTakenException;
 import exception.BadRequestException;
+import message.ErrorMessage;
 import model.AuthData;
 import model.UserData;
 import service.RegisterService;
@@ -28,15 +29,15 @@ public class RegisterHandler implements Route {
         }
         catch (BadRequestException badRequest) {
             res.status(400);
-            return new Gson().toJson(badRequest);
+            return new Gson().toJson(new ErrorMessage(badRequest.getMessage()));
         }
         catch (AlreadyTakenException alreadyTaken){
             res.status(403);
-            return new Gson().toJson(alreadyTaken);
+            return new Gson().toJson(new ErrorMessage(alreadyTaken.getMessage()));
         }
         catch (Exception otherException){
             res.status(500);
-            return new Gson().toJson(otherException);
+            return new Gson().toJson(new ErrorMessage(otherException.getMessage()));
         }
     }
 }

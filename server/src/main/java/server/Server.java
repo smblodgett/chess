@@ -30,7 +30,7 @@ public class Server {
         // login user
         Spark.post("/session",new LoginHandler(services.loginService));
         // logout user
-        Spark.post("/session",new LogoutHandler(services.logoutService));
+        Spark.delete("/session",new LogoutHandler(services.logoutService));
         // delete data
         Spark.delete("/db",new ClearDataHandler(services.clearService));
 

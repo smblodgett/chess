@@ -15,7 +15,7 @@ public class ClearDataService {
     }
 
     public void clearAllData() {
-        authData.clearAuth();
+        authData.clearAllAuth();
         gameData.clearGames();
         userData.clearUsers();
     }

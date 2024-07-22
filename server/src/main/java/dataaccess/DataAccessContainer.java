@@ -1,9 +1,9 @@
 package dataaccess;
 
 public class DataAccessContainer {
-    public final AuthDAO authData;
-    public final GameDAO gameData;
-    public final UserDAO userData;
+    public AuthDAO authData;
+    public GameDAO gameData;
+    public UserDAO userData;
 
 
     public DataAccessContainer(AuthDAO authData, GameDAO gameData, UserDAO userData) {

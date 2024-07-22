@@ -352,3 +352,25 @@ WHERE condition
 
 // (if you don't put a where clause, you delete the entire table)
 ```
++ Queries
+```
+SELECT Column, Column,...
+FROM Table, Table,...
+WHERE Condition
+```
+Examples:
+```
+SELECT *
+FROM book    // selects the entire book table
+```
+```
+SELECT author, title
+FROM book
+WHERE genre = "NonFiction" // selects author & title columns from book when they're nonfiction 
+```
+```
+SELECT member.name, book.title
+FROM member, books_read, book // this unions member x books_read x book
+// to make this useful, we need to use a where clause
+WHERE member.id = books_read.member_id AND book.id=books_read.book_id
+```
