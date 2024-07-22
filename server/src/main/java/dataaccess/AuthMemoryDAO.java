@@ -1,5 +1,6 @@
 package dataaccess;
 
+import exception.UnauthorizedException;
 import model.AuthData;
 
 import java.util.HashSet;
@@ -29,12 +30,12 @@ public class AuthMemoryDAO implements AuthDAO {
     }
 
     @Override
-    public AuthData getAuth(String authToken) throws DataAccessException {
+    public AuthData getAuth(String authToken) throws UnauthorizedException {
         for (var auth : authDatabase) {
             if (Objects.equals(auth.authToken(), authToken)) {
                 return auth;
             }
         }
-        throw new DataAccessException("your auth token matches no username in the data files!");
+        throw new UnauthorizedException("Error: unauthorized");
     }
 }

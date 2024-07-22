@@ -374,3 +374,99 @@ FROM member, books_read, book // this unions member x books_read x book
 // to make this useful, we need to use a where clause
 WHERE member.id = books_read.member_id AND book.id=books_read.book_id
 ```
+```
+SELECT member.name, book.title
+FROM member
+INNER JOIN books_read ON member.id = books_read.member_id
+INNER JOIN book ON books_read.book_id = book.id
+WHERE genre = "NonFiction" 
+// this is the more modern way to do it
+```
+You can tell the database to not "commit" your changes immediately; you can make either all of it to happen, or non of it to.
+This protects against SQL doing things only halfway.
+```
+BEGIN TRANSACTION; // e.g. do NOT make this permanent unless you can do it all
+SQL statement 1;
+SQL statement 2;
+...
+COMMIT TRANSACTION; or ROLLBACK TRANSACTION // this is how you commit changes (or undo everything)
+```
+
+JDBC: java's SQL API
+
++ load database driver: add MySQL driver for Java in project files
++ open a database connection
+  + you want to open it, use it, close it
+  + ```
+    String connectionURL = "jdbc:mysql://localhost:3306/BookClub?"+;
+    
+    Connection connection = null;
+    try(Connection c = DriverManager.getConnecton(connectionURL) {
+       connection = c;
+    
+       // start transaction
+       connection.setAutoCommit(false);
+    }
+    catch (SQLException ex){
+    // ERROR
+    }
+``
++ start a transaction
++ execute queries and/or updates
+  + ```
+    List<Book> books = new ArrayList<>();
+    
+    String sql = "select id, title, author, genre, category_id from book"'
+    
+    try(PreparedStatement stmt = connection.prepareStatement(sql);
+    ResultSet rs = stmt.executeQuery()) {
+    
+    while(rs.next()) {
+        int id = rs.getInt(1);
+        String title = rs.getString(2);
+        String author = rs.getString(3);
+        ...
+        books.add(new Book(id, title, author,...);
+    }
+    
+    }
+    catch (SQLException ex) {
+        // ERROR
+    }
+``
++ Execute an insert, delete, or update
+  + ```
+    String sql = "update book " +
+    "set title = ?, author = ?, genre = ? ..."
+    
+    try(PreparedStatement stmt = connection.prepareStatement(sql)) {
+        stmt.setString(1, book.getTitle());
+        stmt.setString(2, book.getAuthor());
+        ...
+        if(stmt.executeUpdate()==1) {
+            System.out.println("updated book " + book.getID());
+        }
+        else {
+            System.out.println("Failed to update book " + book.getID());
+        }  
+    }
+    catch(SQLException ex){
+        // ERROR
+    }
+``
++ Commit or rollback a transaction
+  + connection.commit();
+  + or 
+  + catch(SQLException ex) {
+  + if (connection!=null) {
+  + connection.rollback();
+  + throw ex
+
+Don't put username/password in source code! Can read from a gitignored config file instead
+
+Create a user with permission to access the database:
+
+CREATE USER 'smblodgett'@'localhost' IDENTIFIED BY 'mypassword';
+GRANT ALL on BookClub.* to 'smblodgett'@'localhost';
+
+

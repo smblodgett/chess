@@ -1,6 +1,9 @@
 package handler;
 
 import com.google.gson.Gson;
+import exception.BadRequestException;
+import exception.UnauthorizedException;
+import message.ErrorMessage;
 import model.GameData;
 import service.CreateGameService;
 import spark.Request;
@@ -17,16 +20,30 @@ public class CreateGameHandler implements Route {
 
     @Override
     public Object handle(Request req, Response res) throws Exception {
-        var game = new Gson().fromJson(req.body(), GameData.class);
-        // need to check auth token if user is verified
-        int gameID = game.gameID();
-        boolean isAddableGame = service.checkUniqueID(gameID);
-        if (isAddableGame) {
-            service.createNewGame(game);
-            res.status(200);
-            return new Gson().toJson(game);
+        try {
+            var authToken = new Gson().fromJson(req.headers("authorization"), String.class);
+            var gameName = new Gson().fromJson(req.body(), String.class);
+            // need to check auth token if user is verified
+            int gameID = service.makeGameID();
+            boolean isAddableGame = service.checkUniqueID(gameID);
+            if (isAddableGame) {
+                service.createNewGame(game);
+                res.status(200);
+                return new Gson().toJson(game);
+            }
         }
-        return null;
+        catch (BadRequestException badRequest) {
+            res.status(400);
+            return new Gson().toJson(new ErrorMessage(badRequest.getMessage()));
+        }
+        catch (UnauthorizedException unauthorized) {
+            res.status(401);
+            return new Gson().toJson(new ErrorMessage(unauthorized.getMessage()));
+        }
+        catch (Exception otherException) {
+            res.status(500);
+            return new Gson().toJson(new ErrorMessage(otherException.getMessage()));
+        }
     }
 
 }
