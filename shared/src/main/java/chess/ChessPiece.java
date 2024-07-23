@@ -143,156 +143,94 @@ public class ChessPiece {
     }
 
     public Set<ChessMove> rookMoves(int currRow, int currCol, ChessPosition myPosition, TeamColor myColor, ChessBoard board, Set<ChessMove> moves) {
-        List<Boolean> directionsRook = new ArrayList<>();
-        for (int j = 0; j < 4; j++) {
-            directionsRook.add(true);
-        }
-        for (int i = 1; i <= 7; i++) {
-            ChessPosition posRookMoveRow = new ChessPosition(currRow + i, currCol);
-            ChessPosition posRookMoveCol = new ChessPosition(currRow, currCol + i);
-            ChessPosition negRookMoveRow = new ChessPosition(currRow - i, currCol);
-            ChessPosition negRookMoveCol = new ChessPosition(currRow, currCol - i);
-            if (directionsRook.get(0) && posRookMoveRow.onBoard() && (board.noPiece(posRookMoveRow) || board.getPiece(posRookMoveRow).pieceColor != myColor)) {
-                moves.add(new ChessMove(myPosition, posRookMoveRow, null));
-                if (!board.noPiece(posRookMoveRow)) {
-                    directionsRook.set(0, false);
+        int[][] rookDirections = {{1,0},{0,-1},{-1,0},{0,1}};
+        boolean[] rookFlag = {true,true,true,true};
+        for (int i=1;i<8;i++){
+            int ind = 0;
+            for (var dir : rookDirections){
+                if (!rookFlag[ind]){
+                    ind++;
+                    continue;
                 }
-            }
-            if (directionsRook.get(1) && posRookMoveCol.onBoard() && (board.noPiece(posRookMoveCol) || board.getPiece(posRookMoveCol).pieceColor != myColor)) {
-                moves.add(new ChessMove(myPosition, posRookMoveCol, null));
-                if (!board.noPiece(posRookMoveCol)) {
-                    directionsRook.set(1, false);
+                ChessPosition mayPosition = new ChessPosition(currRow+dir[0]*i,currCol+dir[1]*i);
+                ChessMove mayMove = new ChessMove(myPosition,mayPosition,null);
+                if (!mayPosition.onBoard()){
+                    rookFlag[ind] = false;
                 }
-            }
-            if (directionsRook.get(2) && negRookMoveRow.onBoard() && (board.noPiece(negRookMoveRow) || board.getPiece(negRookMoveRow).pieceColor != myColor)) {
-                moves.add(new ChessMove(myPosition, negRookMoveRow, null));
-                if (!board.noPiece(negRookMoveRow)) {
-                    directionsRook.set(2, false);
+                else if (mayPosition.onBoard() && board.isEnemyPiece(mayPosition,pieceColor)){
+                    moves.add(mayMove);
+                    rookFlag[ind] = false;
                 }
-            }
-            if (directionsRook.get(3) && negRookMoveCol.onBoard() && (board.noPiece(negRookMoveCol) || board.getPiece(negRookMoveCol).pieceColor != myColor)) {
-                moves.add(new ChessMove(myPosition, negRookMoveCol, null));
-                if (!board.noPiece(negRookMoveCol)) {
-                    directionsRook.set(3, false);
+                else if (mayPosition.onBoard() && !board.noPiece(mayPosition) && !board.isEnemyPiece(mayPosition,pieceColor)){
+                    rookFlag[ind] = false;
                 }
-            }
-            if (directionsRook.get(0) && posRookMoveRow.onBoard() && !board.noPiece(posRookMoveRow) && board.getPiece(posRookMoveRow).pieceColor == myColor) {
-                directionsRook.set(0, false);
-            }
-            if (directionsRook.get(1) && posRookMoveCol.onBoard() && !board.noPiece(posRookMoveCol) && board.getPiece(posRookMoveCol).pieceColor == myColor) {
-                directionsRook.set(1, false);
-            }
-            if (directionsRook.get(2) && negRookMoveRow.onBoard() && !board.noPiece(negRookMoveRow) && board.getPiece(negRookMoveRow).pieceColor == myColor) {
-                directionsRook.set(2, false);
-            }
-            if (directionsRook.get(3) && negRookMoveCol.onBoard() && !board.noPiece(negRookMoveCol) && board.getPiece(negRookMoveCol).pieceColor == myColor) {
-                directionsRook.set(3, false);
+                else if (mayPosition.onBoard() && board.noPiece(mayPosition)){
+                    moves.add(mayMove);
+                }
+                ind++;
             }
         }
         return moves;
     }
 
     public Set<ChessMove> queenMoves(int currRow, int currCol, ChessPosition myPosition, TeamColor myColor, ChessBoard board, Set<ChessMove> moves) {
-        List<Boolean> directionsQueenRank = new ArrayList<>();
-        for (int j = 0; j < 4; j++) {
-            directionsQueenRank.add(true);
-        }
-        for (int i = 1; i <= 7; i++) {
-            ChessPosition posQueenMoveRow = new ChessPosition(currRow + i, currCol);
-            ChessPosition posQueenMoveCol = new ChessPosition(currRow, currCol + i);
-            ChessPosition negQueenMoveRow = new ChessPosition(currRow - i, currCol);
-            ChessPosition negQueenMoveCol = new ChessPosition(currRow, currCol - i);
-            if (directionsQueenRank.get(0) && posQueenMoveRow.onBoard() && (board.noPiece(posQueenMoveRow) || board.getPiece(posQueenMoveRow).pieceColor != myColor)) {
-                moves.add(new ChessMove(myPosition, posQueenMoveRow, null));
-                if (!board.noPiece(posQueenMoveRow)) {
-                    directionsQueenRank.set(0, false);
-                }
-            }
-            if (directionsQueenRank.get(1) && posQueenMoveCol.onBoard() && (board.noPiece(posQueenMoveCol) || board.getPiece(posQueenMoveCol).pieceColor != myColor)) {
-                moves.add(new ChessMove(myPosition, posQueenMoveCol, null));
-                if (!board.noPiece(posQueenMoveCol)) {
-                    directionsQueenRank.set(1, false);
-                }
-            }
-            if (directionsQueenRank.get(2) && negQueenMoveRow.onBoard() && (board.noPiece(negQueenMoveRow) || board.getPiece(negQueenMoveRow).pieceColor != myColor)) {
-                moves.add(new ChessMove(myPosition, negQueenMoveRow, null));
-                if (!board.noPiece(negQueenMoveRow)) {
-                    directionsQueenRank.set(2, false);
-                }
-            }
-            if (directionsQueenRank.get(3) && negQueenMoveCol.onBoard() && (board.noPiece(negQueenMoveCol) || board.getPiece(negQueenMoveCol).pieceColor != myColor)) {
-                moves.add(new ChessMove(myPosition, negQueenMoveCol, null));
-                if (!board.noPiece(negQueenMoveCol)) {
-                    directionsQueenRank.set(3, false);
-                }
-            }
-            if (directionsQueenRank.get(0) && posQueenMoveRow.onBoard() && !board.noPiece(posQueenMoveRow) && board.getPiece(posQueenMoveRow).pieceColor == myColor) {
-                directionsQueenRank.set(0, false);
-            }
-            if (directionsQueenRank.get(1) && posQueenMoveCol.onBoard() && !board.noPiece(posQueenMoveCol) && board.getPiece(posQueenMoveCol).pieceColor == myColor) {
-                directionsQueenRank.set(1, false);
-            }
-            if (directionsQueenRank.get(2) && negQueenMoveRow.onBoard() && !board.noPiece(negQueenMoveRow) && board.getPiece(negQueenMoveRow).pieceColor == myColor) {
-                directionsQueenRank.set(2, false);
-            }
-            if (directionsQueenRank.get(3) && negQueenMoveCol.onBoard() && !board.noPiece(negQueenMoveCol) && board.getPiece(negQueenMoveCol).pieceColor == myColor) {
-                directionsQueenRank.set(3, false);
-            }
-        }
-        List<Boolean> directionsQueenDiagonal = new ArrayList<>(); // represents direction vectors bishop can move: (-1,-1);(-1,1);(1,-1);(1,1)
-        // add the booleans to the list
-        for (int j = 0; j < 4; j++) {
-            directionsQueenDiagonal.add(true);
-        }
-        // go through the possible distances the bishops can move
-        for (int i = 1; i <= 7; i++) {
-            int[] directionRow = {-1, 1};
-            int[] directionCol = {-1, 1};
-            // go through direction vectors
+        int[][] queenDiagDirections = {{1,1},{1,-1},{-1,1},{-1,-1}};
+        boolean[] queenDiagFlag = {true,true,true,true};
+        for (int i=1;i<8;i++){
             int ind = 0;
-            for (int diR : directionRow) {
-                for (int diC : directionCol) {
-                    ChessPosition move = new ChessPosition(currRow + i * diR, currCol + i * diC);
-                    // if off-board or friendly piece, end that direction
-                    if (!move.onBoard() || (board.getPiece(move) != null && board.getPiece(move).pieceColor == myColor)) {
-                        if (diR == -1 && diC == -1) {
-                            directionsQueenDiagonal.set(0, false);
-                        }
-                        if (diR == -1 && diC == 1) {
-                            directionsQueenDiagonal.set(1, false);
-                        }
-                        if (diR == 1 && diC == -1) {
-                            directionsQueenDiagonal.set(2, false);
-                        }
-                        if (diR == 1 && diC == 1) {
-                            directionsQueenDiagonal.set(3, false);
-                        }
-                    }
-                    // add the move if the direction hasn't been cut off
-                    if (directionsQueenDiagonal.get(ind)) {
-                        moves.add(new ChessMove(myPosition, move, null));
-                    }
-                    // if it's an enemy piece, make sure you can't move any further (after taking)
-                    if (move.onBoard() && (board.getPiece(move) != null && board.getPiece(move).pieceColor != myColor)) {
-                        if (diR == -1 && diC == -1) {
-                            directionsQueenDiagonal.set(0, false);
-                        }
-                        if (diR == -1 && diC == 1) {
-                            directionsQueenDiagonal.set(1, false);
-                        }
-                        if (diR == 1 && diC == -1) {
-                            directionsQueenDiagonal.set(2, false);
-                        }
-                        if (diR == 1 && diC == 1) {
-                            directionsQueenDiagonal.set(3, false);
-                        }
-                    }
+            for (var dir : queenDiagDirections){
+                if (!queenDiagFlag[ind]){
                     ind++;
+                    continue;
                 }
+                ChessPosition mayPosition = new ChessPosition(currRow+dir[0]*i,currCol+dir[1]*i);
+                ChessMove mayMove = new ChessMove(myPosition,mayPosition,null);
+                if (!mayPosition.onBoard()){
+                    queenDiagFlag[ind] = false;
+                }
+                else if (mayPosition.onBoard() && board.isEnemyPiece(mayPosition,pieceColor)){
+                    moves.add(mayMove);
+                    queenDiagFlag[ind] = false;
+                }
+                else if (mayPosition.onBoard() && !board.noPiece(mayPosition) && !board.isEnemyPiece(mayPosition,pieceColor)){
+                    queenDiagFlag[ind] = false;
+                }
+                else if (mayPosition.onBoard() && board.noPiece(mayPosition)){
+                    moves.add(mayMove);
+                }
+                ind++;
+            }
+        }
+        int[][] queenStraightDirections = {{1,0},{0,-1},{-1,0},{0,1}};
+        boolean[] queenStraightFlag = {true,true,true,true};
+        for (int i=1;i<8;i++){
+            int ind = 0;
+            for (var dir : queenStraightDirections){
+                if (!queenStraightFlag[ind]){
+                    ind++;
+                    continue;
+                }
+                ChessPosition mayPosition = new ChessPosition(currRow+dir[0]*i,currCol+dir[1]*i);
+                ChessMove mayMove = new ChessMove(myPosition,mayPosition,null);
+                if (!mayPosition.onBoard()){
+                    queenStraightFlag[ind] = false;
+                }
+                else if (mayPosition.onBoard() && board.isEnemyPiece(mayPosition,pieceColor)){
+                    moves.add(mayMove);
+                    queenStraightFlag[ind] = false;
+                }
+                else if (mayPosition.onBoard() && !board.noPiece(mayPosition) && !board.isEnemyPiece(mayPosition,pieceColor)){
+                    queenStraightFlag[ind] = false;
+                }
+                else if (mayPosition.onBoard() && board.noPiece(mayPosition)){
+                    moves.add(mayMove);
+                }
+                ind++;
             }
         }
         return moves;
     }
+
     public Set<ChessMove> kingMoves(int currRow, int currCol, ChessPosition myPosition, TeamColor myColor, ChessBoard board, Set<ChessMove> moves) {
         int[][] moveSet = {{1, 1}, {1, 0}, {1, -1}, {0, 1}, {0, -1}, {-1, 1}, {-1, 0}, {-1, -1}};
         for (var mv : moveSet) {
@@ -348,7 +286,6 @@ public class ChessPiece {
         // check if pawn is on 2nd/7th rank, make 2 move flag
         boolean firstMove = (myColor == ChessGame.TeamColor.WHITE && currRow == 2)
                 || (myColor == ChessGame.TeamColor.BLACK && currRow == 7);
-
         // capturing flags
         ChessPosition whiteCapturePosR = new ChessPosition(currRow + 1, currCol + 1);
         ChessPosition whiteCapturePosL = new ChessPosition(currRow + 1, currCol - 1);
@@ -358,14 +295,12 @@ public class ChessPiece {
         boolean whiteCanCaptureL = (whiteCapturePosL.onBoard() && !board.noPiece(whiteCapturePosL) && board.getPiece(whiteCapturePosL).pieceColor != myColor);
         boolean blackCanCaptureR = (blackCapturePosR.onBoard() && !board.noPiece(blackCapturePosR) && board.getPiece(blackCapturePosR).pieceColor != myColor);
         boolean blackCanCaptureL = (blackCapturePosL.onBoard() && !board.noPiece(blackCapturePosL) && board.getPiece(blackCapturePosL).pieceColor != myColor);
-
-        if (myColor == ChessGame.TeamColor.WHITE) {
+        if (myColor == ChessGame.TeamColor.WHITE) { // white/black switch
             boolean pieceInFront = (!board.noPiece(new ChessPosition(currRow + 1, currCol)));
             boolean pieceTwoInFront = (firstMove && (pieceInFront || !board.noPiece(new ChessPosition(currRow + 2, currCol))));
             boolean promotionReached = (currRow + 1 == 8);
             if (!pieceInFront && !promotionReached) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol), null));
-            }
+                moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol), null));}
             if (!pieceInFront && promotionReached) {
                 moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol), PieceType.QUEEN));
                 moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol), PieceType.ROOK));
@@ -411,17 +346,14 @@ public class ChessPiece {
             boolean pieceTwoInFront = (firstMove && (pieceInFront || !board.noPiece(new ChessPosition(currRow - 2, currCol))));
             boolean promotionReached = (currRow - 1 == 1);
             if (!pieceInFront && !promotionReached) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(currRow - 1, currCol), null));
-            }
+                moves.add(new ChessMove(myPosition, new ChessPosition(currRow - 1, currCol), null));}
             if (!pieceInFront && promotionReached) {
                 moves.add(new ChessMove(myPosition, new ChessPosition(currRow - 1, currCol), PieceType.QUEEN));
                 moves.add(new ChessMove(myPosition, new ChessPosition(currRow - 1, currCol), PieceType.ROOK));
                 moves.add(new ChessMove(myPosition, new ChessPosition(currRow - 1, currCol), PieceType.BISHOP));
-                moves.add(new ChessMove(myPosition, new ChessPosition(currRow - 1, currCol), PieceType.KNIGHT));
-            }
+                moves.add(new ChessMove(myPosition, new ChessPosition(currRow - 1, currCol), PieceType.KNIGHT));}
             if (firstMove && !pieceTwoInFront) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(currRow - 2, currCol), null));
-            }
+                moves.add(new ChessMove(myPosition, new ChessPosition(currRow - 2, currCol), null));}
             if (blackCanCaptureL) {
                 if (!promotionReached) {
                     moves.add(new ChessMove(myPosition, new ChessPosition(currRow - 1, currCol - 1), null));
@@ -429,9 +361,7 @@ public class ChessPiece {
                     moves.add(new ChessMove(myPosition, new ChessPosition(currRow - 1, currCol - 1), PieceType.QUEEN));
                     moves.add(new ChessMove(myPosition, new ChessPosition(currRow - 1, currCol - 1), PieceType.ROOK));
                     moves.add(new ChessMove(myPosition, new ChessPosition(currRow - 1, currCol - 1), PieceType.BISHOP));
-                    moves.add(new ChessMove(myPosition, new ChessPosition(currRow - 1, currCol - 1), PieceType.KNIGHT));
-                }
-            }
+                    moves.add(new ChessMove(myPosition, new ChessPosition(currRow - 1, currCol - 1), PieceType.KNIGHT));} }
             if (blackCanCaptureR) {
                 if (!promotionReached) {
                     moves.add(new ChessMove(myPosition, new ChessPosition(currRow - 1, currCol + 1), null));
@@ -439,22 +369,16 @@ public class ChessPiece {
                     moves.add(new ChessMove(myPosition, new ChessPosition(currRow - 1, currCol + 1), PieceType.QUEEN));
                     moves.add(new ChessMove(myPosition, new ChessPosition(currRow - 1, currCol + 1), PieceType.ROOK));
                     moves.add(new ChessMove(myPosition, new ChessPosition(currRow - 1, currCol + 1), PieceType.BISHOP));
-                    moves.add(new ChessMove(myPosition, new ChessPosition(currRow - 1, currCol + 1), PieceType.KNIGHT));
-                }
-            }
+                    moves.add(new ChessMove(myPosition, new ChessPosition(currRow - 1, currCol + 1), PieceType.KNIGHT));}}
             if (getEnPassantable()) {
                 ChessPosition passedPawnPos = getEnPassantPosition();
                 int passedPawnRow = passedPawnPos.getRow();
                 int passedPawnCol = passedPawnPos.getColumn();
                 ChessPosition passantEndPos = new ChessPosition(passedPawnRow - 1, passedPawnCol);
                 if (passedPawnRow == currRow && abs(passedPawnCol - currCol) == 1 && passantEndPos.onBoard() && board.noPiece(passantEndPos)) {
-                    moves.add(new ChessMove(myPosition, passantEndPos, null));
-                }
-            }
-        }
+                    moves.add(new ChessMove(myPosition, passantEndPos, null));} } }
         return moves;
     }
-
 
         @Override
     public String toString() {
