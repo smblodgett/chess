@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.DataAccessContainer;
 import dataaccess.DataAccessException;
+import exception.BadRequestException;
 import exception.UnauthorizedException;
 import model.AuthData;
 import model.GameData;
@@ -16,7 +17,8 @@ public class CreateGameService {
         this.data=dataAccessContainer;
     }
 
-    public void createNewGame(GameData game){
+    public void createNewGame(GameData game) throws BadRequestException {
+        if (game.gameName()==null) throw new BadRequestException("Error: bad request");
         data.gameData.createGame(game);
     }
 

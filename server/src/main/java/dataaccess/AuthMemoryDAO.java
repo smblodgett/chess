@@ -13,6 +13,10 @@ public class AuthMemoryDAO implements AuthDAO {
     public AuthMemoryDAO() {
     }
 
+    public HashSet<AuthData> getAuthDatabase() {
+        return authDatabase;
+    }
+
     @Override
     public AuthData addAuth(String username) {
         AuthData addedAuthData = new AuthData(username, UUID.randomUUID().toString());
