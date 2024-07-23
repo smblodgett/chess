@@ -1,5 +1,6 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.DataAccessContainer;
 import dataaccess.DataAccessException;
 import exception.BadRequestException;
@@ -26,11 +27,16 @@ public class JoinGameService {
         return data.gameData.getGame(gameID);
     }
 
-    public GameData addPlayer(GameData gameData, String color, String username) throws BadRequestException {
+    public GameData addPlayer(GameData gameData, String color, String username) throws BadRequestException, DataAccessException {
+
         if (color.equals("WHITE")) {
+            ChessGame.TeamColor teamColor = ChessGame.TeamColor.WHITE;
+            data.gameData.updateGamePlayer(gameData,teamColor,username);
             return new GameData(gameData.gameID(),username, gameData.blackUsername(), gameData.gameName(), gameData.game());
         }
         else if (color.equals("BLACK")){
+            ChessGame.TeamColor teamColor = ChessGame.TeamColor.BLACK;
+            data.gameData.updateGamePlayer(gameData,teamColor,username);
             return new GameData(gameData.gameID(),gameData.whiteUsername(),username, gameData.gameName(), gameData.game());
         }
         else throw new BadRequestException("Error: bad request");

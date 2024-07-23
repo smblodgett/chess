@@ -3,11 +3,13 @@ package dataaccess;
 import chess.ChessGame;
 import model.GameData;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 
 public class GameMemoryDAO implements GameDAO {
-    static HashSet<GameData> gameDatabase  = new HashSet<>();
+    static ArrayList<GameData> gameDatabase  = new ArrayList<>();
 
     public GameMemoryDAO(){
     }
@@ -29,7 +31,7 @@ public class GameMemoryDAO implements GameDAO {
     }
 
     @Override
-    public HashSet<GameData> listGames() {
+    public ArrayList<GameData> listGames() {
         return gameDatabase;
     }
 

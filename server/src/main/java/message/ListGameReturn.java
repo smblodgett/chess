@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public record ListGameReturn(HashSet<GameData> games) {
+public record ListGameReturn(ArrayList<GameData> games) {
 
     public List<GameData> removeChessBoards() {
         List<GameData> gamesToReturn = new ArrayList<>();
