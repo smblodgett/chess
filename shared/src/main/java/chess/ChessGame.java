@@ -104,36 +104,7 @@ public class ChessGame {
         Set<ChessMove> moves = (Set<ChessMove>) board.getPiece(startPosition).pieceMoves(board,startPosition);
         for (ChessMove move : moves){
             if (kingMoving){
-                if (abs(move.getEndPosition().getColumn()-startPosition.getColumn())==2 && ((currentTeam==TeamColor.BLACK && blackKingsideValid)||(currentTeam==TeamColor.WHITE && whiteKingsideValid))){
-                    if (!isInCheck(chosenColor)){
-                        if (!underAttack(new ChessPosition(startPosition.getRow(),startPosition.getColumn()+1),chosenColor)){
-                            makeTestMove(move,board);
-                            if (!isInCheck(chosenColor)) {
-                                finalMoves.add(move);
-                            }
-                        }
-
-                    }
-                }
-                else if (abs(move.getEndPosition().getColumn()-startPosition.getColumn())==3 && ((currentTeam==TeamColor.BLACK && blackQueensideValid)||(currentTeam==TeamColor.WHITE && whiteQueensideValid))){
-                    if (!isInCheck(chosenColor)){
-                        if (!underAttack(new ChessPosition(startPosition.getRow(),startPosition.getColumn()-1),chosenColor) &&
-                                !underAttack(new ChessPosition(startPosition.getRow(),startPosition.getColumn()-2),chosenColor)
-                        ){
-                            makeTestMove(move,board);
-                            if (!isInCheck(chosenColor)) {
-                                finalMoves.add(move);
-                            }
-                        }
-
-                    }
-                }
-                else {
-                    makeTestMove(move, board);
-                    if (!isInCheck(chosenColor)) {
-                        finalMoves.add(move);
-                    }
-                }
+                finalMoves.addAll(kingMoveHelper(move,startPosition,board,chosenColor));
             }
             else {
                 makeTestMove(move, board);
@@ -143,6 +114,41 @@ public class ChessGame {
             }
         }
 
+        return finalMoves;
+    }
+
+    public Set<ChessMove> kingMoveHelper(ChessMove move, ChessPosition startPosition, ChessBoard board, TeamColor chosenColor){
+        Set<ChessMove> finalMoves = new HashSet<>();
+        if (abs(move.getEndPosition().getColumn()-startPosition.getColumn())==2 && ((currentTeam==TeamColor.BLACK && blackKingsideValid)||(currentTeam==TeamColor.WHITE && whiteKingsideValid))){
+            if (!isInCheck(chosenColor)){
+                if (!underAttack(new ChessPosition(startPosition.getRow(),startPosition.getColumn()+1),chosenColor)){
+                    makeTestMove(move,board);
+                    if (!isInCheck(chosenColor)) {
+                        finalMoves.add(move);
+                    }
+                }
+
+            }
+        }
+        else if (abs(move.getEndPosition().getColumn()-startPosition.getColumn())==3 && ((currentTeam==TeamColor.BLACK && blackQueensideValid)||(currentTeam==TeamColor.WHITE && whiteQueensideValid))){
+            if (!isInCheck(chosenColor)){
+                if (!underAttack(new ChessPosition(startPosition.getRow(),startPosition.getColumn()-1),chosenColor) &&
+                        !underAttack(new ChessPosition(startPosition.getRow(),startPosition.getColumn()-2),chosenColor)
+                ){
+                    makeTestMove(move,board);
+                    if (!isInCheck(chosenColor)) {
+                        finalMoves.add(move);
+                    }
+                }
+
+            }
+        }
+        else {
+            makeTestMove(move, board);
+            if (!isInCheck(chosenColor)) {
+                finalMoves.add(move);
+            }
+        }
         return finalMoves;
     }
 

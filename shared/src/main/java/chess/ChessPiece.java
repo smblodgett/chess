@@ -98,14 +98,14 @@ public class ChessPiece {
                 ChessPosition q3 = new ChessPosition(currRow - rowadd, currCol - coladd);
                 ChessPosition q4 = new ChessPosition(currRow + rowadd, currCol - coladd);
                 //System.out.println(board.getPiece(q1));
-                if (q1.onBoard() && (board.getPiece(q1) == null || board.getPiece(q1).pieceColor != myColor))
-                    moves.add(new ChessMove(myPosition, q1, null));
-                if (q2.onBoard() && (board.getPiece(q2) == null || board.getPiece(q2).pieceColor != myColor))
-                    moves.add(new ChessMove(myPosition, q2, null));
-                if (q3.onBoard() && (board.getPiece(q3) == null || board.getPiece(q3).pieceColor != myColor))
-                    moves.add(new ChessMove(myPosition, q3, null));
-                if (q4.onBoard() && (board.getPiece(q4) == null || board.getPiece(q4).pieceColor != myColor))
-                    moves.add(new ChessMove(myPosition, q4, null));
+                if (q1.onBoard() && (board.getPiece(q1) == null || board.getPiece(q1).pieceColor != myColor)){
+                    moves.add(new ChessMove(myPosition, q1, null));}
+                if (q2.onBoard() && (board.getPiece(q2) == null || board.getPiece(q2).pieceColor != myColor)){
+                    moves.add(new ChessMove(myPosition, q2, null));}
+                if (q3.onBoard() && (board.getPiece(q3) == null || board.getPiece(q3).pieceColor != myColor)){
+                    moves.add(new ChessMove(myPosition, q3, null));}
+                if (q4.onBoard() && (board.getPiece(q4) == null || board.getPiece(q4).pieceColor != myColor)){
+                    moves.add(new ChessMove(myPosition, q4, null));}
             }
         }
         return moves;
@@ -291,10 +291,14 @@ public class ChessPiece {
         ChessPosition whiteCapturePosL = new ChessPosition(currRow + 1, currCol - 1);
         ChessPosition blackCapturePosR = new ChessPosition(currRow - 1, currCol + 1);
         ChessPosition blackCapturePosL = new ChessPosition(currRow - 1, currCol - 1);
-        boolean whiteCanCaptureR = (whiteCapturePosR.onBoard() && !board.noPiece(whiteCapturePosR) && board.getPiece(whiteCapturePosR).pieceColor != myColor);
-        boolean whiteCanCaptureL = (whiteCapturePosL.onBoard() && !board.noPiece(whiteCapturePosL) && board.getPiece(whiteCapturePosL).pieceColor != myColor);
-        boolean blackCanCaptureR = (blackCapturePosR.onBoard() && !board.noPiece(blackCapturePosR) && board.getPiece(blackCapturePosR).pieceColor != myColor);
-        boolean blackCanCaptureL = (blackCapturePosL.onBoard() && !board.noPiece(blackCapturePosL) && board.getPiece(blackCapturePosL).pieceColor != myColor);
+        boolean whiteCanCaptureR = (whiteCapturePosR.onBoard() && !board.noPiece(whiteCapturePosR)
+                                    && board.getPiece(whiteCapturePosR).pieceColor != myColor);
+        boolean whiteCanCaptureL = (whiteCapturePosL.onBoard() && !board.noPiece(whiteCapturePosL)
+                                    && board.getPiece(whiteCapturePosL).pieceColor != myColor);
+        boolean blackCanCaptureR = (blackCapturePosR.onBoard() && !board.noPiece(blackCapturePosR)
+                                    && board.getPiece(blackCapturePosR).pieceColor != myColor);
+        boolean blackCanCaptureL = (blackCapturePosL.onBoard() && !board.noPiece(blackCapturePosL)
+                                    && board.getPiece(blackCapturePosL).pieceColor != myColor);
         if (myColor == ChessGame.TeamColor.WHITE) { // white/black switch
             boolean pieceInFront = (!board.noPiece(new ChessPosition(currRow + 1, currCol)));
             boolean pieceTwoInFront = (firstMove && (pieceInFront || !board.noPiece(new ChessPosition(currRow + 2, currCol))));
@@ -390,8 +394,8 @@ public class ChessPiece {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {return true;}
+        if (o == null || getClass() != o.getClass()){ return false;}
         ChessPiece that = (ChessPiece) o;
         return pieceColor == that.pieceColor && pieceType == that.pieceType;
     }
