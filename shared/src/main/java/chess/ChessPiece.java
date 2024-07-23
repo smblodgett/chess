@@ -112,56 +112,31 @@ public class ChessPiece {
     }
 
     public Set<ChessMove> bishopMoves(int currRow, int currCol, ChessPosition myPosition, TeamColor myColor, ChessBoard board, Set<ChessMove> moves) {
-        List<Boolean> directionsBishop = new ArrayList<>(); // represents direction vectors bishop can move: (-1,-1);(-1,1);(1,-1);(1,1)
-        // add the booleans to the list
-        for (int j = 0; j < 4; j++) {
-            directionsBishop.add(true);
-        }
-        // go through the possible distances the bishops can move
-        for (int i = 1; i <= 7; i++) {
-            int[] directionRow = {-1, 1};
-            int[] directionCol = {-1, 1};
-            // go through direction vectors
+        int[][] bishopDirections = {{1,1},{1,-1},{-1,1},{-1,-1}};
+        boolean[] bishopFlag = {true,true,true,true};
+        for (int i=1;i<8;i++){
             int ind = 0;
-            for (int diR : directionRow) {
-                for (int diC : directionCol) {
-                    ChessPosition move = new ChessPosition(currRow + i * diR, currCol + i * diC);
-                    // if off-board or friendly piece, end that direction
-                    if (!move.onBoard() || (board.getPiece(move) != null && board.getPiece(move).pieceColor == myColor)) {
-                        if (diR == -1 && diC == -1) {
-                            directionsBishop.set(0, false);
-                        }
-                        if (diR == -1 && diC == 1) {
-                            directionsBishop.set(1, false);
-                        }
-                        if (diR == 1 && diC == -1) {
-                            directionsBishop.set(2, false);
-                        }
-                        if (diR == 1 && diC == 1) {
-                            directionsBishop.set(3, false);
-                        }
-                    }
-                    // add the move if the direction hasn't been cut off
-                    if (directionsBishop.get(ind)) {
-                        moves.add(new ChessMove(myPosition, move, null));
-                    }
-                    // if it's an enemy piece, make sure you can't move any further (after taking)
-                    if (move.onBoard() && (board.getPiece(move) != null && board.getPiece(move).pieceColor != myColor)) {
-                        if (diR == -1 && diC == -1) {
-                            directionsBishop.set(0, false);
-                        }
-                        if (diR == -1 && diC == 1) {
-                            directionsBishop.set(1, false);
-                        }
-                        if (diR == 1 && diC == -1) {
-                            directionsBishop.set(2, false);
-                        }
-                        if (diR == 1 && diC == 1) {
-                            directionsBishop.set(3, false);
-                        }
-                    }
+            for (var dir : bishopDirections){
+                if (!bishopFlag[ind]){
                     ind++;
+                    continue;
                 }
+                ChessPosition mayPosition = new ChessPosition(currRow+dir[0]*i,currCol+dir[1]*i);
+                ChessMove mayMove = new ChessMove(myPosition,mayPosition,null);
+                if (!mayPosition.onBoard()){
+                    bishopFlag[ind] = false;
+                }
+                else if (mayPosition.onBoard() && board.isEnemyPiece(mayPosition,pieceColor)){
+                    moves.add(mayMove);
+                    bishopFlag[ind] = false;
+                }
+                else if (mayPosition.onBoard() && !board.noPiece(mayPosition) && !board.isEnemyPiece(mayPosition,pieceColor)){
+                    bishopFlag[ind] = false;
+                }
+                else if (mayPosition.onBoard() && board.noPiece(mayPosition)){
+                    moves.add(mayMove);
+                }
+                ind++;
             }
         }
         return moves;

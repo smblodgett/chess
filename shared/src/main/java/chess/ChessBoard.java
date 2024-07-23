@@ -46,6 +46,10 @@ public class ChessBoard {
         return board[position.getRow()][position.getColumn()];
     }
 
+    public boolean isEnemyPiece(ChessPosition position, ChessGame.TeamColor myColor){
+        ChessPiece piece = getPiece(position);
+        return piece != null && (piece.getTeamColor() != myColor);
+    }
     /**
      * tells if a piece is at a certain position
      *
