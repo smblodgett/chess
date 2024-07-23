@@ -309,11 +309,9 @@ public class ChessPiece {
                 moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol), PieceType.QUEEN));
                 moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol), PieceType.ROOK));
                 moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol), PieceType.BISHOP));
-                moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol), PieceType.KNIGHT));
-            }
+                moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol), PieceType.KNIGHT));}
             if (firstMove && !pieceTwoInFront) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 2, currCol), null));
-            }
+                moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 2, currCol), null));}
             if (whiteCanCaptureL) {
                 if (!promotionReached) {
                     moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol - 1), null));
@@ -321,18 +319,16 @@ public class ChessPiece {
                     moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol - 1), PieceType.QUEEN));
                     moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol - 1), PieceType.ROOK));
                     moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol - 1), PieceType.BISHOP));
-                    moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol - 1), PieceType.KNIGHT));
-                }
+                    moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol - 1), PieceType.KNIGHT));}
             }
             if (whiteCanCaptureR) {
                 if (!promotionReached) {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol + 1), null));
-                } else {
+                    moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol + 1), null));}
+                else {
                     moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol + 1), PieceType.QUEEN));
                     moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol + 1), PieceType.ROOK));
                     moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol + 1), PieceType.BISHOP));
-                    moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol + 1), PieceType.KNIGHT));
-                }
+                    moves.add(new ChessMove(myPosition, new ChessPosition(currRow + 1, currCol + 1), PieceType.KNIGHT));}
             }
             if (getEnPassantable()) {
                 ChessPosition passedPawnPos = getEnPassantPosition();

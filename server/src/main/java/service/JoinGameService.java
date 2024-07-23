@@ -44,6 +44,6 @@ public class JoinGameService {
             data.gameData.updateGamePlayer(gameData,teamColor,username);
             return new GameData(gameData.gameID(),gameData.whiteUsername(),username, gameData.gameName(), gameData.game());
         }
-        else throw new BadRequestException("Error: bad request");
+        else {throw new BadRequestException("Error: bad request");}
     }
 }

@@ -27,7 +27,7 @@ public class CreateGameHandler implements Route {
             var authToken = new Gson().fromJson(req.headers("authorization"), String.class);
             var gameNameReq = new Gson().fromJson(req.body(), CreateGameRequest.class);
             String gameName = gameNameReq.gameName();
-            if (gameName==null) throw new BadRequestException("Error: bad request");
+            if (gameName==null) {throw new BadRequestException("Error: bad request");}
             var auth = service.authenticate(authToken);
             // need to check auth token if user is verified
             int gameID = service.makeGameID();

@@ -18,7 +18,7 @@ public class CreateGameService {
     }
 
     public void createNewGame(GameData game) throws BadRequestException {
-        if (game.gameName()==null) throw new BadRequestException("Error: bad request");
+        if (game.gameName()==null) {throw new BadRequestException("Error: bad request");}
         data.gameData.createGame(game);
     }
 

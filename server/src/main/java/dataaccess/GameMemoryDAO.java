@@ -45,13 +45,13 @@ public class GameMemoryDAO implements GameDAO {
         String whiteName = gameData.whiteUsername();
 
         if (color == ChessGame.TeamColor.WHITE){
-            if (whiteName!=null) throw new DataAccessException("someone else is already white!");
+            if (whiteName!=null) {throw new DataAccessException("someone else is already white!");}
             GameData updatedGame = new GameData(gameID,username,blackName,gameName,myGame);
             deleteGame(gameID);
             createGame(updatedGame);
         }
         if (color == ChessGame.TeamColor.BLACK){
-            if (blackName!=null) throw new DataAccessException("someone else is already black!");
+            if (blackName!=null) {throw new DataAccessException("someone else is already black!");}
             GameData updatedGame = new GameData(gameID,whiteName,username,gameName,myGame);
             deleteGame(gameID);
             createGame(updatedGame);

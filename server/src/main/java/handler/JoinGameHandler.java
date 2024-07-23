@@ -32,12 +32,12 @@ public class JoinGameHandler implements Route {
             var gameJoinReq = new Gson().fromJson(req.body(), JoinGameRequest.class);
             String color = gameJoinReq.playerColor();
             int gameID = gameJoinReq.gameID();
-            if (color==null) throw new BadRequestException("Error: bad request");
+            if (color==null) {throw new BadRequestException("Error: bad request");}
             AuthData auth = service.authenticate(authToken);
             String username = auth.username();
             var gameData = service.findGame(gameID);
-            if (color.equals("BLACK") && gameData.blackUsername()!=null) throw new AlreadyTakenException("Error: already taken");
-            if (color.equals("WHITE") && gameData.blackUsername()!=null) throw new AlreadyTakenException("Error: already taken");
+            if (color.equals("BLACK") && gameData.blackUsername()!=null) {throw new AlreadyTakenException("Error: already taken");}
+            if (color.equals("WHITE") && gameData.blackUsername()!=null) {throw new AlreadyTakenException("Error: already taken");}
             GameData addedGame = service.addPlayer(gameData,color, username);
             res.status(200);
             return "";
