@@ -352,7 +352,7 @@ public class ChessGame {
         ChessBoard board = getTestBoard();
         ChessPiece[][] pieceGrid = board.getPieceGrid();
         Set<ChessMove> everyMove = new HashSet<>();
-        if (!inCheck) return false;
+        if (!inCheck) {return false;}
         else {
             for (int row=1;row<9;row++) {
                 for (int col = 1; col < 9; col++) {
@@ -382,7 +382,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        if (isInCheckmate(teamColor)) return false;
+        if (isInCheckmate(teamColor)) {return false;}
         ChessBoard board = getBoard();
         ChessPiece[][] pieceGrid = board.getPieceGrid();
         Set<ChessMove> allMoves = new HashSet<>();
