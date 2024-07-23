@@ -23,8 +23,13 @@ public class JoinGameService {
         return data.authData.getAuth(authToken);
     }
 
-    public GameData findGame(int gameID) throws DataAccessException {
-        return data.gameData.getGame(gameID);
+    public GameData findGame(int gameID) throws BadRequestException {
+        try {
+            return data.gameData.getGame(gameID);
+        }
+        catch (DataAccessException noSuchGame){
+            throw new BadRequestException("Error: bad request");
+        }
     }
 
     public GameData addPlayer(GameData gameData, String color, String username) throws BadRequestException, DataAccessException {

@@ -2,6 +2,7 @@ package handler;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import exception.AlreadyTakenException;
 import exception.BadRequestException;
 import exception.UnauthorizedException;
@@ -46,9 +47,9 @@ public class JoinGameHandler implements Route {
             res.status(400);
             return new Gson().toJson(new ErrorMessage(badRequest.getMessage()));
         }
-        catch (UnauthorizedException unauthorized) {
+        catch (UnauthorizedException | JsonSyntaxException unauthorized) {
             res.status(401);
-            return new Gson().toJson(new ErrorMessage(unauthorized.getMessage()));
+            return new Gson().toJson(new ErrorMessage("Error: unauthorized"));
         }
         catch (AlreadyTakenException alreadyTaken) {
             res.status(403);
