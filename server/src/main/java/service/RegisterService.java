@@ -15,7 +15,7 @@ public class RegisterService {
         data=dataAccessContainer;
     }
 
-    public AuthData register(UserData userData) throws AlreadyTakenException, BadRequestException {
+    public AuthData register(UserData userData) throws AlreadyTakenException, BadRequestException, DataAccessException {
         var username = userData.username();
         var email = userData.email();
         var password = userData.password();

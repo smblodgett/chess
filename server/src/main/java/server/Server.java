@@ -3,6 +3,7 @@ package server;
 import dataaccess.*;
 import exception.AlreadyTakenException;
 import exception.BadRequestException;
+import exception.ResponseException;
 import handler.*;
 import service.ServiceContainer;
 import spark.*;
@@ -15,12 +16,12 @@ public class Server {
     public Server(){
     }
 
-    public int run(int desiredPort) {
+    public int run(int desiredPort) throws ResponseException, DataAccessException {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
 
-        var authData = new AuthMemoryDAO();
+        var authData = new AuthSQLDAO();
         var gameData = new GameMemoryDAO();
         var userData = new UserMemoryDAO();
         var dataContainer = new DataAccessContainer(authData, gameData, userData);

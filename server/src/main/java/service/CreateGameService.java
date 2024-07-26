@@ -42,7 +42,7 @@ public class CreateGameService {
         }
     }
 
-    public AuthData authenticate(String authToken) throws UnauthorizedException {
+    public AuthData authenticate(String authToken) throws UnauthorizedException, DataAccessException {
         if (data.authData.getAuth(authToken)==null){
             throw new UnauthorizedException("Error: unauthorized");
         }

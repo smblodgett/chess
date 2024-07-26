@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
-import java.util.Set;
+
 import java.util.UUID;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
@@ -44,8 +44,8 @@ public class AuthSQLDAO implements AuthDAO {
             var id = preparedStatement.executeUpdate(statement);
             return new AuthData(username, authToken);
         }
-        catch (DataAccessException | SQLException ex) {
-            throw new DataAccessException("error with stuff");
+        catch (SQLException ex) {
+            throw new DataAccessException("error with addAuth");
         }
     }
 
@@ -56,11 +56,10 @@ public class AuthSQLDAO implements AuthDAO {
             var preparedStatement = conn.prepareStatement(statement);
             var id = preparedStatement.executeUpdate(statement);
         }
-        catch (DataAccessException | SQLException ex) {
-            throw new DataAccessException("error with stuff");
+        catch (SQLException ex) {
+            throw new DataAccessException("error with clearAll");
         }
     }
-
 
     @Override
     public void clearAuth(String authToken) throws DataAccessException {
@@ -69,7 +68,7 @@ public class AuthSQLDAO implements AuthDAO {
             var preparedStatement = conn.prepareStatement(statement);
             var id = preparedStatement.executeUpdate(statement);
         }
-        catch (DataAccessException | SQLException ex) {
+        catch (SQLException ex) {
             throw new DataAccessException("error with stuff");
         }
     }
@@ -77,7 +76,7 @@ public class AuthSQLDAO implements AuthDAO {
     @Override
     public AuthData getAuth(String authToken) throws UnauthorizedException, DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT auth, username FROM authDatatable WHERE auth ="+authToken+" ;" ;
+            var statement = "SELECT username, auth FROM authDatatable WHERE auth ="+authToken+" ;" ;
             var preparedStatement = conn.prepareStatement(statement);
             var resultSet = preparedStatement.executeQuery(statement);
             String username = "";
@@ -89,7 +88,7 @@ public class AuthSQLDAO implements AuthDAO {
             }
             else {throw new UnauthorizedException("Error: unauthorized");}
         }
-        catch (DataAccessException | SQLException ex) {
+        catch (SQLException ex) {
             throw new DataAccessException("error with stuff");
         }
     }
@@ -99,7 +98,7 @@ public class AuthSQLDAO implements AuthDAO {
 
         HashSet<AuthData> authDatabase = new HashSet<>();
 
-        String sql = "SELECT username, auth from authDatatable";
+        String sql = "SELECT username, auth FROM authDatatable";
 
         try(PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql);
             ResultSet rs = stmt.executeQuery()) {
@@ -111,7 +110,7 @@ public class AuthSQLDAO implements AuthDAO {
             }
             return authDatabase;
         }
-        catch (SQLException | DataAccessException ex) {
+        catch (SQLException ex) {
             throw new DataAccessException("yeHAW");
         }
     }
