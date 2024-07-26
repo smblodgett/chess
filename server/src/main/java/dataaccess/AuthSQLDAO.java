@@ -2,100 +2,117 @@ package dataaccess;
 
 import com.google.gson.Gson;
 import exception.DatabaseException;
+import exception.ResponseException;
 import exception.UnauthorizedException;
 import model.AuthData;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
 public class AuthSQLDAO implements AuthDAO {
 
-    public AuthSQLDAO() throws DataAccessException, DatabaseException {
+    public AuthSQLDAO() throws DataAccessException, ResponseException {
         configureDatabase();
     }
 
-    private final String[] createStatements = {
-            """
-            CREATE TABLE IF NOT EXISTS  auth (
-              `id` int NOT NULL AUTO_INCREMENT,
-              `username` varchar(256) NOT NULL,
-              `authToken` varchar(256) NOT NULL,
-              `json` TEXT DEFAULT NULL,
-              PRIMARY KEY (`id`),
-              INDEX(authToken),
-              INDEX(username)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
-            """
-    };
 
-    private void configureDatabase() throws DatabaseException, DataAccessException {
+    private void configureDatabase() throws DataAccessException, ResponseException {
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
+            String tableString = "CREATE table authDatatable (username varchar(128), auth varchar(128))";
+            var preparedStatement = conn.prepareStatement(tableString);
+            preparedStatement.executeUpdate();
         } catch (SQLException ex) {
-            throw new DatabaseException(500, String.format("Unable to configure database: %s", ex.getMessage()));
+            throw new ResponseException(500, String.format("Unable to configure database: %s", ex.getMessage()));
         }
     }
 
-    private int executeUpdate(String statement, Object... params) throws ResponseException {
+
+    @Override
+    public AuthData addAuth(String username) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param instanceof PetType p) ps.setString(i + 1, p.toString());
-                    else if (param == null) ps.setNull(i + 1, NULL);
-                }
-                ps.executeUpdate();
+            var authToken = UUID.randomUUID().toString();
+            var statement = "INSERT INTO authDatatable (username, authToken) VALUES ("+username+","+authToken+")";
+            var preparedStatement = conn.prepareStatement(statement);
+            var id = preparedStatement.executeUpdate(statement);
+            return new AuthData(username, authToken);
+        }
+        catch (DataAccessException | SQLException ex) {
+            throw new DataAccessException("error with stuff");
+        }
+    }
 
-                var rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-
-                return 0;
-            }
-        } catch (SQLException e) {
-            throw new ResponseException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+    @Override
+    public void clearAllAuth() throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "DROP TABLE IF EXISTS authDatatable";
+            var preparedStatement = conn.prepareStatement(statement);
+            var id = preparedStatement.executeUpdate(statement);
+        }
+        catch (DataAccessException | SQLException ex) {
+            throw new DataAccessException("error with stuff");
         }
     }
 
 
     @Override
-    public AuthData addAuth(AuthData authData) throws ResponseException {
-        var statement = "INSERT INTO auth (username, authToken, json) VALUES (?, ?, ?)";
-        var json = new Gson().toJson(authData);
-        var id = executeUpdate(statement, authData.username(), authData.authToken(), json);
-        return new AuthData(authData.authToken(), authData.username());
+    public void clearAuth(String authToken) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = " DELETE FROM authDatatable WHERE authToken = " + authToken +";" ;
+            var preparedStatement = conn.prepareStatement(statement);
+            var id = preparedStatement.executeUpdate(statement);
+        }
+        catch (DataAccessException | SQLException ex) {
+            throw new DataAccessException("error with stuff");
+        }
     }
 
     @Override
-    public void clearAllAuth() {
-
+    public AuthData getAuth(String authToken) throws UnauthorizedException, DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT auth, username FROM authDatatable WHERE auth ="+authToken+" ;" ;
+            var preparedStatement = conn.prepareStatement(statement);
+            var resultSet = preparedStatement.executeQuery(statement);
+            String username = "";
+            if (resultSet.isBeforeFirst()) {
+                while (resultSet.next()) {
+                    username = resultSet.getString("username");
+                }
+                return new AuthData(authToken, username);
+            }
+            else {throw new UnauthorizedException("Error: unauthorized");}
+        }
+        catch (DataAccessException | SQLException ex) {
+            throw new DataAccessException("error with stuff");
+        }
     }
 
     @Override
-    public void clearAuth(String authToken) {
+    public HashSet<AuthData> getAuthDatabase() throws DataAccessException {
 
-    }
+        HashSet<AuthData> authDatabase = new HashSet<>();
 
-    @Override
-    public AuthData getAuth(String authToken) throws UnauthorizedException {
-        return null;
-    }
+        String sql = "SELECT username, auth from authDatatable";
 
-    @Override
-    public HashSet<AuthData> getAuthDatabase() {
-        return null;
+        try(PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+
+            while(rs.next()) {
+                String username = rs.getString(1);
+                String authToken = rs.getString(2);
+                authDatabase.add(new AuthData(username,authToken));
+            }
+            return authDatabase;
+        }
+        catch (SQLException | DataAccessException ex) {
+            throw new DataAccessException("yeHAW");
+        }
     }
 }
