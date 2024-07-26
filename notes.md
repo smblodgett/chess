@@ -469,4 +469,13 @@ Create a user with permission to access the database:
 CREATE USER 'smblodgett'@'localhost' IDENTIFIED BY 'mypassword';
 GRANT ALL on BookClub.* to 'smblodgett'@'localhost';
 
+**7/26/24**
 
+_Defensive Programming_
+
+...aka making sure we aren't putting our own dumb mistakes into the code
+
+use assert statements to validate the assumptions that you've made about your code
+
+parameter checking: write code that validates my inputs; raise an error if they're bad inputs
+(you can do this with either if ___ then throw _____ OR asserts)
