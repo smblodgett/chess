@@ -50,7 +50,7 @@ public class AuthSQLDAO implements AuthDAO {
     public AuthData addAuth(String username) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             var authToken = UUID.randomUUID().toString();
-            var statement = "INSERT INTO authDatatable (username, authToken) VALUES (?,?)";
+            var statement = "INSERT INTO authDatatable (username, auth) VALUES (?,?)";
             var preparedStatement = conn.prepareStatement(statement);
             preparedStatement.setString(1,username);
             preparedStatement.setString(2,authToken);
@@ -77,7 +77,7 @@ public class AuthSQLDAO implements AuthDAO {
     @Override
     public void clearAuth(String authToken) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = " DELETE FROM authDatatable WHERE authToken = " + authToken +";" ;
+            var statement = " DELETE FROM authDatatable WHERE auth = " + authToken +";" ;
             var preparedStatement = conn.prepareStatement(statement);
             var id = preparedStatement.executeUpdate(statement);
         }
