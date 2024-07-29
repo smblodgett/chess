@@ -16,13 +16,14 @@ import java.util.UUID;
 
 public class AuthSQLDAO implements AuthDAO {
 
-    public AuthSQLDAO() throws DataAccessException, ResponseException {
+    public AuthSQLDAO() throws DataAccessException {
         configureDatabase();
     }
 
 
-    private void configureDatabase() throws DataAccessException, ResponseException {
-        String DATABASE_NAME = "authDatatable";
+    private void configureDatabase() throws DataAccessException {
+        String DATABASE_NAME = "chessDatabase";
+        String DATATABLE_NAME = "authDatatable";
         String checkDatabaseSQL = "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = ?";
 
         try (var conn = DatabaseManager.getConnection();
@@ -37,7 +38,7 @@ public class AuthSQLDAO implements AuthDAO {
         }
 
         try (var conn = DatabaseManager.getConnection()) {
-            String tableString = "CREATE table IF NOT EXISTS "+DATABASE_NAME+" (username varchar(128), auth varchar(128))";
+            String tableString = "CREATE table IF NOT EXISTS "+DATATABLE_NAME+" (username varchar(128), auth varchar(128))";
             var preparedStatement = conn.prepareStatement(tableString);
             preparedStatement.executeUpdate(); // this should only happen if the table doesn't exist...
         } catch (SQLException ex) {
@@ -83,7 +84,7 @@ public class AuthSQLDAO implements AuthDAO {
             var id = preparedStatement.executeUpdate();
         }
         catch (SQLException ex) {
-            throw new DataAccessException("error with stuff");
+            throw new DataAccessException("error with clearAuth");
         }
     }
 
@@ -104,7 +105,7 @@ public class AuthSQLDAO implements AuthDAO {
             else {throw new UnauthorizedException("Error: unauthorized");}
         }
         catch (SQLException ex) {
-            throw new DataAccessException("error with stuff");
+            throw new DataAccessException("error with getAuth");
         }
     }
 
@@ -126,7 +127,7 @@ public class AuthSQLDAO implements AuthDAO {
             return authDatabase;
         }
         catch (SQLException ex) {
-            throw new DataAccessException("yeHAW");
+            throw new DataAccessException("yeHAW error with getAuthDatabase");
         }
     }
 }

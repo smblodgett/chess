@@ -485,3 +485,8 @@ parameter checking: write code that validates my inputs; raise an error if they'
 in industry/practical applications, you want to do command-line builds so that you can quickly compile, test, install, etc your software without using an IDE
 
 Maven is one such command-line build supporter for Java.
+
+Console-user interfaces: can be formatted with formatted text, color, graphics 
+
+"Control codes": certain strings you can pass to console that make the console appear different ways/do different things
+
