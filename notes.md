@@ -479,3 +479,9 @@ use assert statements to validate the assumptions that you've made about your co
 
 parameter checking: write code that validates my inputs; raise an error if they're bad inputs
 (you can do this with either if ___ then throw _____ OR asserts)
+
+**7/29/24**
+
+in industry/practical applications, you want to do command-line builds so that you can quickly compile, test, install, etc your software without using an IDE
+
+Maven is one such command-line build supporter for Java.

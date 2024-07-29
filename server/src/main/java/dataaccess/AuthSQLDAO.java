@@ -77,9 +77,10 @@ public class AuthSQLDAO implements AuthDAO {
     @Override
     public void clearAuth(String authToken) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = " DELETE FROM authDatatable WHERE auth = " + authToken +";" ;
+            var statement = "DELETE FROM authDatatable WHERE auth = ? " ;
             var preparedStatement = conn.prepareStatement(statement);
-            var id = preparedStatement.executeUpdate(statement);
+            preparedStatement.setString(1,authToken);
+            var id = preparedStatement.executeUpdate();
         }
         catch (SQLException ex) {
             throw new DataAccessException("error with stuff");
@@ -89,9 +90,10 @@ public class AuthSQLDAO implements AuthDAO {
     @Override
     public AuthData getAuth(String authToken) throws UnauthorizedException, DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT username, auth FROM authDatatable WHERE auth ="+authToken+" ;" ;
+            var statement = "SELECT username, auth FROM authDatatable WHERE auth = ?" ;
             var preparedStatement = conn.prepareStatement(statement);
-            var resultSet = preparedStatement.executeQuery(statement);
+            preparedStatement.setString(1,authToken);
+            var resultSet = preparedStatement.executeQuery();
             String username = "";
             if (resultSet.isBeforeFirst()) {
                 while (resultSet.next()) {
