@@ -30,7 +30,7 @@ public class UserSQLDAO implements UserDAO {
         }
 
         try (var conn = DatabaseManager.getConnection()) {
-            String tableString = "CREATE table IF NOT EXISTS "+DATATABLE_NAME+" (username VARCHAR(128), password VARCHAR(128), email VARCHAR(128)";
+            String tableString = "CREATE table IF NOT EXISTS "+DATATABLE_NAME+" (username VARCHAR(128), password VARCHAR(128), email VARCHAR(128))";
             var preparedStatement = conn.prepareStatement(tableString);
             preparedStatement.executeUpdate(); // this should only happen if the table doesn't exist...
         } catch (SQLException ex) {
@@ -58,15 +58,20 @@ public class UserSQLDAO implements UserDAO {
     @Override
     public UserData getUser(String username) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT username, password, email FROM authDatatable WHERE username = ?" ;
+            var statement = "SELECT username, password, email FROM userDatatable WHERE username = ?" ;
             var preparedStatement = conn.prepareStatement(statement);
             preparedStatement.setString(1,username);
             var resultSet = preparedStatement.executeQuery();
-            String password = "";
-            String email = "";
-            password = resultSet.getString("password");
-            email = resultSet.getString("email");
-            return new UserData(username,password,email);
+            if (resultSet.isBeforeFirst()) {
+                String password = "";
+                String email = "";
+                while (resultSet.next()) {
+                    password = resultSet.getString("password");
+                    email = resultSet.getString("email");
+                }
+                return new UserData(username,password,email);
+            }
+            return null;
         }
         catch (SQLException ex) {
             throw new DataAccessException("error with getUser");

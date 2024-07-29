@@ -23,7 +23,7 @@ public class Server {
 
         var authData = new AuthSQLDAO();
         var gameData = new GameMemoryDAO();
-        var userData = new UserMemoryDAO();
+        var userData = new UserSQLDAO();
         var dataContainer = new DataAccessContainer(authData, gameData, userData);
         var services = new ServiceContainer(dataContainer); // make handler/service reference data statically
         this.addServices(services);
