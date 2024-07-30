@@ -8,21 +8,29 @@ import handler.*;
 import service.ServiceContainer;
 import spark.*;
 
+import static dataaccess.DatabaseManager.createDatabase;
+
 public class Server {
 
     private ServiceContainer services;
 
 
     public Server(){
+        try {
+            createDatabase();
+        }
+        catch (Exception ex) {
+            System.out.println("unable to create database");
+        }
     }
 
-    public int run(int desiredPort) throws ResponseException, DataAccessException {
+    public int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
 
         var authData = new AuthSQLDAO();
-        var gameData = new GameMemoryDAO();
+        var gameData = new GameSQLDAO();
         var userData = new UserSQLDAO();
         var dataContainer = new DataAccessContainer(authData, gameData, userData);
         var services = new ServiceContainer(dataContainer); // make handler/service reference data statically

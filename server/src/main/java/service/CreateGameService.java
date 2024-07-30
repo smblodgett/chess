@@ -17,7 +17,7 @@ public class CreateGameService {
         this.data=dataAccessContainer;
     }
 
-    public void createNewGame(GameData game) throws BadRequestException {
+    public void createNewGame(GameData game) throws BadRequestException, DataAccessException {
         if (game.gameName()==null) {throw new BadRequestException("Error: bad request");}
         data.gameData.createGame(game);
     }

@@ -16,33 +16,19 @@ import java.util.UUID;
 
 public class AuthSQLDAO implements AuthDAO {
 
-    public AuthSQLDAO() throws DataAccessException {
+    public AuthSQLDAO()  {
         configureDatabase();
     }
 
 
-    private void configureDatabase() throws DataAccessException {
-        String DATABASE_NAME = "chessDatabase";
+    private void configureDatabase() {
         String DATATABLE_NAME = "authDatatable";
-        String checkDatabaseSQL = "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = ?";
-
-        try (var conn = DatabaseManager.getConnection();
-             var preparedStatement = conn.prepareStatement(checkDatabaseSQL)) {
-            preparedStatement.setString(1,DATABASE_NAME);
-            if (!preparedStatement.executeQuery().isBeforeFirst()){
-                DatabaseManager.createDatabase(); // should just try and login if database already exists
-            }
-
-        } catch (SQLException ex) {
-            throw new DataAccessException("can't configure database, bro! Audaciously bogus!");
-        }
-
         try (var conn = DatabaseManager.getConnection()) {
-            String tableString = "CREATE table IF NOT EXISTS "+DATATABLE_NAME+" (username varchar(128), auth varchar(128))";
+            String tableString = "CREATE table IF NOT EXISTS "+DATATABLE_NAME+" (username VARCHAR(128), auth VARCHAR(128))";
             var preparedStatement = conn.prepareStatement(tableString);
             preparedStatement.executeUpdate(); // this should only happen if the table doesn't exist...
-        } catch (SQLException ex) {
-            throw new DataAccessException("can't configure database, bro! Audaciously bogus!");
+        } catch (SQLException | DataAccessException ex) {
+            System.out.println("can't configure authDatatable");
         }
     }
 
@@ -66,7 +52,7 @@ public class AuthSQLDAO implements AuthDAO {
     @Override
     public void clearAllAuth() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "DROP TABLE IF EXISTS authDatatable";
+            var statement = "TRUNCATE authDatatable";
             var preparedStatement = conn.prepareStatement(statement);
             var id = preparedStatement.executeUpdate();
         }
