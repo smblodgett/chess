@@ -6,6 +6,7 @@ import exception.AlreadyTakenException;
 import exception.BadRequestException;
 import model.AuthData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class RegisterService {
 
@@ -19,6 +20,8 @@ public class RegisterService {
         var username = userData.username();
         var email = userData.email();
         var password = userData.password();
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+
 
         var userDataInDatabase = data.userData.getUser(username);
         if (userDataInDatabase!=null){
@@ -27,7 +30,7 @@ public class RegisterService {
         if (username==null || password==null || email==null){
             throw new BadRequestException("Error: bad request");
         }
-        data.userData.createUser(username,password,email);
+        data.userData.createUser(username,hashedPassword,email);
         return data.authData.addAuth(username);
     }
 }

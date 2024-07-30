@@ -86,7 +86,7 @@ public class AuthSQLDAO implements AuthDAO {
                 while (resultSet.next()) {
                     username = resultSet.getString("username");
                 }
-                return new AuthData(authToken, username);
+                return new AuthData(username, authToken);
             }
             else {throw new UnauthorizedException("Error: unauthorized");}
         }

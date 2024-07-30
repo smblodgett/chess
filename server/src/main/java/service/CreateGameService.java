@@ -23,13 +23,21 @@ public class CreateGameService {
     }
 
     public int makeGameID(){
-        Random random = new Random();
+        try {
+            return data.gameData.listGames().size()+1;
+        }
+        catch (Exception ex){
+            System.out.println("something's funky in makeGameID");
+            return 999999999;
+        }
 
-        // Generate a random 8-digit number
-        int min = 10000000; // Minimum 8-digit number
-        int max = 99999999; // Maximum 8-digit number
-
-        return random.nextInt(max - min + 1) + min;
+//        Random random = new Random();
+//
+//        // Generate a random 8-digit number
+//        int min = 10000000; // Minimum 8-digit number
+//        int max = 99999999; // Maximum 8-digit number
+//
+//        return random.nextInt(max - min + 1) + min;
     }
 
     public boolean checkUniqueID(int gameID){

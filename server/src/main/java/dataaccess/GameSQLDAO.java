@@ -9,6 +9,7 @@ import model.UserData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -21,7 +22,7 @@ public class GameSQLDAO implements GameDAO {
     private void configureDatabase() {
         String DATATABLE_NAME = "gameDatatable";
         try (var conn = DatabaseManager.getConnection()) {
-            String tableString = "CREATE table IF NOT EXISTS "+DATATABLE_NAME+" (gameID INTEGER, whiteUsername VARCHAR(128), blackUsername VARCHAR(128), gameName VARCHAR(128), chessGame VARCHAR(8192))";
+            String tableString = "CREATE table IF NOT EXISTS "+DATATABLE_NAME+" (gameID INT NOT NULL AUTO_INCREMENT PRIMARY KEY, whiteUsername VARCHAR(128), blackUsername VARCHAR(128), gameName VARCHAR(128), chessGame VARCHAR(8192))";
             var preparedStatement = conn.prepareStatement(tableString);
             preparedStatement.executeUpdate(); // this should only happen if the table doesn't exist...
         } catch (SQLException | DataAccessException ex) {
@@ -33,15 +34,23 @@ public class GameSQLDAO implements GameDAO {
     @Override
     public GameData createGame(GameData gameData) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "INSERT INTO gameDatatable (gameID, whiteUsername, blackUsername, gameName, chessGame) VALUES (?,?,?,?,?)";
-            var preparedStatement = conn.prepareStatement(statement);
-            preparedStatement.setInt(1,gameData.gameID());
-            preparedStatement.setString(2,gameData.whiteUsername());
-            preparedStatement.setString(3,gameData.blackUsername());
-            preparedStatement.setString(4,gameData.gameName());
+            var statement = "INSERT INTO gameDatatable (whiteUsername, blackUsername, gameName, chessGame) VALUES (?,?,?,?)";
+            var preparedStatement = conn.prepareStatement(statement, Statement.RETURN_GENERATED_KEYS);
+//            preparedStatement.setInt(1,gameData.gameID());
+            preparedStatement.setString(1,gameData.whiteUsername());
+            preparedStatement.setString(2,gameData.blackUsername());
+            preparedStatement.setString(3,gameData.gameName());
             String gameAsString = new Gson().toJson(gameData.game());
-            preparedStatement.setString(5,gameAsString);
+            preparedStatement.setString(4,gameAsString);
             var id = preparedStatement.executeUpdate();
+//            try (var generatedKeys = preparedStatement.getGeneratedKeys()) {
+//                if (generatedKeys.next()) {
+//                    int gameId = generatedKeys.getInt(1);
+//                    gameData = new GameData(gameId,); // Assuming you have a setter for gameID in GameData
+//                } else {
+//                    throw new SQLException("Creating game failed, no ID obtained.");
+//                }
+//            }
             return gameData;
         }
         catch (SQLException ex) {
