@@ -115,7 +115,7 @@ public class GameSQLDAO implements GameDAO {
     @Override
     public void updateGamePlayer(GameData gameData, ChessGame.TeamColor color, String username) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-//            int gameID = gameData.gameID();
+            int gameID = gameData.gameID();
 //            ChessGame myGame = gameData.game();
 //            String gameName = gameData.gameName();
             String blackName = gameData.blackUsername();
@@ -123,16 +123,18 @@ public class GameSQLDAO implements GameDAO {
 
             if (color == ChessGame.TeamColor.WHITE){
                 if (whiteName!=null) {throw new DataAccessException("someone else is already white!");}
-                var statement = "UPDATE gameDatatable SET whiteUsername = ?";
+                var statement = "UPDATE gameDatatable SET whiteUsername = ? WHERE gameID = ?";
                 var preparedStatement = conn.prepareStatement(statement);
+                preparedStatement.setInt(2,gameID);
                 preparedStatement.setString(1,username);
                 var id = preparedStatement.executeUpdate();
             }
             if (color == ChessGame.TeamColor.BLACK){
                 if (blackName!=null) {throw new DataAccessException("someone else is already black!");}
-                var statement = "UPDATE gameDatatable SET blackUsername = ?";
+                var statement = "UPDATE gameDatatable SET blackUsername = ? WHERE gameID = ?";
                 var preparedStatement = conn.prepareStatement(statement);
                 preparedStatement.setString(1,username);
+                preparedStatement.setInt(2,gameID);
                 var id = preparedStatement.executeUpdate();
             }
         }
