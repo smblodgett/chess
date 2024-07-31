@@ -1,9 +1,6 @@
 package server;
 
 import dataaccess.*;
-import exception.AlreadyTakenException;
-import exception.BadRequestException;
-import exception.ResponseException;
 import handler.*;
 import service.ServiceContainer;
 import spark.*;

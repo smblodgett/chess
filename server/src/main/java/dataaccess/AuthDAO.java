@@ -1,10 +1,8 @@
 package dataaccess;
 
-import exception.ResponseException;
 import exception.UnauthorizedException;
 import model.AuthData;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 
 public interface AuthDAO {

@@ -1,8 +1,5 @@
 package dataaccess;
 
-import com.google.gson.Gson;
-import exception.DatabaseException;
-import exception.ResponseException;
 import exception.UnauthorizedException;
 import model.AuthData;
 
@@ -17,9 +14,9 @@ import java.util.UUID;
 public class AuthSQLDAO implements AuthDAO {
 
     public AuthSQLDAO()  {
-        String DATATABLE_NAME = "authDatatable";
+        String dataTableName = "authDatatable";
         try (var conn = DatabaseManager.getConnection()) {
-            String tableString = "CREATE table IF NOT EXISTS "+DATATABLE_NAME+" (username VARCHAR(128), auth VARCHAR(128))";
+            String tableString = "CREATE table IF NOT EXISTS "+dataTableName+" (username VARCHAR(128), auth VARCHAR(128))";
             var preparedStatement = conn.prepareStatement(tableString);
             preparedStatement.executeUpdate(); // this should only happen if the table doesn't exist...
         } catch (SQLException | DataAccessException ex) {
