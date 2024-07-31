@@ -10,10 +10,6 @@ import java.util.UUID;
 public class UserSQLDAO implements UserDAO {
 
     public UserSQLDAO() {
-        configureDatabase();
-    }
-
-    private void configureDatabase() {
         String DATATABLE_NAME = "userDatatable";
         try (var conn = DatabaseManager.getConnection()) {
             String tableString = "CREATE table IF NOT EXISTS "+DATATABLE_NAME+" (username VARCHAR(128), password VARCHAR(128), email VARCHAR(128))";
@@ -24,10 +20,10 @@ public class UserSQLDAO implements UserDAO {
         }
     }
 
-
     @Override
     public UserData createUser(String username, String password, String email) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
+            if (username.isBlank()) {throw new DataAccessException("username must be something");}
             var statement = "INSERT INTO userDatatable (username, password, email) VALUES (?,?,?)";
             var preparedStatement = conn.prepareStatement(statement);
             preparedStatement.setString(1,username);
@@ -36,7 +32,7 @@ public class UserSQLDAO implements UserDAO {
             var id = preparedStatement.executeUpdate();
             return new UserData(username, password, email);
         }
-        catch (SQLException ex) {
+        catch (SQLException | NullPointerException ex) {
             throw new DataAccessException("error with createUser");
         }
     }
@@ -44,6 +40,7 @@ public class UserSQLDAO implements UserDAO {
     @Override
     public UserData getUser(String username) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
+            if (username.isBlank()) {throw new DataAccessException("username must be something");}
             var statement = "SELECT username, password, email FROM userDatatable WHERE username = ?" ;
             var preparedStatement = conn.prepareStatement(statement);
             preparedStatement.setString(1,username);
@@ -59,7 +56,7 @@ public class UserSQLDAO implements UserDAO {
             }
             return null;
         }
-        catch (SQLException ex) {
+        catch (SQLException | NullPointerException ex) {
             throw new DataAccessException("error with getUser");
         }
     }

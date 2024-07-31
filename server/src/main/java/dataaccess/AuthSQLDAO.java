@@ -17,11 +17,6 @@ import java.util.UUID;
 public class AuthSQLDAO implements AuthDAO {
 
     public AuthSQLDAO()  {
-        configureDatabase();
-    }
-
-
-    private void configureDatabase() {
         String DATATABLE_NAME = "authDatatable";
         try (var conn = DatabaseManager.getConnection()) {
             String tableString = "CREATE table IF NOT EXISTS "+DATATABLE_NAME+" (username VARCHAR(128), auth VARCHAR(128))";
@@ -36,6 +31,7 @@ public class AuthSQLDAO implements AuthDAO {
     @Override
     public AuthData addAuth(String username) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
+            if (username.isBlank()) {throw new DataAccessException("username must be something");}
             var authToken = UUID.randomUUID().toString();
             var statement = "INSERT INTO authDatatable (username, auth) VALUES (?,?)";
             var preparedStatement = conn.prepareStatement(statement);
@@ -44,7 +40,7 @@ public class AuthSQLDAO implements AuthDAO {
             var id = preparedStatement.executeUpdate();
             return new AuthData(username, authToken);
         }
-        catch (SQLException ex) {
+        catch (SQLException | NullPointerException ex) {
             throw new DataAccessException("error with addAuth");
         }
     }
@@ -64,12 +60,13 @@ public class AuthSQLDAO implements AuthDAO {
     @Override
     public void clearAuth(String authToken) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
+            if (authToken==null){throw new DataAccessException("null auth token passed!");}
             var statement = "DELETE FROM authDatatable WHERE auth = ? " ;
             var preparedStatement = conn.prepareStatement(statement);
             preparedStatement.setString(1,authToken);
             var id = preparedStatement.executeUpdate();
         }
-        catch (SQLException ex) {
+        catch (SQLException | NullPointerException ex) {
             throw new DataAccessException("error with clearAuth");
         }
     }
