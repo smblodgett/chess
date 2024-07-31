@@ -16,9 +16,11 @@ import java.util.HashSet;
 public class GameSQLDAO implements GameDAO {
 
     public GameSQLDAO() {
-        String DATATABLE_NAME = "gameDatatable";
+        String dataTableName = "gameDatatable";
         try (var conn = DatabaseManager.getConnection()) {
-            String tableString = "CREATE table IF NOT EXISTS "+DATATABLE_NAME+" (gameID INT NOT NULL AUTO_INCREMENT PRIMARY KEY, whiteUsername VARCHAR(128), blackUsername VARCHAR(128), gameName VARCHAR(128), chessGame VARCHAR(8192))";
+            String tableString = "CREATE table IF NOT EXISTS "+dataTableName+
+                    " (gameID INT NOT NULL AUTO_INCREMENT PRIMARY KEY, whiteUsername VARCHAR(128), blackUsername VARCHAR(128), " +
+                    "gameName VARCHAR(128), chessGame VARCHAR(8192))";
             var preparedStatement = conn.prepareStatement(tableString);
             preparedStatement.executeUpdate(); // this should only happen if the table doesn't exist...
         } catch (SQLException | DataAccessException ex) {

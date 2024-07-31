@@ -10,9 +10,9 @@ import java.util.UUID;
 public class UserSQLDAO implements UserDAO {
 
     public UserSQLDAO() {
-        String DATATABLE_NAME = "userDatatable";
+        String dataTableName = "userDatatable";
         try (var conn = DatabaseManager.getConnection()) {
-            String tableString = "CREATE table IF NOT EXISTS "+DATATABLE_NAME+" (username VARCHAR(128), password VARCHAR(128), email VARCHAR(128))";
+            String tableString = "CREATE table IF NOT EXISTS "+dataTableName+" (username VARCHAR(128), password VARCHAR(128), email VARCHAR(128))";
             var preparedStatement = conn.prepareStatement(tableString);
             preparedStatement.executeUpdate(); // this should only happen if the table doesn't exist...
         } catch (SQLException | DataAccessException ex) {
