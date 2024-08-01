@@ -1,5 +1,7 @@
 package client;
 
+import model.AuthData;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -8,6 +10,7 @@ import static ui.EscapeSequences.*;
 public class UserOI {
 
     public static ServerFacade facade;
+    public static AuthData userAuth;
 
     public UserOI(){
         facade = new ServerFacade(8080);
@@ -86,7 +89,10 @@ public class UserOI {
             String username = commandInputs.get(1);
             String password = commandInputs.get(2);
             String email = commandInputs.get(3);
-            ServerFacade.register(username,password,email);
+            AuthData userAuth = facade.register(username,password,email);
+            if (userAuth == null){
+                System.out.println(SET_BG_COLOR_RED+"there was an error registering you. try again?"+RESET_TEXT_COLOR);
+            }
         }
 
     }

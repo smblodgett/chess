@@ -31,10 +31,10 @@ public class ServerFacadeTests {
         assertTrue(true);
     }
 
-//    @Test
-//    void register() throws Exception {
-//        var authData = facade.register("player1", "password", "p1@email.com");
-//        assertTrue(authData.authToken().length() > 10);
-//    }
+    @Test
+    void register() throws Exception {
+        var authData = facade.register("player1", "password", "p1@email.com");
+        assertTrue(authData.authToken().length() > 10);
+    }
 
 }
