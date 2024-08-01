@@ -3,6 +3,7 @@ package client;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import message.ListGameReturn;
 import model.AuthData;
 
 import java.io.InputStream;
@@ -11,6 +12,9 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+
+import static ui.EscapeSequences.RESET_TEXT_COLOR;
+import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
 
 public class ServerFacade {
 
@@ -105,9 +109,10 @@ public class ServerFacade {
                 os.write((jsonToSend).getBytes());
             }
             if (httpConnection.getResponseCode()==HttpURLConnection.HTTP_OK){
-                InputStream response = httpConnection.getInputStream();
-                Gson gson = new GsonBuilder().create();
-                return gson.fromJson(new InputStreamReader(response), int.class);
+//                InputStream response = httpConnection.getInputStream();
+//                Gson gson = new GsonBuilder().create();
+//                return gson.fromJson(new InputStreamReader(response), int.class);
+                return 0;
             }
             else {
                 System.out.println("ERROR: " + httpConnection.getResponseMessage());
@@ -142,6 +147,7 @@ public class ServerFacade {
                 os.write((jsonToSend).getBytes());
             }
             if (httpConnection.getResponseCode()==HttpURLConnection.HTTP_OK){
+                System.out.println(SET_TEXT_COLOR_BLUE+"You've joined game no."+gameID+RESET_TEXT_COLOR);
             }
             else {
                 System.out.println("ERROR: " + httpConnection.getResponseMessage());
@@ -156,11 +162,11 @@ public class ServerFacade {
         }
     }
 
-    public ArrayList listGames(String authToken){
+    public ListGameReturn listGames(String authToken){
         try {
             URL url = new URL("http://localhost:"+port+"/game");
             HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection();
-            httpConnection.setRequestMethod("PUT");
+            httpConnection.setRequestMethod("GET");
             httpConnection.setDoOutput(false);
             httpConnection.addRequestProperty("authorization",authToken);
             httpConnection.connect();
@@ -168,7 +174,7 @@ public class ServerFacade {
             if (httpConnection.getResponseCode()==HttpURLConnection.HTTP_OK){
                 InputStream response = httpConnection.getInputStream();
                 Gson gson = new GsonBuilder().create();
-                return gson.fromJson(new InputStreamReader(response), ArrayList.class);
+                return gson.fromJson(new InputStreamReader(response), ListGameReturn.class);
             }
             else {
                 System.out.println("ERROR: " + httpConnection.getResponseMessage());
@@ -182,5 +188,52 @@ public class ServerFacade {
             throw new RuntimeException(ex.getMessage());
         }
         return null;
+    }
+
+    public void logout(String authToken) {
+        try {
+            URL url = new URL("http://localhost:"+port+"/session");
+            HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection();
+            httpConnection.setRequestMethod("DELETE");
+            httpConnection.setDoOutput(false);
+            httpConnection.addRequestProperty("authorization",authToken);
+            httpConnection.connect();
+
+            if (httpConnection.getResponseCode()==HttpURLConnection.HTTP_OK){
+            }
+            else {
+                System.out.println("ERROR: " + httpConnection.getResponseMessage());
+                // Get the error stream containing the HTTP response body (if any)
+                InputStream respBody = httpConnection.getErrorStream();
+                // Display the data returned from the server
+                System.out.println(respBody.toString());
+            }
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+    }
+
+    public void clearData() {
+        try {
+            URL url = new URL("http://localhost:"+port+"/db");
+            HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection();
+            httpConnection.setRequestMethod("DELETE");
+            httpConnection.setDoOutput(false);
+            httpConnection.connect();
+
+            if (httpConnection.getResponseCode()==HttpURLConnection.HTTP_OK){
+            }
+            else {
+                System.out.println("ERROR: " + httpConnection.getResponseMessage());
+                // Get the error stream containing the HTTP response body (if any)
+                InputStream respBody = httpConnection.getErrorStream();
+                // Display the data returned from the server
+                System.out.println(respBody.toString());
+            }
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
     }
 }
