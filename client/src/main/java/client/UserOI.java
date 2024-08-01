@@ -13,6 +13,7 @@ public class UserOI {
 
     public static ServerFacade facade;
     public static AuthData userAuth;
+    public static final String DIVIDERS = "■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□";
 
     public UserOI(){
         facade = new ServerFacade(8080);
@@ -63,19 +64,19 @@ public class UserOI {
     }
 
     private void help() {
-        System.out.println(SET_BG_COLOR_LIGHT_GREY+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        System.out.println(SET_TEXT_COLOR_BLUE+"These are the things this app is programmed to do:"+RESET_TEXT_COLOR);
+        System.out.println(SET_BG_COLOR_LIGHT_GREY+DIVIDERS);
+        System.out.println(SET_TEXT_COLOR_BLUE+"options"+RESET_TEXT_COLOR);
         System.out.println(SET_TEXT_COLOR_GREEN+"register <username> <password> <email> "+RESET_TEXT_COLOR+"- register a chess account");
         System.out.println(SET_TEXT_COLOR_GREEN+"login <username> <password> "+RESET_TEXT_COLOR+"- login to play chess");
         System.out.println(SET_TEXT_COLOR_GREEN+"quit "+RESET_TEXT_COLOR+"- exit the application");
         System.out.println(SET_TEXT_COLOR_GREEN+"help "+RESET_TEXT_COLOR+"- you just selected this!");
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println(DIVIDERS);
     }
 
     private void quit(){
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println(DIVIDERS);
         System.out.println(SET_TEXT_COLOR_BLUE+"see you next time!"+RESET_TEXT_COLOR);
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println(DIVIDERS);
         try{
             Thread.sleep(3000);
         }
@@ -85,9 +86,9 @@ public class UserOI {
     }
 
     private void badInputAction() {
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println(DIVIDERS);
         System.out.println(SET_TEXT_COLOR_BLUE+"umm....that's an invalid input, mate. Try again!"+RESET_TEXT_COLOR);
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println(DIVIDERS);
     }
 
     private void register(ArrayList<String> commandInputs) {
@@ -130,9 +131,9 @@ public class UserOI {
     }
 
     private void loggedInMenu() {
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println(DIVIDERS);
         System.out.println(SET_TEXT_COLOR_BLUE+"Logged in! It's time to chess! (Type help if you're lost.)"+RESET_TEXT_COLOR);
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println(DIVIDERS);
         boolean isLoggedInMenuGoing = true;
         Scanner scanner = new Scanner(System.in);
         while (isLoggedInMenuGoing) {
@@ -176,12 +177,14 @@ public class UserOI {
     }
 
     private void helpLoggedIn() {
-        System.out.println(SET_BG_COLOR_LIGHT_GREY+SET_TEXT_COLOR_GREEN+"create <gameName> "+RESET_TEXT_COLOR+"- create a new game with name gameName");
+        System.out.println(SET_BG_COLOR_LIGHT_GREY+DIVIDERS);
+        System.out.println(SET_TEXT_COLOR_GREEN+"create <gameName> "+RESET_TEXT_COLOR+"- create a new game with name gameName");
         System.out.println(SET_TEXT_COLOR_GREEN+"join <white/black> <gameID> "+RESET_TEXT_COLOR+"- join a game, pick your side");
         System.out.println(SET_TEXT_COLOR_GREEN+"list "+RESET_TEXT_COLOR+"- list all current games");
         System.out.println(SET_TEXT_COLOR_GREEN+"logout "+RESET_TEXT_COLOR+"- logout of the application");
         System.out.println(SET_TEXT_COLOR_GREEN+"clear "+RESET_TEXT_COLOR+"- clear all data");
         System.out.println(SET_TEXT_COLOR_GREEN+"help "+RESET_TEXT_COLOR+"- you just selected this!");
+        System.out.println(DIVIDERS);
     }
 
     private void createGame(ArrayList<String> commandInputs){
@@ -252,14 +255,20 @@ public class UserOI {
             var whiteName = game.whiteUsername();
             var blackName = game.blackUsername();
             var gameID = game.gameID();
-            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            System.out.println(DIVIDERS);
             System.out.println(SET_TEXT_COLOR_BLUE+"game name: "+name+ "\nwhite is "+ whiteName
                     +"\nblack is "+blackName+"\ngameid="+gameID+RESET_TEXT_COLOR);
         }
-        if (gameList.size()==0){
-            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-            System.out.println("There aren't any games made, yet. Maybe you should make one...");
-            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        if (gameList.isEmpty()){
+            System.out.println(DIVIDERS);
+            System.out.println(SET_TEXT_COLOR_BLUE+"There aren't any games made, yet. Maybe you should make one..."+RESET_TEXT_COLOR);
+            System.out.println(DIVIDERS);
+            try{
+                Thread.sleep(3000);
+            }
+            catch (InterruptedException ex) {
+                System.out.println("!!!!!!!!");
+            }
             helpLoggedIn();
         }
     }
@@ -272,9 +281,9 @@ public class UserOI {
 
     private void clearData(){
         facade.clearData();
-        System.out.println(SET_BG_COLOR_RED+SET_TEXT_COLOR_BLACK+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println(SET_BG_COLOR_RED+SET_TEXT_COLOR_BLACK+DIVIDERS);
         System.out.println("everything. has. been. destroyed.");
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+RESET_TEXT_COLOR);
+        System.out.println(DIVIDERS+RESET_TEXT_COLOR);
         try{
             Thread.sleep(3000);
         }
