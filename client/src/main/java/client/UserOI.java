@@ -1,10 +1,17 @@
 package client;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
 
 public class UserOI {
+
+    public static ServerFacade facade;
+
+    public UserOI(){
+        facade = new ServerFacade(8080);
+    }
 
     public void run(){
         baseLevelMenu();
@@ -15,7 +22,16 @@ public class UserOI {
         Scanner scanner = new Scanner(System.in);
         while (isBaseGoing) {
             String command = scanner.nextLine();
-            switch (command) {
+
+            Scanner lineScanner = new Scanner(command);  // Create a new scanner for the line
+            ArrayList<String> commandInputs = new ArrayList<>();
+            while (lineScanner.hasNext()) {
+                String word = lineScanner.next();  // Read one word at a time
+                commandInputs.add(word);  // Process the word
+            }
+            lineScanner.close();
+
+            switch (commandInputs.getFirst()) {
                 case "help":
                     help();
                     break;
@@ -24,8 +40,10 @@ public class UserOI {
                     quit();
                     break;
                 case "register":
+                    register(commandInputs);
                     break;
                 case "login":
+                    login(commandInputs);
                     break;
                 default:
                     badInputAction();
@@ -57,6 +75,31 @@ public class UserOI {
 
     private void badInputAction() {
         System.out.println(SET_TEXT_COLOR_BLUE+"umm....that's an invalid input, mate. Try again!"+RESET_TEXT_COLOR);
+    }
+
+    private void register(ArrayList<String> commandInputs) {
+        if (commandInputs.size()!=4){
+            System.out.println(SET_TEXT_COLOR_BLUE+"wrong number of inputs!"+RESET_TEXT_COLOR);
+            help();
+        }
+        else {
+            String username = commandInputs.get(1);
+            String password = commandInputs.get(2);
+            String email = commandInputs.get(3);
+            ServerFacade.register(username,password,email);
+        }
+
+    }
+
+    private void login(ArrayList<String> commandInputs) {
+        if (commandInputs.size()!=3){
+            System.out.println(SET_TEXT_COLOR_BLUE+"wrong number of inputs!"+RESET_TEXT_COLOR);
+            help();
+        }
+        else {
+            String username = commandInputs.get(1);
+            String password = commandInputs.get(2);
+        }
     }
 
 }
