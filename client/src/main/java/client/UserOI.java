@@ -155,9 +155,13 @@ public class UserOI {
                 case "create":
                     createGame(commandInputs);
                     break;
+                case "join":
                 case "play":
                     joinGame(commandInputs);
                     break;
+                case "watch":
+                case "observe":
+                    watchGame(commandInputs);
                 case "list":
                     listGames();
                     break;
@@ -179,6 +183,7 @@ public class UserOI {
 
     private void helpLoggedIn() {
         System.out.println(SET_BG_COLOR_LIGHT_GREY+DIVIDERS);
+        System.out.println(SET_TEXT_COLOR_BLUE+"♖ options ♖"+RESET_TEXT_COLOR);
         System.out.println(SET_TEXT_COLOR_GREEN+"create <gameName> "+RESET_TEXT_COLOR+"- create a new game with name gameName");
         System.out.println(SET_TEXT_COLOR_GREEN+"play <white/black> <gameListNumber> "+RESET_TEXT_COLOR+"- join a game, pick your side");
         System.out.println(SET_TEXT_COLOR_GREEN+"observe <gameListNumber> "+RESET_TEXT_COLOR+"- join a game, pick your side");
@@ -259,6 +264,30 @@ public class UserOI {
         }
     }
 
+    private void watchGame(ArrayList<String> commandInputs){
+        int gameListNumber;
+        try {
+            gameListNumber = Integer.parseInt(commandInputs.get(1));
+        }
+        catch (Exception ex) {
+            System.out.println(SET_TEXT_COLOR_BLUE+"second input must be game list number!"+RESET_TEXT_COLOR);
+            return;
+        }
+        if (commandInputs.size()!=2){
+            System.out.println(SET_TEXT_COLOR_BLUE+"wrong number of inputs!"+RESET_TEXT_COLOR);
+            helpLoggedIn();
+        }
+        try {
+            ChessGame chessGame = new ChessGame(); // this will  probably be replaced with real game data
+            var printer = new chessBoardPrinter(chessGame);
+            printer.drawEverything();
+        }
+        catch (NullPointerException ex) {
+            System.out.println(SET_TEXT_COLOR_BLUE+"null error for some reason :/"+RESET_TEXT_COLOR);
+            helpLoggedIn();
+        }
+    }
+
     private void listGames() {
         String authToken = userAuth.authToken();
         var impureGameList = facade.listGames(authToken);
@@ -307,7 +336,6 @@ public class UserOI {
         catch (InterruptedException ex) {
             System.out.println("!!!!!!!!");
         }
-        System.out.println(ERASE_SCREEN);
     }
 
 }

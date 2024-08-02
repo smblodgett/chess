@@ -21,13 +21,13 @@ public class chessBoardPrinter {
     }
 
     public void drawEverything(){
-        System.out.println("beginning printing :0");
+//        System.out.println("beginning printing :0");
 
-        String headerText1 = SET_BG_COLOR_LIGHT_GREY+SET_TEXT_COLOR_BLACK+EMPTY+
-                " H"+EMPTY+"G"+EMPTY+"F"+EMPTY+"E"+EMPTY+"D"+EMPTY+"C"+EMPTY+"B"+EMPTY+"A"+EMPTY+"\n";
+        String headerText1 = SET_BG_COLOR_LIGHT_GREY+SET_TEXT_COLOR_BLACK+BUFFER+
+                "   H"+"  "+"G"+" \u2006\u2006\u2006"+"F"+"  "+"E"+" \u2006\u2006\u2006"+"D"+"  "+"C"+" \u2006\u2006\u2006\u2006"+"B"+" \u2006\u2006\u2008"+"A"+"  "+"\n";
 
-        String headerText2 = SET_BG_COLOR_LIGHT_GREY+SET_TEXT_COLOR_BLACK+EMPTY+
-                " A"+EMPTY+"B"+EMPTY+"C"+EMPTY+"D"+EMPTY+"E"+EMPTY+"F"+EMPTY+"G"+EMPTY+"H"+EMPTY+"\n";
+        String headerText2 = SET_BG_COLOR_LIGHT_GREY+SET_TEXT_COLOR_BLACK+BUFFER+
+                "   A"+"  "+"B"+" \u2006\u2006\u2006"+"C"+"  "+"D"+" \u2006\u2006\u2006"+"E"+"  "+"F"+" \u2006\u2006\u2006\u2006"+"G"+" \u2006\u2006\u2008"+"H"+"  "+"\n";
 
         drawHeader(headerText1);
         drawBoard(chessGame, new int[]{1,2,3,4,5,6,7,8});
@@ -46,14 +46,14 @@ public class chessBoardPrinter {
         ChessPiece[][] pieceGrid = chessGame.getBoard().getPieceGrid();
         for (var rowNumber : order){
             ChessPiece[] row = pieceGrid[rowNumber];
-            out.print(SET_BG_COLOR_LIGHT_GREY +" "+rowNumber+EMPTY);
+            out.print(SET_BG_COLOR_LIGHT_GREY +SET_TEXT_COLOR_BLACK+" "+rowNumber+BUFFER);
             for (var colNumber : order){
                 ChessPiece piece = row[colNumber];
                 String pieceText = handlePiecePrint(piece);
                 out.print(getSquareColorBackground()+pieceText);
             }
             isWhiteToPrint= !isWhiteToPrint;
-            out.print(SET_BG_COLOR_LIGHT_GREY+EMPTY+rowNumber+"\n");
+            out.print(SET_BG_COLOR_LIGHT_GREY+BUFFER+rowNumber+"\n"+RESET_TEXT_COLOR);
         }
         isWhiteToPrint=true;
     }
@@ -88,11 +88,11 @@ public class chessBoardPrinter {
     private String getSquareColorBackground(){
         if (isWhiteToPrint){
             isWhiteToPrint=false;
-            return SET_BG_COLOR_WHITE;
+            return SET_BG_COLOR_LIGHTER_GREY;
         }
         else {
             isWhiteToPrint=true;
-            return SET_BG_COLOR_BLACK;
+            return SET_BG_COLOR_DARK_GREEN;
         }
     }
 }
