@@ -5,15 +5,18 @@ import model.AuthData;
 import model.GameData;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
+import ui.chessBoardPrinter;
 
 public class UserOI {
 
     public static ServerFacade facade;
     public static AuthData userAuth;
     public static final String DIVIDERS = "■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□";
+    public static Map<Integer,Integer> gameKey;
 
     public UserOI(){
         facade = new ServerFacade(8080);
@@ -58,9 +61,7 @@ public class UserOI {
                     break;
             }
         }
-
         scanner.close();
-
     }
 
     private void help() {
@@ -69,7 +70,7 @@ public class UserOI {
         System.out.println(SET_TEXT_COLOR_GREEN+"register <username> <password> <email> "+RESET_TEXT_COLOR+"- register a chess account");
         System.out.println(SET_TEXT_COLOR_GREEN+"login <username> <password> "+RESET_TEXT_COLOR+"- login to play chess");
         System.out.println(SET_TEXT_COLOR_GREEN+"quit "+RESET_TEXT_COLOR+"- exit the application");
-        System.out.println(SET_TEXT_COLOR_GREEN+"help "+RESET_TEXT_COLOR+"- you just selected this!");
+        System.out.println(SET_TEXT_COLOR_GREEN+"help "+RESET_TEXT_COLOR+"- if you need more help");
         System.out.println(DIVIDERS);
     }
 
@@ -154,7 +155,7 @@ public class UserOI {
                 case "create":
                     createGame(commandInputs);
                     break;
-                case "join":
+                case "play":
                     joinGame(commandInputs);
                     break;
                 case "list":
@@ -179,11 +180,12 @@ public class UserOI {
     private void helpLoggedIn() {
         System.out.println(SET_BG_COLOR_LIGHT_GREY+DIVIDERS);
         System.out.println(SET_TEXT_COLOR_GREEN+"create <gameName> "+RESET_TEXT_COLOR+"- create a new game with name gameName");
-        System.out.println(SET_TEXT_COLOR_GREEN+"join <white/black> <gameID> "+RESET_TEXT_COLOR+"- join a game, pick your side");
+        System.out.println(SET_TEXT_COLOR_GREEN+"play <white/black> <gameListNumber> "+RESET_TEXT_COLOR+"- join a game, pick your side");
+        System.out.println(SET_TEXT_COLOR_GREEN+"observe <gameListNumber> "+RESET_TEXT_COLOR+"- join a game, pick your side");
         System.out.println(SET_TEXT_COLOR_GREEN+"list "+RESET_TEXT_COLOR+"- list all current games");
         System.out.println(SET_TEXT_COLOR_GREEN+"logout "+RESET_TEXT_COLOR+"- logout of the application");
         System.out.println(SET_TEXT_COLOR_GREEN+"clear "+RESET_TEXT_COLOR+"- clear all data");
-        System.out.println(SET_TEXT_COLOR_GREEN+"help "+RESET_TEXT_COLOR+"- you just selected this!");
+        System.out.println(SET_TEXT_COLOR_GREEN+"help "+RESET_TEXT_COLOR+"- if you need more help");
         System.out.println(DIVIDERS);
     }
 
@@ -206,12 +208,12 @@ public class UserOI {
     }
 
     private void joinGame(ArrayList<String> commandInputs) {
-        int gameID;
+        int gameListNumber;
         try {
-            gameID = Integer.parseInt(commandInputs.get(2));
+            gameListNumber = Integer.parseInt(commandInputs.get(2));
         }
         catch (Exception ex) {
-            System.out.println(SET_TEXT_COLOR_BLUE+"second input must be gameID number!"+RESET_TEXT_COLOR);
+            System.out.println(SET_TEXT_COLOR_BLUE+"second input must be game list number!"+RESET_TEXT_COLOR);
             return;
         }
         if (commandInputs.size()!=3){
@@ -241,8 +243,12 @@ public class UserOI {
                     helpLoggedIn();
                     break;
             }
+            int gameID = gameKey.get(gameListNumber);
             String authToken = userAuth.authToken();
             facade.joinGame(color,gameID,authToken);
+            ChessGame chessGame = new ChessGame(); // this will  probably be replaced?
+            var printer = new chessBoardPrinter(chessGame);
+            printer.drawEverything();
         }
     }
 
@@ -250,14 +256,18 @@ public class UserOI {
         String authToken = userAuth.authToken();
         var impureGameList = facade.listGames(authToken);
         var gameList = impureGameList.removeChessBoards();
+        int count = 1;
         for (var game : gameList){
             var name = game.gameName();
             var whiteName = game.whiteUsername();
             var blackName = game.blackUsername();
             var gameID = game.gameID();
             System.out.println(DIVIDERS);
+            System.out.println(count+":");
             System.out.println(SET_TEXT_COLOR_BLUE+"game name: "+name+ "\nwhite is "+ whiteName
                     +"\nblack is "+blackName+"\ngameid="+gameID+RESET_TEXT_COLOR);
+            gameKey.put(count,gameID);
+            count++;
         }
         if (gameList.isEmpty()){
             System.out.println(DIVIDERS);
