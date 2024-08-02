@@ -20,6 +20,10 @@ public class ServerFacadeTests {
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
         facade = new ServerFacade(port);
+    }
+
+    @BeforeEach
+    public void clearFacade(){
         facade.clearData();
     }
 
@@ -39,6 +43,7 @@ public class ServerFacadeTests {
         var authData = facade.register("player1", "password", "p1@email.com");
         assertTrue(authData.authToken().length() > 10);
     }
+// somehow, I'm not able to pass when every case goes. but individual cases pass just fine.
 
 //    @Test
 //    void registerTwice() throws Exception {
@@ -79,6 +84,7 @@ public class ServerFacadeTests {
     void createGame() throws Exception {
         var authData1 = facade.register("player1", "password", "p1@email.com");
         facade.createGame("testgame",authData1.authToken());
+        assertEquals(1,facade.listGames(authData1.authToken()).removeChessBoards().size());
     }
 
     @Test
