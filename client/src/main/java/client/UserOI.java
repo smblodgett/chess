@@ -305,6 +305,7 @@ public class UserOI {
                 System.out.println(SET_TEXT_COLOR_BLUE + "game name: " + name + "\nwhite is " + whiteName
                         + "\nblack is " + blackName + "\ngameid=" + gameID + RESET_TEXT_COLOR);
             }
+            System.out.println(DIVIDERS);
             gameKey.put(count,gameID);
             count++;
         }
