@@ -218,7 +218,7 @@ public class ServerFacade {
             httpConnection.connect();
 
             if (httpConnection.getResponseCode()==HttpURLConnection.HTTP_OK){
-                return;
+
             }
             else {
                 System.out.println("ERROR: " + httpConnection.getResponseMessage());
