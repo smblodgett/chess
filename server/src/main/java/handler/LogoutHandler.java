@@ -2,15 +2,11 @@ package handler;
 
 import com.google.gson.Gson;
 import exception.UnauthorizedException;
-import message.ErrorMessage;
-import model.UserData;
+import message.message.ErrorMessage;
 import service.LogoutService;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-
-import static dataaccess.AuthMemoryDAO.authDatabase;
-import static dataaccess.UserMemoryDAO.userDatabase;
 
 public class LogoutHandler implements Route {
 

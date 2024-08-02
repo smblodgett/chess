@@ -1,4 +1,4 @@
-package message;
+package message.message;
 
 public record CreateGameReturn(int gameID) {
 }

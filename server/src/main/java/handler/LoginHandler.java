@@ -1,13 +1,10 @@
 package handler;
 
 import com.google.gson.Gson;
-import exception.AlreadyTakenException;
-import exception.BadRequestException;
 import exception.UnauthorizedException;
-import message.ErrorMessage;
+import message.message.ErrorMessage;
 import model.UserData;
 import service.LoginService;
-import service.LogoutService;
 import spark.*;
 
 public class LoginHandler implements Route {

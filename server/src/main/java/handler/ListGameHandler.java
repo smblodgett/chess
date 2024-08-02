@@ -2,8 +2,8 @@ package handler;
 
 import com.google.gson.Gson;
 import exception.UnauthorizedException;
-import message.ErrorMessage;
-import message.ListGameReturn;
+import message.message.ErrorMessage;
+import message.message.ListGameReturn;
 import service.ListGameService;
 import spark.*;
 import response.ListGameResponse;

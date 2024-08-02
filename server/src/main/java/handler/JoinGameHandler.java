@@ -1,15 +1,12 @@
 package handler;
 
-import chess.ChessGame;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import exception.AlreadyTakenException;
 import exception.BadRequestException;
 import exception.UnauthorizedException;
-import message.CreateGameRequest;
-import message.CreateGameReturn;
-import message.ErrorMessage;
-import message.JoinGameRequest;
+import message.message.ErrorMessage;
+import message.message.JoinGameRequest;
 import model.AuthData;
 import model.GameData;
 import service.JoinGameService;
