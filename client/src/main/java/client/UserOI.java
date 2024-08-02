@@ -67,7 +67,7 @@ public class UserOI {
 
     private void help() {
         System.out.println(SET_BG_COLOR_LIGHT_GREY+DIVIDERS);
-        System.out.println(SET_TEXT_COLOR_BLUE+"options"+RESET_TEXT_COLOR);
+        System.out.println(SET_TEXT_COLOR_BLUE+"♝ options ♝"+RESET_TEXT_COLOR);
         System.out.println(SET_TEXT_COLOR_GREEN+"register <username> <password> <email> "+RESET_TEXT_COLOR+"- register a chess account");
         System.out.println(SET_TEXT_COLOR_GREEN+"login <username> <password> "+RESET_TEXT_COLOR+"- login to play chess");
         System.out.println(SET_TEXT_COLOR_GREEN+"quit "+RESET_TEXT_COLOR+"- exit the application");

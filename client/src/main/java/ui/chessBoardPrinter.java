@@ -23,16 +23,19 @@ public class chessBoardPrinter {
     public void drawEverything(){
         System.out.println("beginning printing :0");
 
-        String headerText = SET_BG_COLOR_LIGHT_GREY+SET_TEXT_COLOR_BLACK+EMPTY+
+        String headerText1 = SET_BG_COLOR_LIGHT_GREY+SET_TEXT_COLOR_BLACK+EMPTY+
                 " H"+EMPTY+"G"+EMPTY+"F"+EMPTY+"E"+EMPTY+"D"+EMPTY+"C"+EMPTY+"B"+EMPTY+"A"+EMPTY+"\n";
 
-        drawHeader(headerText);
+        String headerText2 = SET_BG_COLOR_LIGHT_GREY+SET_TEXT_COLOR_BLACK+EMPTY+
+                " A"+EMPTY+"B"+EMPTY+"C"+EMPTY+"D"+EMPTY+"E"+EMPTY+"F"+EMPTY+"G"+EMPTY+"H"+EMPTY+"\n";
+
+        drawHeader(headerText1);
         drawBoard(chessGame, new int[]{1,2,3,4,5,6,7,8});
-        drawHeader(headerText);
+        drawHeader(headerText1);
         out.print("\n");
-        drawHeader(headerText);
+        drawHeader(headerText2);
         drawBoard(chessGame, new int[]{8, 7, 6, 5, 4, 3, 2, 1});
-        drawHeader(headerText);
+        drawHeader(headerText2);
     }
 
     private void drawHeader(String headerText){
@@ -42,14 +45,17 @@ public class chessBoardPrinter {
     private void drawBoard(ChessGame chessGame,int[] order){
         ChessPiece[][] pieceGrid = chessGame.getBoard().getPieceGrid();
         for (var rowNumber : order){
-            ChessPiece[] row=pieceGrid[rowNumber];
+            ChessPiece[] row = pieceGrid[rowNumber];
             out.print(SET_BG_COLOR_LIGHT_GREY +" "+rowNumber+EMPTY);
-            for (var piece : row){
+            for (var colNumber : order){
+                ChessPiece piece = row[colNumber];
                 String pieceText = handlePiecePrint(piece);
                 out.print(getSquareColorBackground()+pieceText);
             }
+            isWhiteToPrint= !isWhiteToPrint;
             out.print(SET_BG_COLOR_LIGHT_GREY+EMPTY+rowNumber+"\n");
         }
+        isWhiteToPrint=true;
     }
 
     private String handlePiecePrint(ChessPiece piece){
