@@ -3,7 +3,7 @@ package client;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import message.ListGameReturn;
+import message.*;
 import model.AuthData;
 
 import java.io.InputStream;
@@ -75,16 +75,14 @@ public class ServerFacade {
                 os.write((jsonToSend).getBytes());
             }
             if (httpConnection.getResponseCode()==HttpURLConnection.HTTP_OK){
+                //
                 InputStream response = httpConnection.getInputStream();
                 Gson gson = new GsonBuilder().create();
                 return gson.fromJson(new InputStreamReader(response), AuthData.class);
             }
             else {
                 System.out.println("ERROR: " + httpConnection.getResponseMessage());
-                // Get the error stream containing the HTTP response body (if any)
                 InputStream respBody = httpConnection.getErrorStream();
-
-                // Display the data returned from the server
                 System.out.println(respBody.toString());
                 return null;
             }
@@ -109,9 +107,6 @@ public class ServerFacade {
                 os.write((jsonToSend).getBytes());
             }
             if (httpConnection.getResponseCode()==HttpURLConnection.HTTP_OK){
-//                InputStream response = httpConnection.getInputStream();
-//                Gson gson = new GsonBuilder().create();
-//                return gson.fromJson(new InputStreamReader(response), int.class);
                 return 0;
             }
             else {
@@ -223,12 +218,11 @@ public class ServerFacade {
             httpConnection.connect();
 
             if (httpConnection.getResponseCode()==HttpURLConnection.HTTP_OK){
+                return;
             }
             else {
                 System.out.println("ERROR: " + httpConnection.getResponseMessage());
-                // Get the error stream containing the HTTP response body (if any)
                 InputStream respBody = httpConnection.getErrorStream();
-                // Display the data returned from the server
                 System.out.println(respBody.toString());
             }
         }

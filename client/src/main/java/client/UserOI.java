@@ -2,7 +2,6 @@ package client;
 
 import chess.ChessGame;
 import model.AuthData;
-import model.GameData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +9,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
-import ui.chessBoardPrinter;
+import ui.ChessBoardPrinter;
 
 public class UserOI {
 
@@ -256,7 +255,7 @@ public class UserOI {
                 String authToken = userAuth.authToken();
                 facade.joinGame(color,gameID,authToken);
                 ChessGame chessGame = new ChessGame(); // this will  probably be replaced?
-                var printer = new chessBoardPrinter(chessGame);
+                var printer = new ChessBoardPrinter(chessGame);
                 printer.drawEverything();
             }
             catch (NullPointerException ex) {
@@ -282,7 +281,7 @@ public class UserOI {
         }
         try {
             ChessGame chessGame = new ChessGame(); // this will  probably be replaced with real game data
-            var printer = new chessBoardPrinter(chessGame);
+            var printer = new ChessBoardPrinter(chessGame);
             printer.drawEverything();
         }
         catch (NullPointerException ex) {

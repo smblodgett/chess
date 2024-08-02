@@ -8,14 +8,14 @@ import java.nio.charset.StandardCharsets;
 
 import static ui.EscapeSequences.*;
 
-public class chessBoardPrinter {
+public class ChessBoardPrinter {
 
     private static final int BOARD_SIZE_IN_SQUARES = 8;
     private static PrintStream out;
     private ChessGame chessGame;
     private static boolean isWhiteToPrint=true;
 
-    public chessBoardPrinter(ChessGame chessGame) {
+    public ChessBoardPrinter(ChessGame chessGame) {
         this.chessGame = chessGame;
         out = new PrintStream(System.out,true, StandardCharsets.UTF_8);
     }
@@ -24,10 +24,12 @@ public class chessBoardPrinter {
 //        System.out.println("beginning printing :0");
 
         String headerText1 = SET_BG_COLOR_LIGHT_GREY+SET_TEXT_COLOR_BLACK+BUFFER+
-                "   H"+"  "+"G"+" \u2006\u2006\u2006"+"F"+"  "+"E"+" \u2006\u2006\u2006"+"D"+"  "+"C"+" \u2006\u2006\u2006\u2006"+"B"+" \u2006\u2006\u2008"+"A"+"  "+"\n";
+                "   H"+"  "+"G"+" \u2006\u2006\u2006"+"F"+"  "+"E"+" \u2006\u2006\u2006"+"D"+"  "
+                +"C"+" \u2006\u2006\u2006\u2006"+"B"+" \u2006\u2006\u2008"+"A"+"  "+"\n";
 
         String headerText2 = SET_BG_COLOR_LIGHT_GREY+SET_TEXT_COLOR_BLACK+BUFFER+
-                "   A"+"  "+"B"+" \u2006\u2006\u2006"+"C"+"  "+"D"+" \u2006\u2006\u2006"+"E"+"  "+"F"+" \u2006\u2006\u2006\u2006"+"G"+" \u2006\u2006\u2008"+"H"+"  "+"\n";
+                "   A"+"  "+"B"+" \u2006\u2006\u2006"+"C"+"  "+"D"+" \u2006\u2006\u2006"+"E"+"  "
+                +"F"+" \u2006\u2006\u2006\u2006"+"G"+" \u2006\u2006\u2008"+"H"+"  "+"\n";
 
         drawHeader(headerText1);
         drawBoard(chessGame, new int[]{1,2,3,4,5,6,7,8});
