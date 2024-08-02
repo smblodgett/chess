@@ -142,7 +142,7 @@ public class ServerFacade {
             else {
                 // System.out.println("ERROR: " + httpConnection.getResponseMessage()); see other methods for getting this message if you want
                 // Get the error stream containing the HTTP response body (if any)
-                System.out.println(SET_BG_COLOR_RED+SET_TEXT_COLOR_BLACK+"This game ,no."+gameID+", can't be joined..."+RESET_TEXT_COLOR);
+                System.out.println(SET_BG_COLOR_RED+SET_TEXT_COLOR_BLACK+"This game, no."+gameID+", can't be joined..."+RESET_TEXT_COLOR);
                 throw new RuntimeException("can't join");
 
             }

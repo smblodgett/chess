@@ -301,7 +301,7 @@ public class UserOI {
             var gameID = game.gameID();
             if (isDisplayed) {
                 System.out.println(DIVIDERS);
-                System.out.println(count + ":");
+                System.out.println(SET_TEXT_COLOR_GREEN+count+ ":");
                 System.out.println(SET_TEXT_COLOR_BLUE + "game name: " + name + "\nwhite is " + whiteName
                         + "\nblack is " + blackName + "\ngameid=" + gameID + RESET_TEXT_COLOR);
             }
