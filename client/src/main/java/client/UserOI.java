@@ -135,6 +135,7 @@ public class UserOI {
         System.out.println(DIVIDERS);
         System.out.println(SET_TEXT_COLOR_BLUE+"You're in! It's time to chess! (Type help if you're lost.)"+RESET_TEXT_COLOR);
         System.out.println(DIVIDERS);
+        listGames(false);
         boolean isLoggedInMenuGoing = true;
         Scanner scanner = new Scanner(System.in);
         while (isLoggedInMenuGoing) {
@@ -162,8 +163,9 @@ public class UserOI {
                 case "watch":
                 case "observe":
                     watchGame(commandInputs);
+                    break;
                 case "list":
-                    listGames();
+                    listGames(true);
                     break;
                 case "logout":
                     logout();
@@ -208,6 +210,7 @@ public class UserOI {
             }
             else {
                 System.out.println(SET_TEXT_COLOR_BLUE+"your game, \""+gameName+ "\", was created."+RESET_TEXT_COLOR);
+                gameKey.put(gameKey.size()+1,gameKey.size()+1);
             }
         }
     }
@@ -288,20 +291,23 @@ public class UserOI {
         }
     }
 
-    private void listGames() {
+    private void listGames(boolean isDisplayed) {
         String authToken = userAuth.authToken();
         var impureGameList = facade.listGames(authToken);
         var gameList = impureGameList.removeChessBoards();
+        gameKey.clear();
         int count = 1;
         for (var game : gameList){
             var name = game.gameName();
             var whiteName = game.whiteUsername();
             var blackName = game.blackUsername();
             var gameID = game.gameID();
-            System.out.println(DIVIDERS);
-            System.out.println(count+":");
-            System.out.println(SET_TEXT_COLOR_BLUE+"game name: "+name+ "\nwhite is "+ whiteName
-                    +"\nblack is "+blackName+"\ngameid="+gameID+RESET_TEXT_COLOR);
+            if (isDisplayed) {
+                System.out.println(DIVIDERS);
+                System.out.println(count + ":");
+                System.out.println(SET_TEXT_COLOR_BLUE + "game name: " + name + "\nwhite is " + whiteName
+                        + "\nblack is " + blackName + "\ngameid=" + gameID + RESET_TEXT_COLOR);
+            }
             gameKey.put(count,gameID);
             count++;
         }
