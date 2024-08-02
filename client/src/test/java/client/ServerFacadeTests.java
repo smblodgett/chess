@@ -45,12 +45,14 @@ public class ServerFacadeTests {
     }
 // somehow, I'm not able to pass when every case goes. but individual cases pass just fine.
 
-//    @Test
-//    void registerTwice() throws Exception {
-//        var authData = facade.register("player1", "password", "p1@email.com");
-//        var authData2 = facade.register("player1", "password", "p2@email.com");
-//        assertTrue();
-//    }
+    @Test
+    void registerTwice() throws Exception {
+        var authData = facade.register("player1", "password", "p1@email.com");
+        var authData2 = facade.register("player1", "password", "p2@email.com");
+        var id1 = facade.createGame("game1",authData.authToken());
+        assertThrows(NullPointerException.class,()->
+                facade.createGame("sdsdfsdf", authData2.authToken()));
+    }
 
     @Test
     void login() throws Exception {
