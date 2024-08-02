@@ -5,6 +5,7 @@ import model.AuthData;
 import model.GameData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -16,7 +17,7 @@ public class UserOI {
     public static ServerFacade facade;
     public static AuthData userAuth;
     public static final String DIVIDERS = "■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□";
-    public static Map<Integer,Integer> gameKey;
+    public static Map<Integer,Integer> gameKey = new HashMap<>();
 
     public UserOI(){
         facade = new ServerFacade(8080);
@@ -123,7 +124,6 @@ public class UserOI {
             userAuth = facade.login(username,password);
             if (userAuth == null){
                 System.out.println(SET_TEXT_COLOR_BLACK+"there was an error logging you in. maybe try again?"+RESET_TEXT_COLOR);
-                help();
             }
             else {
                 loggedInMenu();
@@ -202,7 +202,7 @@ public class UserOI {
                 System.out.println(SET_TEXT_COLOR_RED+"there was an error creating a game. try again?"+RESET_TEXT_COLOR);
             }
             else {
-                System.out.println(SET_TEXT_COLOR_BLUE+"your game "+gameName+ "was created."+RESET_TEXT_COLOR);
+                System.out.println(SET_TEXT_COLOR_BLUE+"your game, \""+gameName+ "\", was created."+RESET_TEXT_COLOR);
             }
         }
     }
@@ -243,12 +243,19 @@ public class UserOI {
                     helpLoggedIn();
                     break;
             }
-            int gameID = gameKey.get(gameListNumber);
-            String authToken = userAuth.authToken();
-            facade.joinGame(color,gameID,authToken);
-            ChessGame chessGame = new ChessGame(); // this will  probably be replaced?
-            var printer = new chessBoardPrinter(chessGame);
-            printer.drawEverything();
+            try {
+                int gameID = gameKey.get(gameListNumber);
+                String authToken = userAuth.authToken();
+                facade.joinGame(color,gameID,authToken);
+                ChessGame chessGame = new ChessGame(); // this will  probably be replaced?
+                var printer = new chessBoardPrinter(chessGame);
+                printer.drawEverything();
+            }
+            catch (NullPointerException ex) {
+                System.out.println(SET_TEXT_COLOR_BLUE+"you need to list a game to get its listing number first"+RESET_TEXT_COLOR);
+                helpLoggedIn();
+            }
+
         }
     }
 

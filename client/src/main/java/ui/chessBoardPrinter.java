@@ -22,7 +22,7 @@ public class chessBoardPrinter {
 
     public void drawEverything(){
         String headerText = SET_BG_COLOR_LIGHT_GREY+SET_TEXT_COLOR_BLACK+EMPTY+
-                "H"+EMPTY+"G"+EMPTY+"F"+EMPTY+"E"+EMPTY+"D"+EMPTY+"C"+EMPTY+"B"+"A"+EMPTY+"\n";
+                "H"+EMPTY+"G"+EMPTY+"F"+EMPTY+"E"+EMPTY+"D"+EMPTY+"C"+EMPTY+"B"+EMPTY+"A"+EMPTY+"\n";
 
         drawHeader(headerText);
         drawBoard(chessGame, new int[]{1,2,3,4,5,6,7,8});
