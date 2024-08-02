@@ -12,8 +12,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static ui.EscapeSequences.RESET_TEXT_COLOR;
-import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
+import static ui.EscapeSequences.*;
 
 public class ServerFacade {
 
@@ -108,12 +107,9 @@ public class ServerFacade {
             if (httpConnection.getResponseCode()==HttpURLConnection.HTTP_OK){
                 return 0;
             }
-            else {
-                System.out.println("ERROR: " + httpConnection.getResponseMessage());
-                // Get the error stream containing the HTTP response body (if any)
-                InputStream respBody = httpConnection.getErrorStream();
-                // Display the data returned from the server
-                System.out.println(respBody.toString());
+            else { // there was an error
+                // System.out.println("ERROR: " + httpConnection.getResponseMessage());InputStream respBody = httpConnection.getErrorStream();
+                //System.out.println(respBody.toString());
                 return -1;
             }
         }
@@ -144,11 +140,11 @@ public class ServerFacade {
                 System.out.println(SET_TEXT_COLOR_BLUE+"You've joined game no."+gameID+RESET_TEXT_COLOR);
             }
             else {
-                System.out.println("ERROR: " + httpConnection.getResponseMessage());
+                // System.out.println("ERROR: " + httpConnection.getResponseMessage()); see other methods for getting this message if you want
                 // Get the error stream containing the HTTP response body (if any)
-                InputStream respBody = httpConnection.getErrorStream();
-                // Display the data returned from the server
-                System.out.println(respBody.toString());
+                System.out.println(SET_BG_COLOR_RED+SET_TEXT_COLOR_BLACK+"This game ,no."+gameID+", can't be joined..."+RESET_TEXT_COLOR);
+                throw new RuntimeException("can't join");
+
             }
         }
         catch (Exception ex) {

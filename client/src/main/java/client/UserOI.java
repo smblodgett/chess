@@ -169,7 +169,6 @@ public class UserOI {
                 case "logout":
                     logout();
                     isLoggedInMenuGoing=false;
-                    help();
                     break;
                 case "clear":
                     clearData();
@@ -258,8 +257,7 @@ public class UserOI {
                 var printer = new ChessBoardPrinter(chessGame);
                 printer.drawEverything();
             }
-            catch (NullPointerException ex) {
-                System.out.println(SET_TEXT_COLOR_BLUE+"null error for some reason :/"+RESET_TEXT_COLOR);
+            catch (RuntimeException ex) {
                 helpLoggedIn();
             }
 

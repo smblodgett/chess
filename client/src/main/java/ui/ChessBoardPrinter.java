@@ -49,7 +49,7 @@ public class ChessBoardPrinter {
         for (var rowNumber : order){
             ChessPiece[] row = pieceGrid[rowNumber];
             out.print(SET_BG_COLOR_LIGHT_GREY +SET_TEXT_COLOR_BLACK+" "+rowNumber+BUFFER);
-            for (var colNumber : order){
+            for (var colNumber : orderReverser(order)){
                 ChessPiece piece = row[colNumber];
                 String pieceText = handlePiecePrint(piece);
                 out.print(getSquareColorBackground()+pieceText);
@@ -58,6 +58,16 @@ public class ChessBoardPrinter {
             out.print(SET_BG_COLOR_LIGHT_GREY+BUFFER+rowNumber+"\n"+RESET_TEXT_COLOR);
         }
         isWhiteToPrint=true;
+    }
+
+    private int[] orderReverser(int[] order){
+        int len = order.length;
+        var reversed = new int[order.length];
+        for (var item : order){
+            reversed[len-1] = item;
+            len--;
+        }
+        return reversed;
     }
 
     private String handlePiecePrint(ChessPiece piece){
