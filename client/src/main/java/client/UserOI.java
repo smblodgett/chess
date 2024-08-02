@@ -305,10 +305,10 @@ public class UserOI {
                 System.out.println(SET_TEXT_COLOR_BLUE + "game name: " + name + "\nwhite is " + whiteName
                         + "\nblack is " + blackName + "\ngameid=" + gameID + RESET_TEXT_COLOR);
             }
-            System.out.println(DIVIDERS);
             gameKey.put(count,gameID);
             count++;
         }
+        if (isDisplayed && !gameList.isEmpty()) {System.out.println(DIVIDERS);}
         if (gameList.isEmpty()){
             System.out.println(DIVIDERS);
             System.out.println(SET_TEXT_COLOR_BLUE+"There aren't any games made, yet. Maybe you should make one..."+RESET_TEXT_COLOR);
