@@ -21,8 +21,10 @@ public class chessBoardPrinter {
     }
 
     public void drawEverything(){
+        System.out.println("beginning printing :0");
+
         String headerText = SET_BG_COLOR_LIGHT_GREY+SET_TEXT_COLOR_BLACK+EMPTY+
-                "H"+EMPTY+"G"+EMPTY+"F"+EMPTY+"E"+EMPTY+"D"+EMPTY+"C"+EMPTY+"B"+EMPTY+"A"+EMPTY+"\n";
+                " H"+EMPTY+"G"+EMPTY+"F"+EMPTY+"E"+EMPTY+"D"+EMPTY+"C"+EMPTY+"B"+EMPTY+"A"+EMPTY+"\n";
 
         drawHeader(headerText);
         drawBoard(chessGame, new int[]{1,2,3,4,5,6,7,8});
@@ -41,16 +43,17 @@ public class chessBoardPrinter {
         ChessPiece[][] pieceGrid = chessGame.getBoard().getPieceGrid();
         for (var rowNumber : order){
             ChessPiece[] row=pieceGrid[rowNumber];
-            out.print(SET_BG_COLOR_LIGHT_GREY +rowNumber+EMPTY);
+            out.print(SET_BG_COLOR_LIGHT_GREY +" "+rowNumber+EMPTY);
             for (var piece : row){
                 String pieceText = handlePiecePrint(piece);
                 out.print(getSquareColorBackground()+pieceText);
             }
-            out.print(SET_BG_COLOR_LIGHT_GREY+EMPTY+rowNumber);
+            out.print(SET_BG_COLOR_LIGHT_GREY+EMPTY+rowNumber+"\n");
         }
     }
 
     private String handlePiecePrint(ChessPiece piece){
+        if (piece==null) {return EMPTY;}
         var color = piece.getTeamColor();
         var type = piece.getPieceType();
         if (color== ChessGame.TeamColor.WHITE) {

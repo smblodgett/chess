@@ -133,7 +133,7 @@ public class UserOI {
 
     private void loggedInMenu() {
         System.out.println(DIVIDERS);
-        System.out.println(SET_TEXT_COLOR_BLUE+"Logged in! It's time to chess! (Type help if you're lost.)"+RESET_TEXT_COLOR);
+        System.out.println(SET_TEXT_COLOR_BLUE+"You're in! It's time to chess! (Type help if you're lost.)"+RESET_TEXT_COLOR);
         System.out.println(DIVIDERS);
         boolean isLoggedInMenuGoing = true;
         Scanner scanner = new Scanner(System.in);
@@ -252,7 +252,7 @@ public class UserOI {
                 printer.drawEverything();
             }
             catch (NullPointerException ex) {
-                System.out.println(SET_TEXT_COLOR_BLUE+"you need to list a game to get its listing number first"+RESET_TEXT_COLOR);
+                System.out.println(SET_TEXT_COLOR_BLUE+"null error for some reason :/"+RESET_TEXT_COLOR);
                 helpLoggedIn();
             }
 
