@@ -3,30 +3,29 @@ package service;
 import dataaccess.DataAccessContainer;
 import dataaccess.DataAccessException;
 import model.GameData;
+import server.WebSocketSessionsManager;
 import websocket.commands.ConnectCommand;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 
+import org.eclipse.jetty.websocket.api.Session;
+
+
 public class WebSocketService {
 
-    private static DataAccessContainer data;
+    private WebSocketSessionsManager sessionsManager;
 
-    WebSocketService(DataAccessContainer dataAccessContainer) {
-        data=dataAccessContainer;
+    public WebSocketService(WebSocketSessionsManager sessionsManager) {
+        this.sessionsManager=sessionsManager;
     }
 
-    public void connect(ConnectCommand command){
+    public void connect(ConnectCommand command, Session session){
         int gameID = command.getGameID();
-        try {
-            GameData game = data.gameData.getGame(gameID);
-        }
-        catch (DataAccessException ex) { // perhaps needs to print if there isn't a game of that id
-            System.out.println(ex.getMessage());
-        }
-        data.gameData.updateGamePlayer(, );
+        sessionsManager.addSessionToGame(gameID,session);
+
     }
 
-    public void makeMove(MakeMoveCommand command){
+    public void makeMove(MakeMoveCommand command, Session session){
 
     }
 

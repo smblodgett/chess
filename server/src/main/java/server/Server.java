@@ -35,7 +35,7 @@ public class Server {
         var sessionManager = new WebSocketSessionsManager();
 
         // websocket
-        Spark.webSocket("/ws",new WebSocketHandler(services.webSocketService,sessionManager));
+        Spark.webSocket("/ws",new WebSocketHandler(sessionManager,dataContainer));
 
 
         // list game
