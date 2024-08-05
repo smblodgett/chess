@@ -6,6 +6,7 @@ import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
+
 import javax.websocket.*;
 import java.net.URI;
 import java.util.Scanner;
@@ -52,15 +53,15 @@ public class WSClient extends Endpoint {
     }
 
     private void handleLoadGame(LoadGameMessage message){
-
+        UserOI.currentGame = message.getChessGame();
     }
 
     private void handleError(ErrorMessage message){
-
+        System.out.println(message.getMessage());
     }
 
     private void handleNotification(NotificationMessage message){
-
+        System.out.println(message.getMessage());
     }
 
     public void send(String msg) throws Exception {

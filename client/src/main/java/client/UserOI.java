@@ -21,10 +21,11 @@ public class UserOI {
     public static final String DIVIDERS = "■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□";
     public static Map<Integer,Integer> gameKey = new HashMap<>();
     public static WSFacade WSFacade;
+    public static ChessGame currentGame = null;
 
     public UserOI(){
         facade = new ServerFacade(8080);
-        WSFacade = new WSFacade("localhost:8080", new ServerMessageHandler()
+        WSFacade = new WSFacade("localhost:8080", new ServerMessageHandler());
     }
 
     public void run(){
