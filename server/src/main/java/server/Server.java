@@ -32,6 +32,11 @@ public class Server {
         var dataContainer = new DataAccessContainer(authData, gameData, userData);
         var services = new ServiceContainer(dataContainer); // make handler/service reference data statically
         this.addServices(services);
+        var sessionManager = new WebSocketSessionsManager();
+
+        // websocket
+        Spark.webSocket("/ws",new WebSocketHandler(services.webSocketService,sessionManager));
+
 
         // list game
         Spark.get("/game",new ListGameHandler(services.listService));

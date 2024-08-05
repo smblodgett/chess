@@ -13,6 +13,7 @@ public class ServiceContainer {
     public final LoginService loginService;
     public final LogoutService logoutService;
     public final RegisterService registerService;
+    public final WebSocketService webSocketService;
 
     public ServiceContainer(DataAccessContainer dataAccessContainer) {
         this.createService = new CreateGameService(dataAccessContainer);
@@ -22,6 +23,7 @@ public class ServiceContainer {
         this.loginService = new LoginService(dataAccessContainer);
         this.logoutService = new LogoutService(dataAccessContainer);
         this.registerService = new RegisterService(dataAccessContainer);
+        this.webSocketService = new WebSocketService(dataAccessContainer);
 
         // Initialize other services here
     }
