@@ -30,21 +30,6 @@ public class WebSocketHandler {
         this.data=data;
     }
 
-    @OnWebSocketConnect
-    public void onConnect(Session session){
-
-    }
-
-    @OnWebSocketClose
-    public void onClose(Session session){
-
-    }
-
-    @OnWebSocketError
-    public void onError(Session session){
-
-    }
-
     @OnWebSocketMessage
     public void onMessage(Session session, String message){
         try {
@@ -59,9 +44,10 @@ public class WebSocketHandler {
                     String username = data.authData.getAuth(authToken).username();
                     var messageToSendToClient = String.format("%s has joined the game", username);
                     var notification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, messageToSendToClient);
-                    sessionsManager.broadcast(username, notification,session);
+                    sessionsManager.broadcast(username,notification,session);
                     break;
-                case MAKE_MOVE -> service.makeMove((MakeMoveCommand) messageAsJavaObject, session);
+                case MAKE_MOVE:
+                    service.makeMove((MakeMoveCommand) messageAsJavaObject, session);
             }
 
             if (command == CONNECT) {

@@ -1,6 +1,9 @@
 package client;
 
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import model.AuthData;
 
 import java.util.ArrayList;
@@ -17,9 +20,11 @@ public class UserOI {
     public static AuthData userAuth;
     public static final String DIVIDERS = "■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□";
     public static Map<Integer,Integer> gameKey = new HashMap<>();
+    public static WSFacade WSFacade;
 
     public UserOI(){
         facade = new ServerFacade(8080);
+        WSFacade = new WSFacade("localhost:8080", new ServerMessageHandler()
     }
 
     public void run(){
@@ -253,14 +258,15 @@ public class UserOI {
                 int gameID = gameKey.get(gameListNumber);
                 String authToken = userAuth.authToken();
                 facade.joinGame(color,gameID,authToken);
+                WSFacade.connectToGame(authToken,gameID);
                 ChessGame chessGame = new ChessGame(); // this will  probably be replaced?
-                var printer = new ChessBoardPrinter(chessGame);
+                var printer = new ChessBoardPrinter(chessGame,color);
                 printer.drawEverything();
+                inGameMenu(chessGame,authToken,gameID,color);
             }
             catch (RuntimeException ex) {
                 helpLoggedIn();
             }
-
         }
     }
 
@@ -279,7 +285,7 @@ public class UserOI {
         }
         try {
             ChessGame chessGame = new ChessGame(); // this will  probably be replaced with real game data
-            var printer = new ChessBoardPrinter(chessGame);
+            var printer = new ChessBoardPrinter(chessGame, ChessGame.TeamColor.WHITE);
             printer.drawEverything();
         }
         catch (NullPointerException ex) {
@@ -341,5 +347,172 @@ public class UserOI {
             System.out.println("!!!!!!!!");
         }
     }
+
+    private void inGameMenu(ChessGame game, String authToken, int gameID, ChessGame.TeamColor color) {
+        System.out.println(DIVIDERS);
+        System.out.println(SET_TEXT_COLOR_BLUE+"You've joined the game! (Type help if you're lost.)"+RESET_TEXT_COLOR);
+        System.out.println(DIVIDERS);
+        boolean isInGameMenuGoing = true;
+        Scanner scanner = new Scanner(System.in);
+        while (isInGameMenuGoing) {
+            String command = scanner.nextLine();
+
+            Scanner lineScanner = new Scanner(command);  // Create a new scanner for the line
+            ArrayList<String> commandInputs = new ArrayList<>();
+            while (lineScanner.hasNext()) {
+                String word = lineScanner.next();  // Read one word at a time
+                commandInputs.add(word);  // Process the word
+            }
+            lineScanner.close();
+
+            switch (commandInputs.get(0)){
+                case "help":
+                    helpInGame();
+                    break;
+                case "draw":
+                case "redraw":
+                    redraw(game);
+                    break;
+                case "leave":
+                    isInGameMenuGoing=false;
+                    leaveGame(authToken,gameID);
+                    break;
+                case "move":
+                    makeMove(commandInputs,game,authToken,gameID);
+                    break;
+                case "highlight":
+                    highlightLegalMoves(commandInputs,game,color);
+                    break;
+                case "resign":
+                    resign(game, authToken,gameID, color);
+                    break;
+                default:
+                    badInputAction();
+                    break;
+            }
+        }
+    }
+
+    private void helpInGame() {
+        System.out.println(SET_BG_COLOR_LIGHT_GREY+DIVIDERS);
+        System.out.println(SET_TEXT_COLOR_BLUE+"♞ options ♞"+RESET_TEXT_COLOR);
+        System.out.println(SET_TEXT_COLOR_GREEN+"draw "+RESET_TEXT_COLOR+"- redraw the current game");
+        System.out.println(SET_TEXT_COLOR_GREEN+"move <initial location> <final location> "+RESET_TEXT_COLOR+"- move a chess piece");
+        System.out.println(SET_TEXT_COLOR_GREEN+"highlight <location> "+RESET_TEXT_COLOR+"- highlight all legal moves from this location");
+        System.out.println(SET_TEXT_COLOR_GREEN+"resign "+RESET_TEXT_COLOR+"- resign this game");
+        System.out.println(SET_TEXT_COLOR_GREEN+"leave "+RESET_TEXT_COLOR+"- leave this game");
+        System.out.println(DIVIDERS);
+    }
+
+    private void redraw(ChessGame game) {
+        var printer = new ChessBoardPrinter(game, ChessGame.TeamColor.WHITE);
+        printer.drawEverything();
+    }
+
+    private void leaveGame(String authToken, int gameID){
+        WSFacade.leaveGame(authToken,gameID);
+    }
+
+    private void makeMove(ArrayList<String> commandInputs,ChessGame game,String authToken,int gameID ){
+        if (commandInputs.size()!=3){ // maybe need to add promotion functionality
+            System.out.println(SET_TEXT_COLOR_BLUE+"wrong number of inputs!"+RESET_TEXT_COLOR);
+            helpInGame();
+        }
+        String initialPositionString = commandInputs.get(1);
+        String finalPositionString = commandInputs.get(2);
+        try {
+            int rowInit = getRowFromString(initialPositionString.substring(1));
+            int colInit = getColumnFromLetter(initialPositionString.charAt(0));
+            ChessPosition initialPosition = new ChessPosition(rowInit,colInit);
+
+            int rowFin = getRowFromString(finalPositionString.substring(1));
+            int colFin = getColumnFromLetter(finalPositionString.charAt(0));
+            ChessPosition finalPosition = new ChessPosition(rowFin,colFin);
+
+            ChessPiece.PieceType promotionPieceType=null;
+            if (game.getBoard().getPiece(initialPosition).getPieceType()== ChessPiece.PieceType.PAWN
+                && finalPosition.getRow()==8){
+                System.out.println("what piece do you want to promote to?");
+                Scanner scanner = new Scanner(System.in);
+                String promotionPieceString = scanner.nextLine();
+                scanner.close();
+                promotionPieceType = getPieceTypeFromString(promotionPieceString);
+            }
+            ChessMove move = new ChessMove(initialPosition,finalPosition,promotionPieceType);
+            WSFacade.makeMove(authToken,gameID,move);
+        }
+        catch (IllegalArgumentException ex) {
+            System.out.println(SET_TEXT_COLOR_BLUE+"you didn't input your move right!"+RESET_TEXT_COLOR);
+        }
+    }
+
+    private ChessPiece.PieceType getPieceTypeFromString(String promotionPieceString) throws IllegalArgumentException{
+        return switch (promotionPieceString){
+            case "knight","Knight","KNIGHT","n","N"-> ChessPiece.PieceType.KNIGHT;
+            case "bishop", "Bishop","BISHOP","b","B" -> ChessPiece.PieceType.BISHOP;
+            case "rook","Rook","ROOK","r","R" -> ChessPiece.PieceType.ROOK;
+            case "queen","Queen","QUEEN","q","Q" -> ChessPiece.PieceType.QUEEN;
+            default -> throw new IllegalArgumentException("you can't promote to that!");
+        };
+    }
+
+    private int getColumnFromLetter(char l) throws IllegalArgumentException {
+        return switch (l){
+            case 'a', 'A' -> 1;
+            case 'b', 'B' -> 2;
+            case 'c', 'C' -> 3;
+            case 'd', 'D' -> 4;
+            case 'e', 'E' -> 5;
+            case 'f', 'F' -> 6;
+            case 'g', 'G' -> 7;
+            case 'h', 'H' -> 8;
+            default -> throw new IllegalArgumentException("Invalid column letter: " + l);
+        };
+    }
+    private int getRowFromString(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid row number: " + s, e);
+        }
+    }
+
+
+    private void highlightLegalMoves(ArrayList<String> commandInputs, ChessGame game, ChessGame.TeamColor myColor) {
+        if (commandInputs.size()!=2){ // maybe need to add promotion functionality
+            System.out.println(SET_TEXT_COLOR_BLUE+"wrong number of inputs!"+RESET_TEXT_COLOR);
+            helpInGame();
+        }
+        String highlightPositionString = commandInputs.get(1);
+
+        try {
+            int row = getRowFromString(highlightPositionString.substring(1));
+            int col = getColumnFromLetter(highlightPositionString.charAt(0));
+            ChessPosition highlightPosition = new ChessPosition(row,col);
+            var printer = new ChessBoardPrinter(game, myColor);
+            printer.highlightedBoard(highlightPosition);
+        }
+        catch (IllegalArgumentException ex) {
+            System.out.println(SET_TEXT_COLOR_BLUE+"you didn't input your move right!"+RESET_TEXT_COLOR);
+        }
+    }
+
+
+    private void resign (ChessGame game, String authToken, int gameID, ChessGame.TeamColor color) {
+        System.out.println("are you sure you want to resign? you'll lose instantly");
+        Scanner scanner = new Scanner(System.in);
+        String resignPrompt = scanner.nextLine();
+        scanner.close();
+        boolean isResign;
+        switch (resignPrompt){
+            case "yes","YES","y","Y"->isResign=true;
+            default -> isResign=false;
+        }
+        if (!isResign){inGameMenu(game,authToken,gameID,color);}
+        WSFacade.resign(authToken,gameID);
+    }
+
+
+
 
 }

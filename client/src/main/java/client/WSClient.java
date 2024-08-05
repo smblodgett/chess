@@ -1,8 +1,12 @@
 package client;
 
-import javax.websocket.Endpoint;
-import javax.websocket.EndpointConfig;
-import javax.websocket.Session;
+import com.google.gson.Gson;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
+import websocket.messages.ServerMessage;
+
+import javax.websocket.*;
 import java.net.URI;
 import java.util.Scanner;
 
@@ -29,8 +33,34 @@ public class WSClient extends Endpoint {
         this.session.addMessageHandler(new MessageHandler.Whole<String>() {
             public void onMessage(String message) {
                 System.out.println(message);
+                Gson gson = new Gson();
+                var serverMessage = gson.fromJson(message, ServerMessage.class);
+                switch(serverMessage.getServerMessageType()){
+                    case LOAD_GAME:
+                        handleLoadGame(new Gson().fromJson(message,LoadGameMessage.class));
+                        break;
+                    case ERROR:
+                        handleError(new Gson().fromJson(message,ErrorMessage.class));
+                        break;
+                    case NOTIFICATION:
+                        handleNotification(new Gson().fromJson(message,NotificationMessage.class));
+                        break;
+                    default:
+                }
             }
         });
+    }
+
+    private void handleLoadGame(LoadGameMessage message){
+
+    }
+
+    private void handleError(ErrorMessage message){
+
+    }
+
+    private void handleNotification(NotificationMessage message){
+
     }
 
     public void send(String msg) throws Exception {

@@ -29,6 +29,8 @@ public class ServerMessage {
         return this.Type;
     }
 
+    public String getMessage() {return message;}
+
     public String toString() {
         return new Gson().toJson(this);
     }
