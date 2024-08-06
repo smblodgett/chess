@@ -12,6 +12,7 @@ import service.WebSocketService;
 import websocket.commands.ConnectCommand;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
@@ -49,12 +50,13 @@ public class WebSocketHandler {
                         if (connectCommand.getColor()== ChessGame.TeamColor.WHITE){colorMessage = "white";}
                         if (connectCommand.getColor()== ChessGame.TeamColor.BLACK){colorMessage = "black";}
                         var messageToSendToClient = String.format("%s has joined the game as"+colorMessage, username); // needs to say as player or observer
-                        var notification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, messageToSendToClient);
+                        var notification = new NotificationMessage(NotificationMessage.ServerMessageType.NOTIFICATION, messageToSendToClient);
                         sessionsManager.broadcast(username,notification,session);
+
                     }
                     else {
                         var messageToSendToClient = String.format("%s is observing the game ", username); // needs to say as player or observer
-                        var notification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, messageToSendToClient);
+                        var notification = new NotificationMessage(NotificationMessage.ServerMessageType.NOTIFICATION, messageToSendToClient);
                         sessionsManager.broadcast(username,notification,session);
                     }
                     break;
