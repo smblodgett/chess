@@ -366,12 +366,13 @@ public class UserOI {
         if (color== ChessGame.TeamColor.WHITE) {colorString = SET_TEXT_COLOR_WHITE + "WHITE";}
         else {colorString = SET_TEXT_COLOR_BLACK + "BLACK";}
         System.out.println(DIVIDERS);
-        System.out.println(SET_TEXT_COLOR_BLUE+"You've joined game no."+gameID+" as "+colorString+RESET_TEXT_COLOR);
+        System.out.println(SET_TEXT_COLOR_BLUE+"You've joined game no."+gameID+" as "+colorString+SET_TEXT_COLOR_BLUE+"(type help for more options)"+RESET_TEXT_COLOR);
         System.out.println(DIVIDERS);
 
         ChessGame game = currentGame; // this will  probably be replaced?
         var printer = new ChessBoardPrinter(game,color);
         printer.drawEverything();
+
 
         boolean isInGameMenuGoing = true;
         Scanner scanner = new Scanner(System.in);

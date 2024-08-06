@@ -23,6 +23,7 @@ public class WSFacade extends Endpoint {
     NotificationHandler notificationHandler;
     ErrorHandler errorHandler;
     LoadGameMessageHandler loadGameHandler;
+    public boolean isOnMessage = false;
 
 
     public WSFacade(String url, NotificationHandler notificationHandler, ErrorHandler errorHandler, LoadGameMessageHandler loadGameHandler)  {
@@ -40,6 +41,7 @@ public class WSFacade extends Endpoint {
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
+                    isOnMessage=true;
                     handleMessage(message);
                 }
             });
@@ -81,6 +83,14 @@ public class WSFacade extends Endpoint {
         } catch (IOException ex) {
             System.out.println("problem with connect to game in WSFacade");
         }
+    }
+
+    public boolean getIsOnMessage() {
+        return isOnMessage;
+    }
+
+    public void setIsOnMessage(boolean bool){
+        isOnMessage=bool;
     }
 
     public void makeMove(String authToken, int gameID, ChessMove move)  {
