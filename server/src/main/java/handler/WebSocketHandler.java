@@ -83,7 +83,7 @@ public class WebSocketHandler {
                         broadcast(moveNotification,session,gameID);
                     }
                     catch (BadRequestException ex){
-                        ErrorMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR,"that move is illegal");
+                        ErrorMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR,"that move is illegal. try again.");
                         send(session,new Gson().toJson(errorMessage,ErrorMessage.class));
                     }
                     break;
@@ -91,15 +91,15 @@ public class WebSocketHandler {
                     var leaveCommand = new Gson().fromJson(message, LeaveCommand.class);
                     try {
                         service.leaveGame(leaveCommand,data);
-                        send(session,new Gson().toJson(new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,"you left the game!")));
+                        send(session,new Gson().toJson(new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,"you left the game!"),NotificationMessage.class));
                         var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,leaveCommand.username+" left the game!");
                         broadcast(notification,session,gameID);
                     }
                     catch (DataAccessException ex) {
-                        send(session,new Gson().toJson(new ErrorMessage(ServerMessage.ServerMessageType.ERROR,"there was a problem with the database")));
+                        send(session,new Gson().toJson(new ErrorMessage(ServerMessage.ServerMessageType.ERROR,"there was a problem with the database"),ErrorMessage.class));
                     }
                     catch (UnauthorizedException ex) {
-                        send(session,new Gson().toJson(new ErrorMessage(ServerMessage.ServerMessageType.ERROR,"you aren't allowed to access that game!")));
+                        send(session,new Gson().toJson(new ErrorMessage(ServerMessage.ServerMessageType.ERROR,"you aren't allowed to access that game!"),ErrorMessage.class));
                     }
                     break;
                 case RESIGN:

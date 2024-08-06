@@ -362,8 +362,9 @@ public class UserOI {
 
     private void inGameMenu(String authToken, int gameID, ChessGame.TeamColor color) {
 
+        if (currentGame!=null) System.out.println(currentGame.toString());
         waitForUpdate();
-
+        System.out.println(currentGame.toString());
         String colorString;
         if (color== ChessGame.TeamColor.WHITE) {colorString = SET_TEXT_COLOR_WHITE + "WHITE";}
         else {colorString = SET_TEXT_COLOR_BLACK + "BLACK";}
@@ -383,7 +384,7 @@ public class UserOI {
         Scanner scanner = new Scanner(System.in);
         while (isInGameMenuGoing) {
 
-            if (game!=currentGame){
+            if (game!=currentGame && currentGame!=null){
                 game=currentGame;
             }
 
@@ -408,6 +409,8 @@ public class UserOI {
                 case "leave":
                     isInGameMenuGoing=false;
                     leaveGame(authToken,gameID,username);
+                    System.out.println("HEYYAYAYAYAY");
+                    helpLoggedIn();
                     break;
                 case "move":
                     makeMove(commandInputs,game,authToken,gameID);
@@ -434,6 +437,7 @@ public class UserOI {
                 System.out.println("interrupted!");
             }
         }
+        System.out.println("okay, we got something from WSFacade");
     }
 
     private void helpInGame() {
@@ -456,6 +460,7 @@ public class UserOI {
         WSFacade.leaveGame(authToken,gameID,username);
         waitForUpdate();
         WSFacade.setIsOnMessage(false);
+        currentGame=null;
     }
 
     private void makeMove(ArrayList<String> commandInputs,ChessGame game,String authToken,int gameID ){
