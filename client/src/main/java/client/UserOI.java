@@ -409,7 +409,6 @@ public class UserOI {
                 case "leave":
                     isInGameMenuGoing=false;
                     leaveGame(authToken,gameID,username);
-                    System.out.println("HEYYAYAYAYAY");
                     helpLoggedIn();
                     break;
                 case "move":

@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class GameSQLDAO implements GameDAO {
 
@@ -145,16 +146,40 @@ public class GameSQLDAO implements GameDAO {
 
     public void removePlayer(int gameID, String username) throws DataAccessException{
         boolean isBlackToRemove=false;
+
         try (var conn = DatabaseManager.getConnection()) {
-            try {
-                var statement = "UPDATE gameDatatable SET whiteUsername = ? WHERE gameID = ?";
-                var preparedStatement = conn.prepareStatement(statement);
-                preparedStatement.setInt(2, gameID);
-                preparedStatement.setString(1, null);
-                var id = preparedStatement.executeUpdate();
-                isBlackToRemove=true;
+            var statement = "SELECT whiteUsername, blackUsername FROM gameDatatable WHERE gameID = ?";
+            var preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setInt(1,gameID);
+            var resultSet = preparedStatement.executeQuery();
+            if (resultSet.isBeforeFirst()) {
+                String whiteUsername = "";
+                String blackUsername = "";
+                while (resultSet.next()) {
+                    whiteUsername = resultSet.getString("whiteUsername");
+                    blackUsername = resultSet.getString("blackUsername");
+                }
+//                if (Objects.equals(username, whiteUsername)){ only if need to remove both black and white as same player
+//                }
+                if (Objects.equals(username, blackUsername)){isBlackToRemove=true;}
+                else {throw new DataAccessException("no such user to remove!");}
             }
-            catch (SQLException ignore){
+        }
+        catch (SQLException ex) {
+            throw new DataAccessException("error with removePlayer: first part");
+        }
+
+        try (var conn = DatabaseManager.getConnection()) {
+            if (!isBlackToRemove){
+                try {
+                    var statement = "UPDATE gameDatatable SET whiteUsername = ? WHERE gameID = ?";
+                    var preparedStatement = conn.prepareStatement(statement);
+                    preparedStatement.setInt(2, gameID);
+                    preparedStatement.setString(1, null);
+                    var id = preparedStatement.executeUpdate();
+                }
+                catch (SQLException ignore) {
+                    }
             }
             if (isBlackToRemove){
                 try {
