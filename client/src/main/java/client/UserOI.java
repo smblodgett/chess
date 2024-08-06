@@ -362,21 +362,29 @@ public class UserOI {
 
     private void inGameMenu(String authToken, int gameID, ChessGame.TeamColor color) {
 
+        waitForUpdate();
+
         String colorString;
         if (color== ChessGame.TeamColor.WHITE) {colorString = SET_TEXT_COLOR_WHITE + "WHITE";}
         else {colorString = SET_TEXT_COLOR_BLACK + "BLACK";}
         System.out.println(DIVIDERS);
-        System.out.println(SET_TEXT_COLOR_BLUE+"You've joined game no."+gameID+" as "+colorString+SET_TEXT_COLOR_BLUE+"(type help for more options)"+RESET_TEXT_COLOR);
+        System.out.println(SET_TEXT_COLOR_BLUE+"You've joined game no."+gameID+" as "+colorString+SET_TEXT_COLOR_BLUE+" (type help for more options)"+RESET_TEXT_COLOR);
         System.out.println(DIVIDERS);
 
         ChessGame game = currentGame; // this will  probably be replaced?
         var printer = new ChessBoardPrinter(game,color);
         printer.drawEverything();
 
+        WSFacade.setIsOnMessage(false);
 
         boolean isInGameMenuGoing = true;
         Scanner scanner = new Scanner(System.in);
         while (isInGameMenuGoing) {
+
+            if (game!=currentGame){
+                game=currentGame;
+            }
+
             String command = scanner.nextLine();
 
             Scanner lineScanner = new Scanner(command);  // Create a new scanner for the line
@@ -411,6 +419,17 @@ public class UserOI {
                 default:
                     badInputAction();
                     break;
+            }
+        }
+    }
+
+    private void waitForUpdate(){
+        while (!WSFacade.getIsOnMessage()) {
+            try {
+                Thread.sleep(100);
+            }
+            catch(InterruptedException ex){
+                System.out.println("interrupted!");
             }
         }
     }
@@ -462,6 +481,8 @@ public class UserOI {
             }
             ChessMove move = new ChessMove(initialPosition,finalPosition,promotionPieceType);
             WSFacade.makeMove(authToken,gameID,move);
+            waitForUpdate();
+            WSFacade.setIsOnMessage(false);
         }
         catch (IllegalArgumentException ex) {
             System.out.println(SET_TEXT_COLOR_BLUE+"you didn't input your move right!"+RESET_TEXT_COLOR);

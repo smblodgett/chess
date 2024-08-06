@@ -97,7 +97,6 @@ public class WSFacade extends Endpoint {
         try {
             var action = new MakeMoveCommand(MakeMoveCommand.CommandType.MAKE_MOVE, authToken, gameID, move);
             this.session.getBasicRemote().sendText(new Gson().toJson(action));
-            this.session.close();
         } catch (IOException ex) {
             System.out.println("something wrong with make move in WSFacade");
         }
