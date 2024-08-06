@@ -6,7 +6,7 @@ public class ConnectCommand extends UserGameCommand {
 
     ChessGame.TeamColor color;
     public ConnectCommand(CommandType commandType, String authToken, Integer gameID, ChessGame.TeamColor color) {
-        super(commandType, authToken, gameID);
+        super(commandType, authToken, gameID,null);
         this.color=color;
     }
 

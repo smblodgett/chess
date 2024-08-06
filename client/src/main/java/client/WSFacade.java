@@ -7,6 +7,9 @@ import com.google.gson.Gson;
 import websocket.commands.ConnectCommand;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import javax.websocket.*;
@@ -17,14 +20,18 @@ import java.net.URISyntaxException;
 public class WSFacade extends Endpoint {
 
     Session session;
-    ServerMessageHandler serverMessageHandler;
+    NotificationHandler notificationHandler;
+    ErrorHandler errorHandler;
+    LoadGameMessageHandler loadGameHandler;
 
 
-    public WSFacade(String url, ServerMessageHandler serverMessageHandler)  {
+    public WSFacade(String url, NotificationHandler notificationHandler, ErrorHandler errorHandler, LoadGameMessageHandler loadGameHandler)  {
         try {
             url = url.replace("http", "ws");
             URI socketURI = new URI(url + "/ws");
-            this.serverMessageHandler = serverMessageHandler;
+            this.notificationHandler = notificationHandler;
+            this.errorHandler = errorHandler;
+            this.loadGameHandler = loadGameHandler;
 
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, socketURI);
@@ -34,7 +41,22 @@ public class WSFacade extends Endpoint {
                 @Override
                 public void onMessage(String message) {
                     ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
-                    serverMessageHandler.notify(serverMessage);
+                    switch (serverMessage.getServerMessageType()){
+                        case LOAD_GAME:
+                            LoadGameMessage loadGameMessage = new Gson().fromJson(message, LoadGameMessage.class);
+                            loadGameHandler.notify(loadGameMessage);
+                            break;
+                        case NOTIFICATION:
+                            NotificationMessage notificationMessage = new Gson().fromJson(message, NotificationMessage.class);
+                            notificationHandler.notify(notificationMessage);
+                            break;
+                        case ERROR:
+                            ErrorMessage errorMessage = new Gson().fromJson(message, ErrorMessage.class);
+                            errorHandler.notify(errorMessage);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             });
         }  catch (URISyntaxException | DeploymentException | IOException ex) {
@@ -68,7 +90,7 @@ public class WSFacade extends Endpoint {
 
     public void leaveGame(String authToken, int gameID) {
         try {
-            var action = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
+            var action = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID,null);
             this.session.getBasicRemote().sendText(new Gson().toJson(action));
             this.session.close();
         } catch (IOException e) {
@@ -78,7 +100,7 @@ public class WSFacade extends Endpoint {
 
     public void resign(String authToken, int gameID) {
         try {
-            var action = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
+            var action = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID,null);
             this.session.getBasicRemote().sendText(new Gson().toJson(action));
             this.session.close();
         } catch (IOException e) {

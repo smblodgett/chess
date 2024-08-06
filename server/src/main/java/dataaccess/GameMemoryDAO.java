@@ -67,4 +67,9 @@ public class GameMemoryDAO implements GameDAO {
     public void deleteGame(int gameID){
         gameDatabase.removeIf(game -> game.gameID() == gameID);
     }
+
+    @Override
+    public void updateGame(int gameID, ChessGame newGame) throws DataAccessException {
+
+    }
 }

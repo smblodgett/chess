@@ -4,6 +4,7 @@ import dataaccess.DataAccessContainer;
 import dataaccess.DataAccessException;
 import exception.AlreadyTakenException;
 import exception.BadRequestException;
+import server.WebSocketSessionsManager;
 
 public class ServiceContainer {
     public final ClearDataService clearService;
@@ -15,7 +16,7 @@ public class ServiceContainer {
     public final RegisterService registerService;
     public final WebSocketService webSocketService;
 
-    public ServiceContainer(DataAccessContainer dataAccessContainer) {
+    public ServiceContainer(DataAccessContainer dataAccessContainer, WebSocketSessionsManager webSocketManager) {
         this.createService = new CreateGameService(dataAccessContainer);
         this.clearService = new ClearDataService(dataAccessContainer);
         this.joinService = new JoinGameService(dataAccessContainer);
@@ -23,7 +24,7 @@ public class ServiceContainer {
         this.loginService = new LoginService(dataAccessContainer);
         this.logoutService = new LogoutService(dataAccessContainer);
         this.registerService = new RegisterService(dataAccessContainer);
-        this.webSocketService = new WebSocketService(dataAccessContainer);
+        this.webSocketService = new WebSocketService(webSocketManager);
 
         // Initialize other services here
     }

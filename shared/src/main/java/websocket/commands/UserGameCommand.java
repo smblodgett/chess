@@ -18,13 +18,8 @@ public class UserGameCommand {
 
     private final Integer gameID;
 
-    private final ChessMove move;
+    public final ChessMove move;
 
-    public UserGameCommand(CommandType commandType, String authToken, Integer gameID) {
-        this.commandType = commandType;
-        this.authToken = authToken;
-        this.gameID = gameID;
-    }
 
     public UserGameCommand(CommandType commandType, String authToken, Integer gameID, ChessMove move) {
         this.commandType = commandType;
@@ -62,12 +57,12 @@ public class UserGameCommand {
         }
         UserGameCommand that = (UserGameCommand) o;
         return getCommandType() == that.getCommandType() &&
-                Objects.equals(getAuthString(), that.getAuthString()) &&
+                Objects.equals(getAuthToken(), that.getAuthToken()) &&
                 Objects.equals(getGameID(), that.getGameID());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getCommandType(), getAuthString(), getGameID());
+        return Objects.hash(getCommandType(), getAuthToken(), getGameID());
     }
 }

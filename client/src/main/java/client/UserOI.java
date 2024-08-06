@@ -25,7 +25,7 @@ public class UserOI {
 
     public UserOI(){
         facade = new ServerFacade(8080);
-        WSFacade = new WSFacade("localhost:8080", new ServerMessageHandler());
+        WSFacade = new WSFacade("http://localhost:8080", new NotificationHandler(), new ErrorHandler(),new LoadGameMessageHandler());
     }
 
     public void run(){
