@@ -1,8 +1,10 @@
 package client;
 
 
+import chess.ChessGame;
 import chess.ChessMove;
 import com.google.gson.Gson;
+import websocket.commands.ConnectCommand;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
@@ -45,9 +47,9 @@ public class WSFacade extends Endpoint {
     public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
 
-    public void connectToGame(String authToken,int gameID)  {
+    public void connectToGame(String authToken, int gameID, ChessGame.TeamColor color)  {
         try {
-            var action = new UserGameCommand(UserGameCommand.CommandType.CONNECT,authToken,gameID);
+            var action = new ConnectCommand(ConnectCommand.CommandType.CONNECT,authToken,gameID,color);
             this.session.getBasicRemote().sendText(new Gson().toJson(action));
         } catch (IOException ex) {
             System.out.println("problem with connect to game in WSFacade");

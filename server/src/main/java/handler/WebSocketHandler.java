@@ -1,5 +1,6 @@
 package handler;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import dataaccess.DataAccessContainer;
 import dataaccess.DataAccessException;
@@ -40,14 +41,26 @@ public class WebSocketHandler {
 
             switch (command) {
                 case CONNECT:
-                    service.connect((ConnectCommand) messageAsJavaObject, session);
+                    var connectCommand = new Gson().fromJson(message,ConnectCommand.class);
+                    service.connect(connectCommand, session);
                     String username = data.authData.getAuth(authToken).username();
-                    var messageToSendToClient = String.format("%s has joined the game", username);
-                    var notification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, messageToSendToClient);
-                    sessionsManager.broadcast(username,notification,session);
+                    String colorMessage ="";
+                    if (connectCommand.getColor()!=null){
+                        if (connectCommand.getColor()== ChessGame.TeamColor.WHITE){colorMessage = "white";}
+                        if (connectCommand.getColor()== ChessGame.TeamColor.BLACK){colorMessage = "black";}
+                        var messageToSendToClient = String.format("%s has joined the game as"+colorMessage, username); // needs to say as player or observer
+                        var notification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, messageToSendToClient);
+                        sessionsManager.broadcast(username,notification,session);
+                    }
+                    else {
+                        var messageToSendToClient = String.format("%s is observing the game ", username); // needs to say as player or observer
+                        var notification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, messageToSendToClient);
+                        sessionsManager.broadcast(username,notification,session);
+                    }
                     break;
                 case MAKE_MOVE:
                     service.makeMove((MakeMoveCommand) messageAsJavaObject, session);
+
             }
 
             if (command == CONNECT) {
