@@ -377,6 +377,8 @@ public class UserOI {
 
         WSFacade.setIsOnMessage(false);
 
+        String username = userAuth.username();
+
         boolean isInGameMenuGoing = true;
         Scanner scanner = new Scanner(System.in);
         while (isInGameMenuGoing) {
@@ -405,7 +407,7 @@ public class UserOI {
                     break;
                 case "leave":
                     isInGameMenuGoing=false;
-                    leaveGame(authToken,gameID);
+                    leaveGame(authToken,gameID,username);
                     break;
                 case "move":
                     makeMove(commandInputs,game,authToken,gameID);
@@ -450,8 +452,10 @@ public class UserOI {
         printer.drawEverything();
     }
 
-    private void leaveGame(String authToken, int gameID){
-        WSFacade.leaveGame(authToken,gameID);
+    private void leaveGame(String authToken, int gameID,String username){
+        WSFacade.leaveGame(authToken,gameID,username);
+        waitForUpdate();
+        WSFacade.setIsOnMessage(false);
     }
 
     private void makeMove(ArrayList<String> commandInputs,ChessGame game,String authToken,int gameID ){

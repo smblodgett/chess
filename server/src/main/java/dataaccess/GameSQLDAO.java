@@ -2,16 +2,13 @@ package dataaccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
-import model.AuthData;
 import model.GameData;
-import model.UserData;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 public class GameSQLDAO implements GameDAO {
 
@@ -143,6 +140,37 @@ public class GameSQLDAO implements GameDAO {
         }
         catch (SQLException ex) {
             throw new DataAccessException("error with updateGame");
+        }
+    }
+
+    public void removePlayer(int gameID, String username) throws DataAccessException{
+        boolean isBlackToRemove=false;
+        try (var conn = DatabaseManager.getConnection()) {
+            try {
+                var statement = "UPDATE gameDatatable SET whiteUsername = ? WHERE gameID = ?";
+                var preparedStatement = conn.prepareStatement(statement);
+                preparedStatement.setInt(2, gameID);
+                preparedStatement.setString(1, null);
+                var id = preparedStatement.executeUpdate();
+                isBlackToRemove=true;
+            }
+            catch (SQLException ignore){
+            }
+            if (isBlackToRemove){
+                try {
+                    var statement = "UPDATE gameDatatable SET blackUsername = ? WHERE gameID = ?";
+                    var preparedStatement = conn.prepareStatement(statement);
+                    preparedStatement.setInt(2, gameID);
+                    preparedStatement.setString(1, null);
+                    var id = preparedStatement.executeUpdate();
+                }
+                catch (SQLException ex) {
+                    throw new DataAccessException("neither could be deleted");
+                }
+            }
+        }
+        catch (SQLException | DataAccessException ex) {
+            throw new DataAccessException("error with remove player");
         }
     }
 

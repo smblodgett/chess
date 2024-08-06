@@ -6,9 +6,11 @@ import chess.InvalidMoveException;
 import dataaccess.DataAccessContainer;
 import dataaccess.DataAccessException;
 import exception.BadRequestException;
+import exception.UnauthorizedException;
 import model.GameData;
 import server.WebSocketSessionsManager;
 import websocket.commands.ConnectCommand;
+import websocket.commands.LeaveCommand;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 
@@ -40,8 +42,19 @@ public class WebSocketService {
         }
     }
 
-    public void leaveGame(UserGameCommand command) {
-
+    public void leaveGame(LeaveCommand command, DataAccessContainer data) throws UnauthorizedException, IllegalArgumentException {
+        int gameID = command.getGameID();
+        String authToken = command.getAuthToken();
+        try {
+            String username = data.authData.getAuth(authToken).username();
+            data.gameData.removePlayer(gameID,username);
+        }
+        catch (DataAccessException ex){
+            throw new IllegalArgumentException("something messed with the data");
+        }
+        catch (UnauthorizedException ex){
+            throw new UnauthorizedException("unauthorized access to leaveGame");
+        }
     }
 
     public void resignGame(UserGameCommand command) {

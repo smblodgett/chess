@@ -11,6 +11,7 @@ import org.eclipse.jetty.websocket.api.annotations.*;
 import server.WebSocketSessionsManager;
 import service.WebSocketService;
 import websocket.commands.ConnectCommand;
+import websocket.commands.LeaveCommand;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
@@ -87,6 +88,19 @@ public class WebSocketHandler {
                     }
                     break;
                 case LEAVE:
+                    var leaveCommand = new Gson().fromJson(message, LeaveCommand.class);
+                    try {
+                        service.leaveGame(leaveCommand,data);
+                        send(session,new Gson().toJson(new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,"you left the game!")));
+                        var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,leaveCommand.username+" left the game!");
+                        broadcast(notification,session,gameID);
+                    }
+                    catch (DataAccessException ex) {
+                        send(session,new Gson().toJson(new ErrorMessage(ServerMessage.ServerMessageType.ERROR,"there was a problem with the database")));
+                    }
+                    catch (UnauthorizedException ex) {
+                        send(session,new Gson().toJson(new ErrorMessage(ServerMessage.ServerMessageType.ERROR,"you aren't allowed to access that game!")));
+                    }
                     break;
                 case RESIGN:
                     break;

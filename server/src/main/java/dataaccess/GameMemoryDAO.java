@@ -72,4 +72,9 @@ public class GameMemoryDAO implements GameDAO {
     public void updateGame(int gameID, ChessGame newGame) throws DataAccessException {
 
     }
+
+    @Override
+    public void removePlayer(int gameID, String username) throws DataAccessException {
+
+    }
 }

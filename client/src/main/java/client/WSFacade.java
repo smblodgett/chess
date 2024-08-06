@@ -5,6 +5,7 @@ import chess.ChessGame;
 import chess.ChessMove;
 import com.google.gson.Gson;
 import websocket.commands.ConnectCommand;
+import websocket.commands.LeaveCommand;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
@@ -102,9 +103,9 @@ public class WSFacade extends Endpoint {
         }
     }
 
-    public void leaveGame(String authToken, int gameID) {
+    public void leaveGame(String authToken, int gameID,String username) {
         try {
-            var action = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID,null);
+            var action = new LeaveCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID,null,username);
             this.session.getBasicRemote().sendText(new Gson().toJson(action));
             this.session.close();
         } catch (IOException e) {
