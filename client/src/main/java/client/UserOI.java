@@ -259,6 +259,10 @@ public class UserOI {
                 int gameID = gameKey.get(gameListNumber);
                 String authToken = userAuth.authToken();
                 facade.joinGame(color,gameID,authToken);
+                String colorString;
+                if (color== ChessGame.TeamColor.WHITE) {colorString = SET_TEXT_COLOR_WHITE + "WHITE";}
+                else {colorString = SET_TEXT_COLOR_BLACK + "BLACK";}
+                System.out.println(SET_TEXT_COLOR_BLUE+"You've joined game no."+gameID+colorString+RESET_TEXT_COLOR);
                 WSFacade.connectToGame(authToken,gameID,color);
                 ChessGame chessGame = new ChessGame(); // this will  probably be replaced?
                 var printer = new ChessBoardPrinter(chessGame,color);

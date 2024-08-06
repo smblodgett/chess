@@ -31,11 +31,11 @@ public class ChessBoardPrinter {
         String headerText2 = SET_BG_COLOR_LIGHT_GREY + SET_TEXT_COLOR_BLACK + BUFFER +
                 "   A" + "  " + "B" + " \u2006\u2006\u2006" + "C" + "  " + "D" + " \u2006\u2006\u2006" + "E" + "  "
                 + "F" + " \u2006\u2006\u2006\u2006" + "G" + " \u2006\u2006\u2008" + "H" + "  " + "\n";
-        if (playerColor == ChessGame.TeamColor.WHITE) {
+        if (playerColor == ChessGame.TeamColor.BLACK) {
             drawHeader(headerText1);
             drawBoard(chessGame, new int[]{1, 2, 3, 4, 5, 6, 7, 8});
             drawHeader(headerText1);
-        } else if (playerColor == ChessGame.TeamColor.BLACK) {
+        } else if (playerColor == ChessGame.TeamColor.WHITE) {
             drawHeader(headerText2);
             drawBoard(chessGame, new int[]{8, 7, 6, 5, 4, 3, 2, 1});
             drawHeader(headerText2);

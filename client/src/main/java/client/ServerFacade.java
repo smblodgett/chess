@@ -137,7 +137,6 @@ public class ServerFacade {
                 os.write((jsonToSend).getBytes());
             }
             if (httpConnection.getResponseCode()==HttpURLConnection.HTTP_OK){
-                System.out.println(SET_TEXT_COLOR_BLUE+"You've joined game no."+gameID+RESET_TEXT_COLOR);
             }
             else {
                 // System.out.println("ERROR: " + httpConnection.getResponseMessage()); see other methods for getting this message if you want
