@@ -3,6 +3,7 @@ package server;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,22 +32,9 @@ public class WebSocketSessionsManager {
         connections.remove(visitorName);
     }
 
-    public void broadcast(String excludeUsername, ServerMessage serverMessage,Session session) throws IOException {
-        var removeList = new ArrayList<Connection>();
-        for (var set : connections.values()) {
-            for (var c : set) {
-                if (!c.equals(session) && c.isOpen()) {
-                    c.send(serverMessage.toString());
-
-                } else {
-                    removeList.add(c);
-                }
-            }
-        }
-
-        // Clean up any connections that were left open.
-        for (var c : removeList) {
-            connections.remove(c.visitorName);
-        }
+    public ConcurrentHashMap<Integer, Set<Session>> getAllSessions() {
+        return connections;
     }
+
+
 }

@@ -22,7 +22,6 @@ public class WebSocketService {
     public void connect(ConnectCommand command, Session session){
         int gameID = command.getGameID();
         sessionsManager.addSessionToGame(gameID,session);
-
     }
 
     public void makeMove(MakeMoveCommand command, Session session){

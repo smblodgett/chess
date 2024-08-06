@@ -12,10 +12,12 @@ import service.WebSocketService;
 import websocket.commands.ConnectCommand;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
+import java.util.Set;
 
 import static websocket.commands.UserGameCommand.CommandType.*;
 
@@ -39,6 +41,7 @@ public class WebSocketHandler {
             var messageAsJavaObject = gson.fromJson(message, UserGameCommand.class);
             var command = messageAsJavaObject.getCommandType();
             var authToken = messageAsJavaObject.getAuthToken();
+            int gameID = messageAsJavaObject.getGameID();
 
             switch (command) {
                 case CONNECT:
@@ -51,13 +54,14 @@ public class WebSocketHandler {
                         if (connectCommand.getColor()== ChessGame.TeamColor.BLACK){colorMessage = "black";}
                         var messageToSendToClient = String.format("%s has joined the game as"+colorMessage, username); // needs to say as player or observer
                         var notification = new NotificationMessage(NotificationMessage.ServerMessageType.NOTIFICATION, messageToSendToClient);
-                        sessionsManager.broadcast(username,notification,session);
+                        broadcast(username,notification,session);
 
+                        send(session,new Gson().toJson(new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME,"joined game!",)))
                     }
                     else {
                         var messageToSendToClient = String.format("%s is observing the game ", username); // needs to say as player or observer
                         var notification = new NotificationMessage(NotificationMessage.ServerMessageType.NOTIFICATION, messageToSendToClient);
-                        sessionsManager.broadcast(username,notification,session);
+                        broadcast(username,notification,session);
                     }
                     break;
                 case MAKE_MOVE:
@@ -79,6 +83,27 @@ public class WebSocketHandler {
             System.out.println(ex.getMessage());
         }
 
+    }
+
+    private void broadcast(ServerMessage message, Session session,int gameID) {
+        Set<Session> sessions = sessionsManager.getAllSessions().get(gameID);
+        Gson gson = new Gson();
+        String messageJson = gson.toJson(message);
+
+        for (Session s : sessions) {
+            if (s.isOpen() && !s.equals(session)) {
+                try {
+                    s.getRemote().sendString(messageJson);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
+    public void send(Session session, String msg) throws Exception {
+        session.getRemote().sendString(msg);
     }
 
 
