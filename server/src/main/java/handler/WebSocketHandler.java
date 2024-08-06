@@ -85,6 +85,7 @@ public class WebSocketHandler {
                         ErrorMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR,"that move is illegal");
                         send(session,new Gson().toJson(errorMessage,ErrorMessage.class));
                     }
+                    break;
                 case LEAVE:
                     break;
                 case RESIGN:
@@ -113,7 +114,6 @@ public class WebSocketHandler {
             }
         }
     }
-
 
     public void send(Session session, String msg) throws Exception {
         session.getRemote().sendString(msg);

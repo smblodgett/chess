@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
+
+import model.GameData;
 import ui.ChessBoardPrinter;
 
 public class UserOI {
@@ -257,17 +259,18 @@ public class UserOI {
             }
             try {
                 int gameID = gameKey.get(gameListNumber);
+//                for (GameData gameData : facade.listGames(userAuth.authToken()).withChessBoards()){
+//                    int possibleIDMatch = gameData.gameID();
+//                    if (gameID==possibleIDMatch){
+//                        game = gameData.game();
+//                    }
+//                }
+//                if (game==null){throw new RuntimeException("WHAT IS HAPPENING");};
                 String authToken = userAuth.authToken();
                 facade.joinGame(color,gameID,authToken);
-                String colorString;
-                if (color== ChessGame.TeamColor.WHITE) {colorString = SET_TEXT_COLOR_WHITE + "WHITE";}
-                else {colorString = SET_TEXT_COLOR_BLACK + "BLACK";}
-                System.out.println(SET_TEXT_COLOR_BLUE+"You've joined game no."+gameID+colorString+RESET_TEXT_COLOR);
                 WSFacade.connectToGame(authToken,gameID,color);
-                ChessGame chessGame = new ChessGame(); // this will  probably be replaced?
-                var printer = new ChessBoardPrinter(chessGame,color);
-                printer.drawEverything();
-                inGameMenu(chessGame,authToken,gameID,color);
+
+                inGameMenu(authToken,gameID,color);
             }
             catch (RuntimeException ex) {
                 helpLoggedIn();
@@ -292,7 +295,7 @@ public class UserOI {
             int gameID = gameKey.get(gameListNumber);
             String authToken = userAuth.authToken();
             WSFacade.connectToGame(authToken,gameID,null);
-            ChessGame chessGame = new ChessGame(); //// this will  probably be replaced with real game data
+            ChessGame chessGame = currentGame; //// this will  probably be replaced with real game data
             var printer = new ChessBoardPrinter(chessGame, ChessGame.TeamColor.WHITE);
             printer.drawEverything();
         }
@@ -301,6 +304,7 @@ public class UserOI {
             helpLoggedIn();
         }
     }
+
 
     private void listGames(boolean isDisplayed) {
         String authToken = userAuth.authToken();
@@ -356,10 +360,19 @@ public class UserOI {
         }
     }
 
-    private void inGameMenu(ChessGame game, String authToken, int gameID, ChessGame.TeamColor color) {
+    private void inGameMenu(String authToken, int gameID, ChessGame.TeamColor color) {
+
+        String colorString;
+        if (color== ChessGame.TeamColor.WHITE) {colorString = SET_TEXT_COLOR_WHITE + "WHITE";}
+        else {colorString = SET_TEXT_COLOR_BLACK + "BLACK";}
         System.out.println(DIVIDERS);
-        System.out.println(SET_TEXT_COLOR_BLUE+"You've joined the game! (Type help if you're lost.)"+RESET_TEXT_COLOR);
+        System.out.println(SET_TEXT_COLOR_BLUE+"You've joined game no."+gameID+" as "+colorString+RESET_TEXT_COLOR);
         System.out.println(DIVIDERS);
+
+        ChessGame game = currentGame; // this will  probably be replaced?
+        var printer = new ChessBoardPrinter(game,color);
+        printer.drawEverything();
+
         boolean isInGameMenuGoing = true;
         Scanner scanner = new Scanner(System.in);
         while (isInGameMenuGoing) {
@@ -516,7 +529,7 @@ public class UserOI {
             case "yes","YES","y","Y"->isResign=true;
             default -> isResign=false;
         }
-        if (!isResign){inGameMenu(game,authToken,gameID,color);}
+        if (!isResign){inGameMenu(authToken,gameID,color);}
         WSFacade.resign(authToken,gameID);
     }
 

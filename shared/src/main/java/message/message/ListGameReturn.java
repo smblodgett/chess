@@ -20,4 +20,12 @@ public record ListGameReturn(ArrayList<GameData> games) {
         return gamesToReturn;
     }
 
+    public List<GameData> withChessBoards() {
+        List<GameData> gamesToReturn = new ArrayList<>();
+        for (GameData gameData : games){
+            gamesToReturn.add(new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(),gameData.game()));
+        }
+        return gamesToReturn;
+    }
+
 }

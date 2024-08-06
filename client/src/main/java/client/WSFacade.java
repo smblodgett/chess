@@ -40,27 +40,32 @@ public class WSFacade extends Endpoint {
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
-                    ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
-                    switch (serverMessage.getServerMessageType()){
-                        case LOAD_GAME:
-                            LoadGameMessage loadGameMessage = new Gson().fromJson(message, LoadGameMessage.class);
-                            loadGameHandler.notify(loadGameMessage);
-                            break;
-                        case NOTIFICATION:
-                            NotificationMessage notificationMessage = new Gson().fromJson(message, NotificationMessage.class);
-                            notificationHandler.notify(notificationMessage);
-                            break;
-                        case ERROR:
-                            ErrorMessage errorMessage = new Gson().fromJson(message, ErrorMessage.class);
-                            errorHandler.notify(errorMessage);
-                            break;
-                        default:
-                            break;
-                    }
+                    handleMessage(message);
                 }
             });
         }  catch (URISyntaxException | DeploymentException | IOException ex) {
             throw new RuntimeException(ex);
+        }
+    }
+
+    private void handleMessage(String message) {
+        ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
+        switch (serverMessage.getServerMessageType()) {
+            case LOAD_GAME:
+                LoadGameMessage loadGameMessage = new Gson().fromJson(message, LoadGameMessage.class);
+//                loadGameHandler.notify(loadGameMessage);
+                loadGameHandler.updateGame(loadGameMessage);
+                break;
+            case NOTIFICATION:
+                NotificationMessage notificationMessage = new Gson().fromJson(message, NotificationMessage.class);
+                notificationHandler.notify(notificationMessage);
+                break;
+            case ERROR:
+                ErrorMessage errorMessage = new Gson().fromJson(message, ErrorMessage.class);
+                errorHandler.notify(errorMessage);
+                break;
+            default:
+                break;
         }
     }
 

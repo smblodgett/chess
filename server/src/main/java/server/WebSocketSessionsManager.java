@@ -16,7 +16,7 @@ public class WebSocketSessionsManager {
 
     public void addSessionToGame(int gameID, Session session) {
         var connection = new Connection(gameID, session);
-        if (connections.get(gameID).isEmpty()){
+        if (connections.get(gameID)==null){
             Set<Session> setToInsert = new HashSet<>();
             setToInsert.add(session);
             connections.put(gameID,setToInsert);
