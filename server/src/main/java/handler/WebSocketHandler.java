@@ -98,6 +98,10 @@ public class WebSocketHandler {
             System.out.println(ex.getMessage());}}
 
     private void handleConnect(String message, String authToken, Session session, GameData gameData, int gameID,ChessGame game) throws Exception {
+        if (gameData.isOver()){
+            send(session, new Gson().toJson(new ErrorMessage(ERROR, "Error: this game is over!"), ErrorMessage.class));
+            return;
+        }
         var connectCommand = new Gson().fromJson(message,ConnectCommand.class);
         service.connect(connectCommand, session);
         String username = data.authData.getAuth(authToken).username();

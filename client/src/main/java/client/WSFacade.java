@@ -62,7 +62,7 @@ public class WSFacade extends Endpoint {
                 break;
             case ERROR:
                 ErrorMessage errorMessage = new Gson().fromJson(message, ErrorMessage.class);
-                errorHandler.notify(errorMessage);
+                errorHandler.notifyOfError(errorMessage);
                 break;
             default:
                 break;

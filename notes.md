@@ -490,3 +490,10 @@ Console-user interfaces: can be formatted with formatted text, color, graphics
 
 "Control codes": certain strings you can pass to console that make the console appear different ways/do different things
 
+**8/7/24**
+
+Multithreading: Types:
++ concurrent: with one CPU/core, the OS gives each task a chance to run. It swaps between different tasks.
+  + the number of cores determines how many tasks/threads your computer can run at a time
++ parallel: each core runs a different thread (only possible with multiple cores)
++ sequential: each task has to run to completion before another task can start

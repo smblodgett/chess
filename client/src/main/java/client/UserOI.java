@@ -228,6 +228,7 @@ public class UserOI {
                 String authToken = userAuth.authToken();
                 facade.joinGame(color,gameID,authToken);
                 wsFacade.connectToGame(authToken,gameID,color);
+                wsFacade.setIsOnMessage(false);
                 inGameMenu(authToken,gameID,color,scanner);
             }
             catch (RuntimeException ex) {
@@ -274,9 +275,12 @@ public class UserOI {
             var whiteName = game.whiteUsername();
             var blackName = game.blackUsername();
             var gameID = game.gameID();
+            boolean isOver = game.isOver();
+            String isOverString="";
+            if (isOver) {isOverString="*this game has finished!*";}
             if (isDisplayed) {
                 System.out.println(DIVIDERS);
-                System.out.println(SET_TEXT_COLOR_GREEN+count+ ":");
+                System.out.println(SET_TEXT_COLOR_GREEN+count+ ": "+isOverString);
                 System.out.println(SET_TEXT_COLOR_BLUE + "game name: " + name + "\nwhite is " + whiteName
                         + "\nblack is " + blackName + "\ngameid=" + gameID + RESET_TEXT_COLOR);
             }
@@ -354,7 +358,7 @@ public class UserOI {
                     break;
                 case "draw":
                 case "redraw":
-                    redraw(game);
+                    redraw(game, ChessGame.TeamColor.WHITE);
                     break;
                 case "leave":
                     isInGameMenuGoing=false;
@@ -386,11 +390,17 @@ public class UserOI {
                 System.out.println("interrupted!");
             }
         }
+        try {
+            Thread.sleep(700);
+        }
+        catch(InterruptedException ex){
+            System.out.println("interrupted!");
+        }
         System.out.println("okay, we got something from WSFacade");
     }
 
-    private void redraw(ChessGame game) {
-        var printer = new ChessBoardPrinter(game, ChessGame.TeamColor.WHITE);
+    private void redraw(ChessGame game, ChessGame.TeamColor color) {
+        var printer = new ChessBoardPrinter(game, color);
         printer.drawEverything();
     }
 
@@ -409,6 +419,7 @@ public class UserOI {
         String initialPositionString = commandInputs.get(1);
         String finalPositionString = commandInputs.get(2);
         try {
+            ChessGame.TeamColor moveColor = currentGame.getTeamTurn();
             int rowInit = getRowFromString(initialPositionString.substring(1));
             int colInit = getColumnFromLetter(initialPositionString.charAt(0));
             ChessPosition initialPosition = new ChessPosition(rowInit,colInit); //
@@ -428,6 +439,7 @@ public class UserOI {
             wsFacade.makeMove(authToken,gameID,move);
             waitForUpdate();
             wsFacade.setIsOnMessage(false);
+            redraw(currentGame,moveColor);
         }
         catch (IllegalArgumentException ex) {
             System.out.println(SET_TEXT_COLOR_BLUE+"you didn't input your move right!"+RESET_TEXT_COLOR);
