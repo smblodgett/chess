@@ -156,7 +156,7 @@ public class WebSocketHandler {
                 var loadMessage = new LoadGameMessage(LOAD_GAME, null, newGame);// send new game to player, all session members
                 send(session, new Gson().toJson(loadMessage, LoadGameMessage.class));
                 broadcast(loadMessage, session, gameID);
-                String moveAsString = moveCommand.getChessMove().toString();// broadcast which move has been made
+                String moveAsString = chessMoveToStringDescription(newGame, moveCommand.getChessMove());// broadcast which move has been made
                 var moveNotification = new NotificationMessage(NOTIFICATION, moveAsString);
                 broadcast(moveNotification, session, gameID);
 
