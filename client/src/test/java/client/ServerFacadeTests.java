@@ -109,9 +109,8 @@ public class ServerFacadeTests {
     void joinGameBadAuth() throws Exception {
         var authData1 = facade.register("player1", "password", "p1@email.com");
         facade.createGame("testgame",authData1.authToken());
-        facade.joinGame(ChessGame.TeamColor.WHITE,1,"1345");
-        var list = facade.listGames(authData1.authToken()).removeChessBoards();
-        assertEquals(list.get(0).whiteUsername(),null);
+        assertThrows(RuntimeException.class,()->
+                facade.joinGame(ChessGame.TeamColor.WHITE,1,"1345"));
     }
 
     @Test
