@@ -15,7 +15,6 @@ public class WebSocketSessionsManager {
     public final ConcurrentHashMap<Integer, Set<Session>> connections = new ConcurrentHashMap<>();
 
     public void addSessionToGame(int gameID, Session session) {
-        var connection = new Connection(gameID, session);
         if (connections.get(gameID)==null){
             Set<Session> setToInsert = new HashSet<>();
             setToInsert.add(session);
@@ -28,8 +27,7 @@ public class WebSocketSessionsManager {
         }
     }
 
-    public void remove(String visitorName) {
-        connections.remove(visitorName);
+    public void remove(int gameID) {
     }
 
     public ConcurrentHashMap<Integer, Set<Session>> getAllSessions() {

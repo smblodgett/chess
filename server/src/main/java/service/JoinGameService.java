@@ -37,12 +37,12 @@ public class JoinGameService {
         if (color.equals("WHITE")) {
             ChessGame.TeamColor teamColor = ChessGame.TeamColor.WHITE;
             data.gameData.updateGamePlayer(gameData,teamColor,username);
-            return new GameData(gameData.gameID(),username, gameData.blackUsername(), gameData.gameName(), gameData.game());
+            return new GameData(gameData.gameID(),username, gameData.blackUsername(), gameData.gameName(), gameData.game(), gameData.isOver());
         }
         else if (color.equals("BLACK")){
             ChessGame.TeamColor teamColor = ChessGame.TeamColor.BLACK;
             data.gameData.updateGamePlayer(gameData,teamColor,username);
-            return new GameData(gameData.gameID(),gameData.whiteUsername(),username, gameData.gameName(), gameData.game());
+            return new GameData(gameData.gameID(),gameData.whiteUsername(),username, gameData.gameName(), gameData.game(), gameData.isOver());
         }
         else {throw new BadRequestException("Error: bad request");}
     }

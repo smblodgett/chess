@@ -57,11 +57,11 @@ public class UserOI {
                     quit();
                     break;
                 case "register":
-                    register(commandInputs);
+                    register(commandInputs,scanner);
                     help();
                     break;
                 case "login":
-                    login(commandInputs);
+                    login(commandInputs,scanner);
                     help();
                     break;
                 default:
@@ -100,7 +100,7 @@ public class UserOI {
         System.out.println(DIVIDERS);
     }
 
-    private void register(ArrayList<String> commandInputs) {
+    private void register(ArrayList<String> commandInputs,Scanner scanner) {
         if (commandInputs.size()!=4){
             System.out.println(SET_TEXT_COLOR_BLUE+"wrong number of inputs!"+RESET_TEXT_COLOR);
             help();
@@ -114,13 +114,13 @@ public class UserOI {
                 System.out.println(SET_BG_COLOR_RED+SET_TEXT_COLOR_BLACK+"there was an error registering you. maybe try again?\n"+RESET_TEXT_COLOR);
             }
             else {
-                loggedInMenu();
+                loggedInMenu(scanner);
             }
         }
 
     }
 
-    private void login(ArrayList<String> commandInputs) {
+    private void login(ArrayList<String> commandInputs,Scanner scanner) {
         if (commandInputs.size()!=3){
             System.out.println(SET_TEXT_COLOR_BLUE+"wrong number of inputs!"+RESET_TEXT_COLOR);
             help();
@@ -133,18 +133,17 @@ public class UserOI {
                 System.out.println(SET_TEXT_COLOR_BLACK+"there was an error logging you in. maybe try again?"+RESET_TEXT_COLOR);
             }
             else {
-                loggedInMenu();
+                loggedInMenu(scanner);
             }
         }
     }
 
-    private void loggedInMenu() {
+    private void loggedInMenu(Scanner scanner) {
         System.out.println(DIVIDERS);
         System.out.println(SET_TEXT_COLOR_BLUE+"You're in! It's time to chess! (Type help if you're lost.)"+RESET_TEXT_COLOR);
         System.out.println(DIVIDERS);
         listGames(false);
         boolean isLoggedInMenuGoing = true;
-        Scanner scanner = new Scanner(System.in);
         while (isLoggedInMenuGoing) {
             String command = scanner.nextLine();
 
@@ -165,11 +164,11 @@ public class UserOI {
                     break;
                 case "join":
                 case "play":
-                    joinGame(commandInputs);
+                    joinGame(commandInputs,scanner);
                     break;
                 case "watch":
                 case "observe":
-                    watchGame(commandInputs);
+                    watchGame(commandInputs,scanner);
                     break;
                 case "list":
                     listGames(true);
@@ -221,7 +220,7 @@ public class UserOI {
         }
     }
 
-    private void joinGame(ArrayList<String> commandInputs) {
+    private void joinGame(ArrayList<String> commandInputs,Scanner scanner) {
         int gameListNumber;
         try {
             gameListNumber = Integer.parseInt(commandInputs.get(2));
@@ -270,7 +269,7 @@ public class UserOI {
                 facade.joinGame(color,gameID,authToken);
                 WSFacade.connectToGame(authToken,gameID,color);
 
-                inGameMenu(authToken,gameID,color);
+                inGameMenu(authToken,gameID,color,scanner);
             }
             catch (RuntimeException ex) {
                 helpLoggedIn();
@@ -278,7 +277,7 @@ public class UserOI {
         }
     }
 
-    private void watchGame(ArrayList<String> commandInputs){
+    private void watchGame(ArrayList<String> commandInputs,Scanner scanner){
         int gameListNumber;
         try {
             gameListNumber = Integer.parseInt(commandInputs.get(1));
@@ -360,7 +359,7 @@ public class UserOI {
         }
     }
 
-    private void inGameMenu(String authToken, int gameID, ChessGame.TeamColor color) {
+    private void inGameMenu(String authToken, int gameID, ChessGame.TeamColor color,Scanner scanner) {
 
         if (currentGame!=null) System.out.println(currentGame.toString());
         waitForUpdate();
@@ -381,7 +380,6 @@ public class UserOI {
         String username = userAuth.username();
 
         boolean isInGameMenuGoing = true;
-        Scanner scanner = new Scanner(System.in);
         while (isInGameMenuGoing) {
 
             if (game!=currentGame && currentGame!=null){
@@ -418,7 +416,7 @@ public class UserOI {
                     highlightLegalMoves(commandInputs,game,color);
                     break;
                 case "resign":
-                    resign(game, authToken,gameID, color);
+                    resign(game, authToken,gameID, color,username,scanner);
                     break;
                 default:
                     badInputAction();
@@ -549,18 +547,16 @@ public class UserOI {
     }
 
 
-    private void resign (ChessGame game, String authToken, int gameID, ChessGame.TeamColor color) {
+    private void resign (ChessGame game, String authToken, int gameID, ChessGame.TeamColor color,String username,Scanner scanner) {
         System.out.println("are you sure you want to resign? you'll lose instantly");
-        Scanner scanner = new Scanner(System.in);
         String resignPrompt = scanner.nextLine();
-        scanner.close();
         boolean isResign;
         switch (resignPrompt){
             case "yes","YES","y","Y"->isResign=true;
             default -> isResign=false;
         }
-        if (!isResign){inGameMenu(authToken,gameID,color);}
-        WSFacade.resign(authToken,gameID);
+        if (!isResign){inGameMenu(authToken,gameID,color,scanner);}
+        WSFacade.resign(authToken,gameID,username);
     }
 
 

@@ -33,7 +33,7 @@ public class CreateGameHandler implements Route {
             int gameID = service.makeGameID();
             boolean isAddableGame = service.checkUniqueID(gameID);
             if (isAddableGame) {
-                service.createNewGame(new GameData(gameID,null,null,gameName,new ChessGame()));
+                service.createNewGame(new GameData(gameID,null,null,gameName,new ChessGame(),false));
                 res.status(200);
                 return new Gson().toJson(new CreateGameReturn(gameID));
             }

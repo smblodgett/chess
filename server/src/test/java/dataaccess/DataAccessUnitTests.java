@@ -29,7 +29,7 @@ public class DataAccessUnitTests {
         userData.clearUsers();
         userJoe = new UserData("joe", "123", "joe@joe.com");
         auth = new AuthData("hey bro","22");
-        game = new GameData(1,null,null,"wow",new ChessGame());
+        game = new GameData(1,null,null,"wow",new ChessGame(),false);
     }
 
     @Test

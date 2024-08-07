@@ -15,7 +15,7 @@ public record ListGameReturn(ArrayList<GameData> games) {
     public List<GameData> removeChessBoards() {
         List<GameData> gamesToReturn = new ArrayList<>();
         for (GameData gameData : games){
-            gamesToReturn.add(new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(),null));
+            gamesToReturn.add(new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(),null, gameData.isOver()));
         }
         return gamesToReturn;
     }
@@ -23,7 +23,7 @@ public record ListGameReturn(ArrayList<GameData> games) {
     public List<GameData> withChessBoards() {
         List<GameData> gamesToReturn = new ArrayList<>();
         for (GameData gameData : games){
-            gamesToReturn.add(new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(),gameData.game()));
+            gamesToReturn.add(new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(),gameData.game(), gameData.isOver()));
         }
         return gamesToReturn;
     }

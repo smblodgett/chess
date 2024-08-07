@@ -11,7 +11,7 @@ import java.util.Objects;
  * methods.
  */
 public class ServerMessage {
-    private ServerMessageType Type;
+    private ServerMessageType serverMessageType;
     String message;
 
     public enum ServerMessageType {
@@ -21,12 +21,12 @@ public class ServerMessage {
     }
 
     public ServerMessage(ServerMessageType type, String message) {
-        this.Type = type;
+        this.serverMessageType = type;
         this.message = message;
     }
 
     public ServerMessageType getServerMessageType() {
-        return this.Type;
+        return this.serverMessageType;
     }
 
     public String getMessage() {return message;}

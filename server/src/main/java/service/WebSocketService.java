@@ -9,10 +9,7 @@ import exception.BadRequestException;
 import exception.UnauthorizedException;
 import model.GameData;
 import server.WebSocketSessionsManager;
-import websocket.commands.ConnectCommand;
-import websocket.commands.LeaveCommand;
-import websocket.commands.MakeMoveCommand;
-import websocket.commands.UserGameCommand;
+import websocket.commands.*;
 
 import org.eclipse.jetty.websocket.api.Session;
 
@@ -57,7 +54,13 @@ public class WebSocketService {
         }
     }
 
-    public void resignGame(UserGameCommand command) {
-
+    public void resignGame(ResignCommand command,DataAccessContainer data) {
+        int gameID = command.getGameID();
+        try{
+            data.gameData.isOver(gameID);
+        }
+        catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

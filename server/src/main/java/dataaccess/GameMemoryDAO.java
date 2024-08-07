@@ -43,16 +43,17 @@ public class GameMemoryDAO implements GameDAO {
         String gameName = gameData.gameName();
         String blackName = gameData.blackUsername();
         String whiteName = gameData.whiteUsername();
+        boolean isOver = gameData.isOver();
 
         if (color == ChessGame.TeamColor.WHITE){
             if (whiteName!=null) {throw new DataAccessException("someone else is already white!");}
-            GameData updatedGame = new GameData(gameID,username,blackName,gameName,myGame);
+            GameData updatedGame = new GameData(gameID,username,blackName,gameName,myGame,isOver);
             deleteGame(gameID);
             createGame(updatedGame);
         }
         if (color == ChessGame.TeamColor.BLACK){
             if (blackName!=null) {throw new DataAccessException("someone else is already black!");}
-            GameData updatedGame = new GameData(gameID,whiteName,username,gameName,myGame);
+            GameData updatedGame = new GameData(gameID,whiteName,username,gameName,myGame,isOver);
             deleteGame(gameID);
             createGame(updatedGame);
         }
@@ -76,5 +77,9 @@ public class GameMemoryDAO implements GameDAO {
     @Override
     public void removePlayer(int gameID, String username) throws DataAccessException {
 
+    }
+
+    @Override
+    public void isOver(int gameID) throws DataAccessException {
     }
 }

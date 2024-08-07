@@ -4,7 +4,7 @@ import chess.ChessGame;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-public record GameData(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
+public record GameData(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game,boolean isOver) {
 
     public JsonObject toJson() {
         JsonObject jsonObject = new JsonObject();

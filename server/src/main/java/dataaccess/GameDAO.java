@@ -13,6 +13,9 @@ public interface GameDAO {
     public GameData getGame(int gameID) throws DataAccessException;
     public ArrayList<GameData> listGames() throws DataAccessException;
     public void updateGamePlayer(GameData gameData, ChessGame.TeamColor color, String username) throws DataAccessException;
+
+    void isOver(int gameID) throws DataAccessException;
+
     public void clearGames() throws DataAccessException;
     void deleteGame(int gameID) throws DataAccessException;
     public void updateGame(int gameID, ChessGame newGame) throws DataAccessException;
