@@ -37,6 +37,7 @@ public class UserOIHelper {
         System.out.println(SET_TEXT_COLOR_GREEN+"highlight <location> "+RESET_TEXT_COLOR+"- highlight all legal moves from this location");
         System.out.println(SET_TEXT_COLOR_GREEN+"resign "+RESET_TEXT_COLOR+"- resign this game");
         System.out.println(SET_TEXT_COLOR_GREEN+"leave "+RESET_TEXT_COLOR+"- leave this game");
+        System.out.println(SET_TEXT_COLOR_GREEN+"help "+RESET_TEXT_COLOR+"- if you need more help");
         System.out.println(DIVIDERS);
     }
 

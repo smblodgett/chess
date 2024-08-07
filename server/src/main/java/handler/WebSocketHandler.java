@@ -90,7 +90,6 @@ public class WebSocketHandler {
                         send(session,new Gson().toJson(
                                 new ErrorMessage(ERROR,"you aren't allowed to access that game!"),
                                 ErrorMessage.class));
-
                     }
                     break;
                 case RESIGN:
@@ -125,7 +124,7 @@ public class WebSocketHandler {
                 // send loaded game to player
                 send(session, new Gson().toJson(
                         new LoadGameMessage(LOAD_GAME, null, game), LoadGameMessage.class));
-                var messageToSendToClients = String.format("%s has joined the game as"+colorMessage, username);// needs to say as player or observer
+                var messageToSendToClients = String.format("%s has joined the game as "+colorMessage, username);// needs to say as player or observer
                 var notification = new NotificationMessage(
                         NOTIFICATION, messageToSendToClients);
                 broadcast(notification, session, gameID);
@@ -162,7 +161,7 @@ public class WebSocketHandler {
                 var loadMessage = new LoadGameMessage(LOAD_GAME, null, newGame);// send new game to player, all session members
                 send(session, new Gson().toJson(loadMessage, LoadGameMessage.class));
                 broadcast(loadMessage, session, gameID);
-                String moveAsString = chessMoveToStringDescription(newGame, moveCommand.getChessMove());// broadcast which move has been made
+                String moveAsString = chessMoveToStringDescription(usernameCurrent, newGame, moveCommand.getChessMove());// broadcast which move has been made
                 var moveNotification = new NotificationMessage(NOTIFICATION, moveAsString);
                 broadcast(moveNotification, session, gameID);
 
@@ -218,7 +217,7 @@ public class WebSocketHandler {
                         new NotificationMessage(NOTIFICATION, "you resigned the game!"),
                         NotificationMessage.class));
                 var notification = new NotificationMessage(
-                        NOTIFICATION, usernameCurrentResign + " left the game!");
+                        NOTIFICATION, usernameCurrentResign + " resigned the game!");
                 broadcast(notification, session, gameID);
             } catch (RuntimeException ex) {
                 send(session, new Gson().toJson(
@@ -231,7 +230,7 @@ public class WebSocketHandler {
                     ErrorMessage.class));}
     }
 
-    private String chessMoveToStringDescription(ChessGame newGame,ChessMove move) {
+    private String chessMoveToStringDescription(String username,ChessGame newGame,ChessMove move) {
         ChessPosition position = move.getEndPosition();
         String first = switch(newGame.getBoard().getPiece(position).getPieceType()){
             case PAWN->"";
@@ -254,10 +253,10 @@ public class WebSocketHandler {
         };
         String third = String.valueOf(position.getRow());
         String fourth;
-        if (newGame.isInCheck(newGame.getTeamTurn())){fourth = "+";}
-        else if (newGame.isInCheckmate(newGame.getTeamTurn())) {fourth = "#";}
+        if (newGame.isInCheckmate(newGame.getTeamTurn())){fourth = "#";}
+        else if (newGame.isInCheck(newGame.getTeamTurn())) {fourth = "+";}
         else {fourth = "";}
-        return first+second+third+fourth;
+        return username + " moved " + first+second+third+fourth;
     }
 
     private void broadcast(ServerMessage message, Session session,int gameID) {

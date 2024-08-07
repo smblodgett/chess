@@ -22,7 +22,8 @@ public class WSFacade extends Endpoint {
     ErrorHandler errorHandler;
     LoadGameMessageHandler loadGameHandler;
     public boolean isOnMessage = false;
-
+    public boolean isObserver = false;
+    ChessGame.TeamColor colorToPrintSideOf;
 
     public WSFacade(String url, NotificationHandler notificationHandler, ErrorHandler errorHandler, LoadGameMessageHandler loadGameHandler)  {
         try {
@@ -55,6 +56,7 @@ public class WSFacade extends Endpoint {
                 LoadGameMessage loadGameMessage = new Gson().fromJson(message, LoadGameMessage.class);
 //                loadGameHandler.notify(loadGameMessage);
                 loadGameHandler.updateGame(loadGameMessage);
+                loadGameHandler.printNewGame(loadGameMessage,colorToPrintSideOf);
                 break;
             case NOTIFICATION:
                 NotificationMessage notificationMessage = new Gson().fromJson(message, NotificationMessage.class);
@@ -74,10 +76,12 @@ public class WSFacade extends Endpoint {
     public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
 
-    public void connectToGame(String authToken, int gameID, ChessGame.TeamColor color)  {
+    public void connectToGame(String authToken, int gameID, ChessGame.TeamColor color,boolean isObserver)  {
         try {
             var action = new ConnectCommand(ConnectCommand.CommandType.CONNECT,authToken,gameID,color);
             this.session.getBasicRemote().sendText(new Gson().toJson(action));
+            this.colorToPrintSideOf=color;
+            if (isObserver){this.colorToPrintSideOf= ChessGame.TeamColor.WHITE;}
         } catch (IOException ex) {
             System.out.println("problem with connect to game in WSFacade");
         }
@@ -104,6 +108,7 @@ public class WSFacade extends Endpoint {
         try {
             var action = new LeaveCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID,null,username);
             this.session.getBasicRemote().sendText(new Gson().toJson(action));
+            this.colorToPrintSideOf=null;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
