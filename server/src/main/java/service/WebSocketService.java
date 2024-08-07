@@ -39,7 +39,8 @@ public class WebSocketService {
         }
     }
 
-    public void leaveGame(LeaveCommand command, DataAccessContainer data,String colorSwitch,Session session) throws UnauthorizedException, IllegalArgumentException {
+    public void leaveGame(LeaveCommand command, DataAccessContainer data,String colorSwitch,Session session)
+            throws UnauthorizedException, IllegalArgumentException {
         int gameID = command.getGameID();
         String authToken = command.getAuthToken();
         try {

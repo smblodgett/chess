@@ -53,7 +53,8 @@ public class WebSocketHandler {
                 gameData = data.gameData.getGame(gameID);
             }
             catch (DataAccessException ex) {
-                send(session, new Gson().toJson(new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error : doesn't contain that game")));
+                send(session, new Gson().toJson(
+                        new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error : doesn't contain that game")));
                 return;
             }
             AuthData authData;
@@ -61,7 +62,8 @@ public class WebSocketHandler {
                 authData = data.authData.getAuth(authToken);
             }
             catch (UnauthorizedException ex){
-                send(session, new Gson().toJson(new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error : bad auth token")));
+                send(session, new Gson().toJson(
+                        new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error : bad auth token")));
                 return;
             }
 
@@ -69,39 +71,7 @@ public class WebSocketHandler {
 
             switch (command) {
                 case CONNECT:
-                    var connectCommand = new Gson().fromJson(message,ConnectCommand.class);
-                    service.connect(connectCommand, session);
-                    String username = data.authData.getAuth(authToken).username();
-                    String colorMessage ="";
-                    try {
-                        if (gameData==null) System.out.println("hsdfhsdf");
-                        if (Objects.equals(gameData.whiteUsername(), username)) {
-                            connectCommand = new ConnectCommand(CONNECT, authToken, gameID, ChessGame.TeamColor.WHITE);
-                        } if (Objects.equals(gameData.blackUsername(), username)) {
-                            connectCommand = new ConnectCommand(CONNECT, authToken, gameID, ChessGame.TeamColor.BLACK);
-                        }
-                        if (connectCommand.getColor() != null) {
-                            if (connectCommand.getColor() == ChessGame.TeamColor.WHITE) {
-                                colorMessage = "white";
-                            }
-                            if (connectCommand.getColor() == ChessGame.TeamColor.BLACK) {
-                                colorMessage = "black";
-                            }
-                            // send loaded game to player
-                            send(session, new Gson().toJson(new LoadGameMessage(LOAD_GAME, null, game), LoadGameMessage.class));
-                            var messageToSendToClients = String.format("%s has joined the game as" + colorMessage, username); // needs to say as player or observer
-                            var notification = new NotificationMessage(NotificationMessage.ServerMessageType.NOTIFICATION, messageToSendToClients);
-                            broadcast(notification, session, gameID);
-                        } else {
-                            send(session, new Gson().toJson(new LoadGameMessage(LOAD_GAME, null, game), LoadGameMessage.class));
-                            var messageToSendToClient = String.format("%s is observing the game ", username); // needs to say as player or observer
-                            var notification = new NotificationMessage(NotificationMessage.ServerMessageType.NOTIFICATION, messageToSendToClient);
-                            broadcast(notification, session, gameID);
-                        }
-                    }
-                    catch (DataAccessException ex) {
-                        send(session, new Gson().toJson(new ErrorMessage(ERROR, "Error: this game doesn't exist!"), ErrorMessage.class));
-                    }
+                    handleConnect(message,authToken,session,gameData,gameID,game);
                     break;
                 case MAKE_MOVE:
                     if (gameData.isOver()){
@@ -146,16 +116,19 @@ public class WebSocketHandler {
                     try {
                         if (colorSwitch!=null) {service.leaveGame(leaveCommand,data,colorSwitch,session);}
 //                        send(session,new Gson().toJson(new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,"you left the game!"),NotificationMessage.class));
-                        var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,leaveCommand.username+" left the game!");
+                        var notification = new NotificationMessage(
+                                ServerMessage.ServerMessageType.NOTIFICATION,leaveCommand.username+" left the game!");
                         broadcast(notification,session,gameID);
                     }
                     catch (UnauthorizedException ex) {
-                        send(session,new Gson().toJson(new ErrorMessage(ServerMessage.ServerMessageType.ERROR,"you aren't allowed to access that game!"),ErrorMessage.class));
+                        send(session,new Gson().toJson(
+                                new ErrorMessage(ServerMessage.ServerMessageType.ERROR,"you aren't allowed to access that game!"),ErrorMessage.class));
                     }
                     break;
                 case RESIGN:
                     if (gameData.isOver()){
-                        send(session, new Gson().toJson(new ErrorMessage(ERROR, "Error: it's over, Anakin! I have the high ground!"), ErrorMessage.class));
+                        send(session, new Gson().toJson(
+                                new ErrorMessage(ERROR, "Error: it's over, Anakin! I have the high ground!"), ErrorMessage.class));
                         return;
                     }
                     String usernameCurrentResign = data.authData.getAuth(authToken).username();
@@ -167,15 +140,22 @@ public class WebSocketHandler {
                         var resignCommand = new Gson().fromJson(message, ResignCommand.class);
                         try {
                             service.resignGame(resignCommand, data);
-                            send(session, new Gson().toJson(new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "you resigned the game!"), NotificationMessage.class));
-                            var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, resignCommand.username + " left the game!");
+                            send(session, new Gson().toJson(
+                                    new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "you resigned the game!"),
+                                    NotificationMessage.class));
+                            var notification = new NotificationMessage(
+                                    ServerMessage.ServerMessageType.NOTIFICATION, resignCommand.username + " left the game!");
                             broadcast(notification, session, gameID);
                         } catch (RuntimeException ex) {
-                            send(session, new Gson().toJson(new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "you can't resign that game!"), ErrorMessage.class));
+                            send(session, new Gson().toJson(
+                                    new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "you can't resign that game!"),
+                                    ErrorMessage.class));
                         }
                     }
                     else {
-                        send(session,new Gson().toJson(new ErrorMessage(ServerMessage.ServerMessageType.ERROR,"you aren't allowed to resign the game!"),ErrorMessage.class));
+                        send(session,new Gson().toJson(
+                                new ErrorMessage(ServerMessage.ServerMessageType.ERROR,"you aren't allowed to resign the game!"),
+                                ErrorMessage.class));
                     }
                     break;
             }
@@ -184,6 +164,46 @@ public class WebSocketHandler {
             System.out.println(ex.getMessage());
         }
 
+    }
+
+    private void handleConnect(String message, String authToken, Session session, GameData gameData, int gameID,ChessGame game) throws Exception {
+        var connectCommand = new Gson().fromJson(message,ConnectCommand.class);
+        service.connect(connectCommand, session);
+        String username = data.authData.getAuth(authToken).username();
+        String colorMessage ="";
+        try {
+//                        if (gameData==null) System.out.println("hsdfhsdf");
+            if (Objects.equals(gameData.whiteUsername(), username)) {
+                connectCommand = new ConnectCommand(CONNECT, authToken, gameID, ChessGame.TeamColor.WHITE);
+            } if (Objects.equals(gameData.blackUsername(), username)) {
+                connectCommand = new ConnectCommand(CONNECT, authToken, gameID, ChessGame.TeamColor.BLACK);
+            }
+            if (connectCommand.getColor() != null) {
+                if (connectCommand.getColor() == ChessGame.TeamColor.WHITE) {
+                    colorMessage = "white";
+                }
+                if (connectCommand.getColor() == ChessGame.TeamColor.BLACK) {
+                    colorMessage = "black";
+                }
+                // send loaded game to player
+                send(session, new Gson().toJson(
+                        new LoadGameMessage(LOAD_GAME, null, game), LoadGameMessage.class));
+                var messageToSendToClients = String.format("%s has joined the game as" + colorMessage, username); // needs to say as player or observer
+                var notification = new NotificationMessage(
+                        NotificationMessage.ServerMessageType.NOTIFICATION, messageToSendToClients);
+                broadcast(notification, session, gameID);
+            } else {
+                send(session, new Gson().toJson(
+                        new LoadGameMessage(LOAD_GAME, null, game), LoadGameMessage.class));
+                var messageToSendToClient = String.format("%s is observing the game ", username); // needs to say as player or observer
+                var notification = new NotificationMessage(
+                        NotificationMessage.ServerMessageType.NOTIFICATION, messageToSendToClient);
+                broadcast(notification, session, gameID);
+            }
+        }
+        catch (DataAccessException ex) {
+            send(session, new Gson().toJson(new ErrorMessage(ERROR, "Error: this game doesn't exist!"), ErrorMessage.class));
+        }
     }
 
     private void broadcast(ServerMessage message, Session session,int gameID) {
@@ -205,9 +225,4 @@ public class WebSocketHandler {
     public void send(Session session, String msg) throws Exception {
         session.getRemote().sendString(msg);
     }
-
-
-
-
-
 }

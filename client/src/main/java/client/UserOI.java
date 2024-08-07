@@ -22,12 +22,12 @@ public class UserOI {
     public static AuthData userAuth;
     public static final String DIVIDERS = "■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□";
     public static Map<Integer,Integer> gameKey = new HashMap<>();
-    public static WSFacade WSFacade;
+    public static WSFacade wsFacade;
     public static ChessGame currentGame = null;
 
     public UserOI(){
         facade = new ServerFacade(8080);
-        WSFacade = new WSFacade("http://localhost:8080", new NotificationHandler(), new ErrorHandler(),new LoadGameMessageHandler());
+        wsFacade = new WSFacade("http://localhost:8080", new NotificationHandler(), new ErrorHandler(),new LoadGameMessageHandler());
     }
 
     public void run(){
@@ -258,16 +258,9 @@ public class UserOI {
             }
             try {
                 int gameID = gameKey.get(gameListNumber);
-//                for (GameData gameData : facade.listGames(userAuth.authToken()).withChessBoards()){
-//                    int possibleIDMatch = gameData.gameID();
-//                    if (gameID==possibleIDMatch){
-//                        game = gameData.game();
-//                    }
-//                }
-//                if (game==null){throw new RuntimeException("WHAT IS HAPPENING");};
                 String authToken = userAuth.authToken();
                 facade.joinGame(color,gameID,authToken);
-                WSFacade.connectToGame(authToken,gameID,color);
+                wsFacade.connectToGame(authToken,gameID,color);
 
                 inGameMenu(authToken,gameID,color,scanner);
             }
@@ -293,7 +286,7 @@ public class UserOI {
         try {
             int gameID = gameKey.get(gameListNumber);
             String authToken = userAuth.authToken();
-            WSFacade.connectToGame(authToken,gameID,null);
+            wsFacade.connectToGame(authToken,gameID,null);
             ChessGame chessGame = currentGame; //// this will  probably be replaced with real game data
             var printer = new ChessBoardPrinter(chessGame, ChessGame.TeamColor.WHITE);
             printer.drawEverything();
@@ -361,21 +354,22 @@ public class UserOI {
 
     private void inGameMenu(String authToken, int gameID, ChessGame.TeamColor color,Scanner scanner) {
 
-        if (currentGame!=null) System.out.println(currentGame.toString());
+//        if (currentGame!=null) System.out.println(currentGame.toString());
         waitForUpdate();
         System.out.println(currentGame.toString());
         String colorString;
         if (color== ChessGame.TeamColor.WHITE) {colorString = SET_TEXT_COLOR_WHITE + "WHITE";}
         else {colorString = SET_TEXT_COLOR_BLACK + "BLACK";}
         System.out.println(DIVIDERS);
-        System.out.println(SET_TEXT_COLOR_BLUE+"You've joined game no."+gameID+" as "+colorString+SET_TEXT_COLOR_BLUE+" (type help for more options)"+RESET_TEXT_COLOR);
+        System.out.println(SET_TEXT_COLOR_BLUE+"You've joined game no."+gameID+" as "
+                +colorString+SET_TEXT_COLOR_BLUE+" (type help for more options)"+RESET_TEXT_COLOR);
         System.out.println(DIVIDERS);
 
-        ChessGame game = currentGame; // this will  probably be replaced?
+        ChessGame game = currentGame;
         var printer = new ChessBoardPrinter(game,color);
         printer.drawEverything();
 
-        WSFacade.setIsOnMessage(false);
+        wsFacade.setIsOnMessage(false);
 
         String username = userAuth.username();
 
@@ -426,7 +420,7 @@ public class UserOI {
     }
 
     private void waitForUpdate(){
-        while (!WSFacade.getIsOnMessage()) {
+        while (!wsFacade.getIsOnMessage()) {
             try {
                 Thread.sleep(100);
             }
@@ -454,9 +448,9 @@ public class UserOI {
     }
 
     private void leaveGame(String authToken, int gameID,String username){
-        WSFacade.leaveGame(authToken,gameID,username);
+        wsFacade.leaveGame(authToken,gameID,username);
         waitForUpdate();
-        WSFacade.setIsOnMessage(false);
+        wsFacade.setIsOnMessage(false);
         currentGame=null;
     }
 
@@ -486,9 +480,9 @@ public class UserOI {
                 promotionPieceType = getPieceTypeFromString(promotionPieceString);
             }
             ChessMove move = new ChessMove(initialPosition,finalPosition,promotionPieceType);
-            WSFacade.makeMove(authToken,gameID,move);
+            wsFacade.makeMove(authToken,gameID,move);
             waitForUpdate();
-            WSFacade.setIsOnMessage(false);
+            wsFacade.setIsOnMessage(false);
         }
         catch (IllegalArgumentException ex) {
             System.out.println(SET_TEXT_COLOR_BLUE+"you didn't input your move right!"+RESET_TEXT_COLOR);
@@ -556,7 +550,7 @@ public class UserOI {
             default -> isResign=false;
         }
         if (!isResign){inGameMenu(authToken,gameID,color,scanner);}
-        WSFacade.resign(authToken,gameID,username);
+        wsFacade.resign(authToken,gameID,username);
     }
 
 
