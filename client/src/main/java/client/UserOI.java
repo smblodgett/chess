@@ -81,8 +81,7 @@ public class UserOI {
     private void badInputAction() {
         System.out.println(DIVIDERS);
         System.out.println(SET_TEXT_COLOR_BLUE+"umm....that's an invalid input, mate. Try again!"+RESET_TEXT_COLOR);
-        System.out.println(DIVIDERS);
-    }
+        System.out.println(DIVIDERS);}
 
     private void register(ArrayList<String> commandInputs,Scanner scanner) {
         if (commandInputs.size()!=4){
@@ -98,8 +97,7 @@ public class UserOI {
                 System.out.println(SET_BG_COLOR_RED+SET_TEXT_COLOR_BLACK+"there was an error registering you. maybe try again?\n"+RESET_TEXT_COLOR);
             }
             else {
-                loggedInMenu(scanner);
-            }
+                loggedInMenu(scanner);}
         }
     }
 
@@ -115,8 +113,7 @@ public class UserOI {
                 System.out.println(SET_TEXT_COLOR_BLACK+"there was an error logging you in. maybe try again?"+RESET_TEXT_COLOR);
             }
             else {
-                loggedInMenu(scanner);
-            }
+                loggedInMenu(scanner);}
         }
     }
 
@@ -182,8 +179,7 @@ public class UserOI {
             }
             else {
                 System.out.println(SET_TEXT_COLOR_BLUE+"your game, \""+gameName+ "\", was created."+RESET_TEXT_COLOR);
-                gameKey.put(gameKey.size()+1,gameKey.size()+1);
-            }
+                gameKey.put(gameKey.size()+1,gameKey.size()+1);}
         }
     }
 
@@ -254,11 +250,7 @@ public class UserOI {
             int gameID = gameKey.get(gameListNumber);
             String authToken = userAuth.authToken();
             wsFacade.connectToGame(authToken,gameID,null,true);
-//            waitForUpdate();
-//            wsFacade.setIsOnMessage(false);
             ChessGame chessGame = currentGame; //// this will  probably be replaced with real game data
-//            var printer = new ChessBoardPrinter(chessGame, ChessGame.TeamColor.WHITE);
-//            printer.drawEverything();
             inGameMenu(authToken,gameID,ChessGame.TeamColor.WHITE,scanner,true);
         }
         catch (NullPointerException ex) {
@@ -324,7 +316,6 @@ public class UserOI {
 
     private void inGameMenu(String authToken, int gameID, ChessGame.TeamColor color,Scanner scanner,boolean isObserver) {
         waitForUpdate();
-//        System.out.println(currentGame.toString());
         String colorString;
         if (color== ChessGame.TeamColor.WHITE && !isObserver) {colorString = SET_TEXT_COLOR_WHITE + "WHITE";}
         else if (color == ChessGame.TeamColor.WHITE) {colorString = SET_TEXT_COLOR_GREEN + "OBSERVER";}
@@ -334,8 +325,6 @@ public class UserOI {
                 +colorString+SET_TEXT_COLOR_BLUE+" (type help for more options)"+RESET_TEXT_COLOR);
         System.out.println(DIVIDERS);
         ChessGame game = currentGame;
-//        var printer = new ChessBoardPrinter(game,color);
-//        printer.drawEverything();
         wsFacade.setIsOnMessage(false);
         String username = userAuth.username();
         boolean isInGameMenuGoing = true;
@@ -401,7 +390,6 @@ public class UserOI {
         }
         catch(InterruptedException ex){
             System.out.println("interrupted!");}
-//        System.out.println("okay, we got something from WSFacade");
     }
 
     private void redraw(ChessGame game, ChessGame.TeamColor color) {
@@ -441,7 +429,6 @@ public class UserOI {
             wsFacade.makeMove(authToken,gameID,move);
             waitForUpdate();
             wsFacade.setIsOnMessage(false);
-//            redraw(currentGame,moveColor);
         }
         catch (IllegalArgumentException ex) {
             System.out.println(SET_TEXT_COLOR_BLUE+"you didn't input your move right!"+RESET_TEXT_COLOR);
