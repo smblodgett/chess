@@ -1,19 +1,14 @@
 package client;
-
 import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import model.AuthData;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-
 import static ui.EscapeSequences.*;
-
-import model.GameData;
 import ui.ChessBoardPrinter;
 
 public class UserOI {
@@ -24,6 +19,7 @@ public class UserOI {
     public static Map<Integer,Integer> gameKey = new HashMap<>();
     public static WSFacade wsFacade;
     public static ChessGame currentGame = null;
+    public static UserOIHelper helper = new UserOIHelper();
 
     public UserOI(){
         facade = new ServerFacade(8080);
@@ -39,7 +35,6 @@ public class UserOI {
         Scanner scanner = new Scanner(System.in);
         while (isBaseGoing) {
             String command = scanner.nextLine();
-
             Scanner lineScanner = new Scanner(command);  // Create a new scanner for the line
             ArrayList<String> commandInputs = new ArrayList<>();
             while (lineScanner.hasNext()) {
@@ -47,10 +42,9 @@ public class UserOI {
                 commandInputs.add(word);  // Process the word
             }
             lineScanner.close();
-
             switch (commandInputs.getFirst()) {
                 case "help":
-                    help();
+                    helper.help();
                     break;
                 case "quit":
                     isBaseGoing=false;
@@ -58,11 +52,11 @@ public class UserOI {
                     break;
                 case "register":
                     register(commandInputs,scanner);
-                    help();
+                    helper.help();
                     break;
                 case "login":
                     login(commandInputs,scanner);
-                    help();
+                    helper.help();
                     break;
                 default:
                     badInputAction();
@@ -70,16 +64,6 @@ public class UserOI {
             }
         }
         scanner.close();
-    }
-
-    private void help() {
-        System.out.println(SET_BG_COLOR_LIGHT_GREY+DIVIDERS);
-        System.out.println(SET_TEXT_COLOR_BLUE+"♝ options ♝"+RESET_TEXT_COLOR);
-        System.out.println(SET_TEXT_COLOR_GREEN+"register <username> <password> <email> "+RESET_TEXT_COLOR+"- register a chess account");
-        System.out.println(SET_TEXT_COLOR_GREEN+"login <username> <password> "+RESET_TEXT_COLOR+"- login to play chess");
-        System.out.println(SET_TEXT_COLOR_GREEN+"quit "+RESET_TEXT_COLOR+"- exit the application");
-        System.out.println(SET_TEXT_COLOR_GREEN+"help "+RESET_TEXT_COLOR+"- if you need more help");
-        System.out.println(DIVIDERS);
     }
 
     private void quit(){
@@ -103,7 +87,7 @@ public class UserOI {
     private void register(ArrayList<String> commandInputs,Scanner scanner) {
         if (commandInputs.size()!=4){
             System.out.println(SET_TEXT_COLOR_BLUE+"wrong number of inputs!"+RESET_TEXT_COLOR);
-            help();
+            helper.help();
         }
         else {
             String username = commandInputs.get(1);
@@ -117,13 +101,11 @@ public class UserOI {
                 loggedInMenu(scanner);
             }
         }
-
     }
 
     private void login(ArrayList<String> commandInputs,Scanner scanner) {
         if (commandInputs.size()!=3){
             System.out.println(SET_TEXT_COLOR_BLUE+"wrong number of inputs!"+RESET_TEXT_COLOR);
-            help();
         }
         else {
             String username = commandInputs.get(1);
@@ -146,7 +128,6 @@ public class UserOI {
         boolean isLoggedInMenuGoing = true;
         while (isLoggedInMenuGoing) {
             String command = scanner.nextLine();
-
             Scanner lineScanner = new Scanner(command);  // Create a new scanner for the line
             ArrayList<String> commandInputs = new ArrayList<>();
             while (lineScanner.hasNext()) {
@@ -154,10 +135,9 @@ public class UserOI {
                 commandInputs.add(word);  // Process the word
             }
             lineScanner.close();
-
             switch (commandInputs.get(0)){
                 case "help":
-                    helpLoggedIn();
+                    helper.helpLoggedIn();
                     break;
                 case "create":
                     createGame(commandInputs);
@@ -188,23 +168,10 @@ public class UserOI {
         }
     }
 
-    private void helpLoggedIn() {
-        System.out.println(SET_BG_COLOR_LIGHT_GREY+DIVIDERS);
-        System.out.println(SET_TEXT_COLOR_BLUE+"♖ options ♖"+RESET_TEXT_COLOR);
-        System.out.println(SET_TEXT_COLOR_GREEN+"create <gameName> "+RESET_TEXT_COLOR+"- create a new game with name gameName");
-        System.out.println(SET_TEXT_COLOR_GREEN+"play <white/black> <gameListNumber> "+RESET_TEXT_COLOR+"- join a game, pick your side");
-        System.out.println(SET_TEXT_COLOR_GREEN+"observe <gameListNumber> "+RESET_TEXT_COLOR+"- join a game, pick your side");
-        System.out.println(SET_TEXT_COLOR_GREEN+"list "+RESET_TEXT_COLOR+"- list all current games");
-        System.out.println(SET_TEXT_COLOR_GREEN+"logout "+RESET_TEXT_COLOR+"- logout of the application");
-        System.out.println(SET_TEXT_COLOR_GREEN+"clear "+RESET_TEXT_COLOR+"- clear all data");
-        System.out.println(SET_TEXT_COLOR_GREEN+"help "+RESET_TEXT_COLOR+"- if you need more help");
-        System.out.println(DIVIDERS);
-    }
-
     private void createGame(ArrayList<String> commandInputs){
         if (commandInputs.size()!=2){
             System.out.println(SET_TEXT_COLOR_BLUE+"wrong number of inputs!"+RESET_TEXT_COLOR);
-            helpLoggedIn();
+            helper.helpLoggedIn();
         }
         else {
             String gameName = commandInputs.get(1);
@@ -231,7 +198,7 @@ public class UserOI {
         }
         if (commandInputs.size()!=3){
             System.out.println(SET_TEXT_COLOR_BLUE+"wrong number of inputs!"+RESET_TEXT_COLOR);
-            helpLoggedIn();
+            helper.helpLoggedIn();
         }
         else {
             ChessGame.TeamColor color;
@@ -253,7 +220,7 @@ public class UserOI {
                 default:
                     System.out.println(SET_TEXT_COLOR_BLUE+"Thou fool! Choose black or white!"+RESET_TEXT_COLOR);
                     color = null;
-                    helpLoggedIn();
+                    helper.helpLoggedIn();
                     break;
             }
             try {
@@ -261,11 +228,10 @@ public class UserOI {
                 String authToken = userAuth.authToken();
                 facade.joinGame(color,gameID,authToken);
                 wsFacade.connectToGame(authToken,gameID,color);
-
                 inGameMenu(authToken,gameID,color,scanner);
             }
             catch (RuntimeException ex) {
-                helpLoggedIn();
+                helper.helpLoggedIn();
             }
         }
     }
@@ -281,7 +247,7 @@ public class UserOI {
         }
         if (commandInputs.size()!=2){
             System.out.println(SET_TEXT_COLOR_BLUE+"wrong number of inputs!"+RESET_TEXT_COLOR);
-            helpLoggedIn();
+            helper.helpLoggedIn();
         }
         try {
             int gameID = gameKey.get(gameListNumber);
@@ -293,10 +259,9 @@ public class UserOI {
         }
         catch (NullPointerException ex) {
             System.out.println(SET_TEXT_COLOR_BLUE+"null error for some reason :/"+RESET_TEXT_COLOR);
-            helpLoggedIn();
+            helper.helpLoggedIn();
         }
     }
-
 
     private void listGames(boolean isDisplayed) {
         String authToken = userAuth.authToken();
@@ -329,7 +294,7 @@ public class UserOI {
             catch (InterruptedException ex) {
                 System.out.println("!!!!!!!!");
             }
-            helpLoggedIn();
+            helper.helpLoggedIn();
         }
     }
 
@@ -353,8 +318,6 @@ public class UserOI {
     }
 
     private void inGameMenu(String authToken, int gameID, ChessGame.TeamColor color,Scanner scanner) {
-
-//        if (currentGame!=null) System.out.println(currentGame.toString());
         waitForUpdate();
         System.out.println(currentGame.toString());
         String colorString;
@@ -368,18 +331,14 @@ public class UserOI {
         ChessGame game = currentGame;
         var printer = new ChessBoardPrinter(game,color);
         printer.drawEverything();
-
         wsFacade.setIsOnMessage(false);
 
         String username = userAuth.username();
-
         boolean isInGameMenuGoing = true;
         while (isInGameMenuGoing) {
-
             if (game!=currentGame && currentGame!=null){
                 game=currentGame;
             }
-
             String command = scanner.nextLine();
 
             Scanner lineScanner = new Scanner(command);  // Create a new scanner for the line
@@ -389,10 +348,9 @@ public class UserOI {
                 commandInputs.add(word);  // Process the word
             }
             lineScanner.close();
-
             switch (commandInputs.get(0)){
                 case "help":
-                    helpInGame();
+                    helper.helpInGame();
                     break;
                 case "draw":
                 case "redraw":
@@ -401,7 +359,7 @@ public class UserOI {
                 case "leave":
                     isInGameMenuGoing=false;
                     leaveGame(authToken,gameID,username);
-                    helpLoggedIn();
+                    helper.helpLoggedIn();
                     break;
                 case "move":
                     makeMove(commandInputs,game,authToken,gameID);
@@ -431,17 +389,6 @@ public class UserOI {
         System.out.println("okay, we got something from WSFacade");
     }
 
-    private void helpInGame() {
-        System.out.println(SET_BG_COLOR_LIGHT_GREY+DIVIDERS);
-        System.out.println(SET_TEXT_COLOR_BLUE+"♞ options ♞"+RESET_TEXT_COLOR);
-        System.out.println(SET_TEXT_COLOR_GREEN+"draw "+RESET_TEXT_COLOR+"- redraw the current game");
-        System.out.println(SET_TEXT_COLOR_GREEN+"move <initial location> <final location> "+RESET_TEXT_COLOR+"- move a chess piece");
-        System.out.println(SET_TEXT_COLOR_GREEN+"highlight <location> "+RESET_TEXT_COLOR+"- highlight all legal moves from this location");
-        System.out.println(SET_TEXT_COLOR_GREEN+"resign "+RESET_TEXT_COLOR+"- resign this game");
-        System.out.println(SET_TEXT_COLOR_GREEN+"leave "+RESET_TEXT_COLOR+"- leave this game");
-        System.out.println(DIVIDERS);
-    }
-
     private void redraw(ChessGame game) {
         var printer = new ChessBoardPrinter(game, ChessGame.TeamColor.WHITE);
         printer.drawEverything();
@@ -457,19 +404,17 @@ public class UserOI {
     private void makeMove(ArrayList<String> commandInputs,ChessGame game,String authToken,int gameID ){
         if (commandInputs.size()!=3){ // maybe need to add promotion functionality
             System.out.println(SET_TEXT_COLOR_BLUE+"wrong number of inputs!"+RESET_TEXT_COLOR);
-            helpInGame();
+            helper.helpInGame();
         }
         String initialPositionString = commandInputs.get(1);
         String finalPositionString = commandInputs.get(2);
         try {
             int rowInit = getRowFromString(initialPositionString.substring(1));
             int colInit = getColumnFromLetter(initialPositionString.charAt(0));
-            ChessPosition initialPosition = new ChessPosition(rowInit,colInit);
-
+            ChessPosition initialPosition = new ChessPosition(rowInit,colInit); //
             int rowFin = getRowFromString(finalPositionString.substring(1));
             int colFin = getColumnFromLetter(finalPositionString.charAt(0));
-            ChessPosition finalPosition = new ChessPosition(rowFin,colFin);
-
+            ChessPosition finalPosition = new ChessPosition(rowFin,colFin); //
             ChessPiece.PieceType promotionPieceType=null;
             if (game.getBoard().getPiece(initialPosition).getPieceType()== ChessPiece.PieceType.PAWN
                 && finalPosition.getRow()==8){
@@ -520,14 +465,12 @@ public class UserOI {
         }
     }
 
-
     private void highlightLegalMoves(ArrayList<String> commandInputs, ChessGame game, ChessGame.TeamColor myColor) {
         if (commandInputs.size()!=2){ // maybe need to add promotion functionality
             System.out.println(SET_TEXT_COLOR_BLUE+"wrong number of inputs!"+RESET_TEXT_COLOR);
-            helpInGame();
+            helper.helpInGame();
         }
         String highlightPositionString = commandInputs.get(1);
-
         try {
             int row = getRowFromString(highlightPositionString.substring(1));
             int col = getColumnFromLetter(highlightPositionString.charAt(0));
@@ -540,7 +483,6 @@ public class UserOI {
         }
     }
 
-
     private void resign (ChessGame game, String authToken, int gameID, ChessGame.TeamColor color,String username,Scanner scanner) {
         System.out.println("are you sure you want to resign? you'll lose instantly");
         String resignPrompt = scanner.nextLine();
@@ -552,8 +494,4 @@ public class UserOI {
         if (!isResign){inGameMenu(authToken,gameID,color,scanner);}
         wsFacade.resign(authToken,gameID,username);
     }
-
-
-
-
 }
