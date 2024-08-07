@@ -39,12 +39,12 @@ public class WebSocketService {
         }
     }
 
-    public void leaveGame(LeaveCommand command, DataAccessContainer data) throws UnauthorizedException, IllegalArgumentException {
+    public void leaveGame(LeaveCommand command, DataAccessContainer data,String colorSwitch) throws UnauthorizedException, IllegalArgumentException {
         int gameID = command.getGameID();
         String authToken = command.getAuthToken();
         try {
             String username = data.authData.getAuth(authToken).username();
-            data.gameData.removePlayer(gameID,username);
+            data.gameData.removePlayer(gameID,username,colorSwitch);
         }
         catch (DataAccessException ex){
             throw new IllegalArgumentException("something messed with the data");

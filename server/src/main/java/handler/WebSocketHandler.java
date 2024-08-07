@@ -137,29 +137,45 @@ public class WebSocketHandler {
                     break;
                 case LEAVE:
                     var leaveCommand = new Gson().fromJson(message, LeaveCommand.class);
+                    String usernameCurrent = data.authData.getAuth(authToken).username();
+                    String usernameWhite = gameData.whiteUsername();
+                    String usernameBlack = gameData.blackUsername();
+                    String colorSwitch=null;
+                    if (Objects.equals(usernameCurrent, usernameWhite)){colorSwitch="w";}
+                    else if (Objects.equals(usernameCurrent, usernameBlack)){colorSwitch="b";}
                     try {
-                        service.leaveGame(leaveCommand,data);
-                        send(session,new Gson().toJson(new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,"you left the game!"),NotificationMessage.class));
+                        if (colorSwitch!=null) {service.leaveGame(leaveCommand,data,colorSwitch);}
+//                        send(session,new Gson().toJson(new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,"you left the game!"),NotificationMessage.class));
                         var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,leaveCommand.username+" left the game!");
                         broadcast(notification,session,gameID);
-                    }
-                    catch (DataAccessException ex) {
-                        send(session,new Gson().toJson(new ErrorMessage(ServerMessage.ServerMessageType.ERROR,"there was a problem with the database"),ErrorMessage.class));
                     }
                     catch (UnauthorizedException ex) {
                         send(session,new Gson().toJson(new ErrorMessage(ServerMessage.ServerMessageType.ERROR,"you aren't allowed to access that game!"),ErrorMessage.class));
                     }
                     break;
                 case RESIGN:
-                    var resignCommand = new Gson().fromJson(message, ResignCommand.class);
-                    try{
-                        service.resignGame(resignCommand,data);
-                        send(session,new Gson().toJson(new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,"you resigned the game!"),NotificationMessage.class));
-                        var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,resignCommand.username+" left the game!");
-                        broadcast(notification,session,gameID);
+                    if (gameData.isOver()){
+                        send(session, new Gson().toJson(new ErrorMessage(ERROR, "Error: it's over, Anakin! I have the high ground!"), ErrorMessage.class));
+                        return;
                     }
-                    catch (RuntimeException ex){
-                        send(session,new Gson().toJson(new ErrorMessage(ServerMessage.ServerMessageType.ERROR,"you can't resign that game!"),ErrorMessage.class));
+                    String usernameCurrentResign = data.authData.getAuth(authToken).username();
+                    String usernameWhiteResign = gameData.whiteUsername();
+                    String usernameBlackResign = gameData.blackUsername();
+                    if ((Objects.equals(usernameCurrentResign, usernameWhiteResign))
+                            ||  (Objects.equals(usernameCurrentResign,usernameBlackResign))) {
+                        // try making the move
+                        var resignCommand = new Gson().fromJson(message, ResignCommand.class);
+                        try {
+                            service.resignGame(resignCommand, data);
+                            send(session, new Gson().toJson(new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "you resigned the game!"), NotificationMessage.class));
+                            var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, resignCommand.username + " left the game!");
+                            broadcast(notification, session, gameID);
+                        } catch (RuntimeException ex) {
+                            send(session, new Gson().toJson(new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "you can't resign that game!"), ErrorMessage.class));
+                        }
+                    }
+                    else {
+                        send(session,new Gson().toJson(new ErrorMessage(ServerMessage.ServerMessageType.ERROR,"you aren't allowed to resign the game!"),ErrorMessage.class));
                     }
                     break;
             }

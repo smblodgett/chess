@@ -75,7 +75,7 @@ public class GameMemoryDAO implements GameDAO {
     }
 
     @Override
-    public void removePlayer(int gameID, String username) throws DataAccessException {
+    public void removePlayer(int gameID, String username,String colorSwitch) throws DataAccessException {
 
     }
 

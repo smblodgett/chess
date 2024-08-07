@@ -104,6 +104,7 @@ public class WSFacade extends Endpoint {
         try {
             var action = new LeaveCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID,null,username);
             this.session.getBasicRemote().sendText(new Gson().toJson(action));
+            this.session.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -148,30 +148,9 @@ public class GameSQLDAO implements GameDAO {
         }
     }
 
-    public void removePlayer(int gameID, String username) throws DataAccessException{
-        boolean isBlackToRemove=false;
+    public void removePlayer(int gameID, String username,String colorSwitch) throws DataAccessException{
+        boolean isBlackToRemove = Objects.equals(colorSwitch, "b");
 
-        try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT whiteUsername, blackUsername FROM gameDatatable WHERE gameID = ?";
-            var preparedStatement = conn.prepareStatement(statement);
-            preparedStatement.setInt(1,gameID);
-            var resultSet = preparedStatement.executeQuery();
-            if (resultSet.isBeforeFirst()) {
-                String whiteUsername = "";
-                String blackUsername = "";
-                while (resultSet.next()) {
-                    whiteUsername = resultSet.getString("whiteUsername");
-                    blackUsername = resultSet.getString("blackUsername");
-                }
-//                if (Objects.equals(username, whiteUsername)){ only if need to remove both black and white as same player
-//                }
-                if (Objects.equals(username, blackUsername)){isBlackToRemove=true;}
-                else {throw new DataAccessException("no such user to remove!");}
-            }
-        }
-        catch (SQLException ex) {
-            throw new DataAccessException("error with removePlayer: first part");
-        }
 
         try (var conn = DatabaseManager.getConnection()) {
             if (!isBlackToRemove){
