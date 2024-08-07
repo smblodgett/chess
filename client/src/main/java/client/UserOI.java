@@ -282,8 +282,7 @@ public class UserOI {
                 System.out.println(DIVIDERS);
                 System.out.println(SET_TEXT_COLOR_GREEN+count+ ": "+isOverString);
                 System.out.println(SET_TEXT_COLOR_BLUE+"game name: " + name + "\n"+SET_TEXT_COLOR_WHITE+"WHITE"+SET_TEXT_COLOR_BLUE+" is "+whiteName
-                        + "\n"+SET_TEXT_COLOR_BLACK+"BLACK"+SET_TEXT_COLOR_BLUE+" is " + blackName + "\ngameid=" + gameID + RESET_TEXT_COLOR);
-            }
+                        + "\n"+SET_TEXT_COLOR_BLACK+"BLACK"+SET_TEXT_COLOR_BLUE+" is " + blackName + "\ngameid=" + gameID + RESET_TEXT_COLOR);}
             gameKey.put(count,gameID);
             count++;
         }
@@ -293,11 +292,10 @@ public class UserOI {
             System.out.println(SET_TEXT_COLOR_BLUE+"There aren't any games made, yet. Maybe you should make one..."+RESET_TEXT_COLOR);
             System.out.println(DIVIDERS);
             try{
-                Thread.sleep(3000);
+                Thread.sleep(2200);
             }
             catch (InterruptedException ex) {
-                System.out.println("!!!!!!!!");
-            }
+                System.out.println("!!!!!!!!");}
             helper.helpLoggedIn();
         }
     }
@@ -331,12 +329,10 @@ public class UserOI {
         System.out.println(SET_TEXT_COLOR_BLUE+"You've joined game no."+gameID+" as "
                 +colorString+SET_TEXT_COLOR_BLUE+" (type help for more options)"+RESET_TEXT_COLOR);
         System.out.println(DIVIDERS);
-
         ChessGame game = currentGame;
         var printer = new ChessBoardPrinter(game,color);
         printer.drawEverything();
         wsFacade.setIsOnMessage(false);
-
         String username = userAuth.username();
         boolean isInGameMenuGoing = true;
         while (isInGameMenuGoing) {
@@ -344,7 +340,6 @@ public class UserOI {
                 game=currentGame;
             }
             String command = scanner.nextLine();
-
             Scanner lineScanner = new Scanner(command);  // Create a new scanner for the line
             ArrayList<String> commandInputs = new ArrayList<>();
             while (lineScanner.hasNext()) {
@@ -387,15 +382,13 @@ public class UserOI {
                 Thread.sleep(100);
             }
             catch(InterruptedException ex){
-                System.out.println("interrupted!");
-            }
+                System.out.println("interrupted!");}
         }
         try {
             Thread.sleep(700);
         }
         catch(InterruptedException ex){
-            System.out.println("interrupted!");
-        }
+            System.out.println("interrupted!");}
         System.out.println("okay, we got something from WSFacade");
     }
 
@@ -412,8 +405,7 @@ public class UserOI {
     private void makeMove(ArrayList<String> commandInputs,ChessGame game,String authToken,int gameID ){
         if (commandInputs.size()!=3){ // maybe need to add promotion functionality
             System.out.println(SET_TEXT_COLOR_BLUE+"wrong number of inputs!"+RESET_TEXT_COLOR);
-            helper.helpInGame();
-        }
+            helper.helpInGame();}
         String initialPositionString = commandInputs.get(1);
         String finalPositionString = commandInputs.get(2);
         try {
@@ -479,8 +471,7 @@ public class UserOI {
     private void highlightLegalMoves(ArrayList<String> commandInputs, ChessGame game, ChessGame.TeamColor myColor) {
         if (commandInputs.size()!=2){ // maybe need to add promotion functionality
             System.out.println(SET_TEXT_COLOR_BLUE+"wrong number of inputs!"+RESET_TEXT_COLOR);
-            helper.helpInGame();
-        }
+            helper.helpInGame();}
         String highlightPositionString = commandInputs.get(1);
         try {
             int row = getRowFromString(highlightPositionString.substring(1));
