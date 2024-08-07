@@ -65,4 +65,13 @@ public class WebSocketService {
             throw new RuntimeException(e);
         }
     }
+
+    public void gameIsOver(int gameID, DataAccessContainer data){
+        try {
+            data.gameData.isOver(gameID);
+        }
+        catch (DataAccessException e){
+            throw new RuntimeException(e);
+        }
+    }
 }
