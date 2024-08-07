@@ -121,11 +121,11 @@ public class ChessBoardPrinter {
         String headerText2 = SET_BG_COLOR_LIGHT_GREY + SET_TEXT_COLOR_BLACK + BUFFER +
                 "   A" + "  " + "B" + " \u2006\u2006\u2006" + "C" + "  " + "D" + " \u2006\u2006\u2006" + "E" + "  "
                 + "F" + " \u2006\u2006\u2006\u2006" + "G" + " \u2006\u2006\u2008" + "H" + "  " + "\n";
-        if (playerColor == ChessGame.TeamColor.WHITE) {
+        if (playerColor == ChessGame.TeamColor.BLACK) { // BLACK
             drawHeader(headerText1);
             drawHighlightedBoard(chessGame, new int[]{1, 2, 3, 4, 5, 6, 7, 8}, positionToHighlight);
             drawHeader(headerText1);
-        } else if (playerColor == ChessGame.TeamColor.BLACK) {
+        } else if (playerColor == ChessGame.TeamColor.WHITE) {
             drawHeader(headerText2);
             drawHighlightedBoard(chessGame, new int[]{8, 7, 6, 5, 4, 3, 2, 1}, positionToHighlight);
             drawHeader(headerText2);
@@ -153,15 +153,19 @@ public class ChessBoardPrinter {
     public String getSquareColorBackgroundHighlighted(ChessPosition positionToHighlight, ChessPosition currentPosition) {
         ChessBoard board = chessGame.getBoard();
         ChessPiece highlightedPiece = board.getPiece(positionToHighlight);
-        if (positionToHighlight == currentPosition) {
-            return SET_BG_COLOR_YELLOW;
+        if (positionToHighlight.equals(currentPosition)) {
+            isWhiteToPrint=!isWhiteToPrint;
+            if (!isWhiteToPrint) {
+                return SET_BG_COLOR_YELLOW;
+            }
+            return SET_BG_COLOR_DARK_YELLOW;
         }
         Set<ChessMove> moves = (Set<ChessMove>) highlightedPiece.pieceMoves(board, positionToHighlight);
         for (ChessMove move : moves) {
-            if (move.getEndPosition() == currentPosition && isWhiteToPrint) {
+            if (move.getEndPosition().equals(currentPosition) && isWhiteToPrint) {
                 isWhiteToPrint = false;
                 return SET_BG_COLOR_LIGHT_GREEN;
-            } else if (move.getEndPosition() == currentPosition && !isWhiteToPrint) {
+            } else if (move.getEndPosition().equals(currentPosition) && !isWhiteToPrint) {
                 isWhiteToPrint = true;
                 return SET_BG_COLOR_SKY_BLUE;
             }

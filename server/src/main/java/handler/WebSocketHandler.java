@@ -89,7 +89,9 @@ public class WebSocketHandler {
                     catch (UnauthorizedException ex) {
                         send(session,new Gson().toJson(
                                 new ErrorMessage(ERROR,"you aren't allowed to access that game!"),
-                                ErrorMessage.class));}
+                                ErrorMessage.class));
+
+                    }
                     break;
                 case RESIGN:
                     handleResign(gameData,session,authToken,message,gameID);

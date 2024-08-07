@@ -281,8 +281,8 @@ public class UserOI {
             if (isDisplayed) {
                 System.out.println(DIVIDERS);
                 System.out.println(SET_TEXT_COLOR_GREEN+count+ ": "+isOverString);
-                System.out.println(SET_TEXT_COLOR_BLUE + "game name: " + name + "\nwhite is " + whiteName
-                        + "\nblack is " + blackName + "\ngameid=" + gameID + RESET_TEXT_COLOR);
+                System.out.println(SET_TEXT_COLOR_BLUE+"game name: " + name + "\n"+SET_TEXT_COLOR_WHITE+"WHITE"+SET_TEXT_COLOR_BLUE+" is "+whiteName
+                        + "\n"+SET_TEXT_COLOR_BLACK+"BLACK"+SET_TEXT_COLOR_BLUE+" is " + blackName + "\ngameid=" + gameID + RESET_TEXT_COLOR);
             }
             gameKey.put(count,gameID);
             count++;
@@ -406,8 +406,6 @@ public class UserOI {
 
     private void leaveGame(String authToken, int gameID,String username){
         wsFacade.leaveGame(authToken,gameID,username);
-        waitForUpdate();
-        wsFacade.setIsOnMessage(false);
         currentGame=null;
     }
 
@@ -469,6 +467,7 @@ public class UserOI {
             default -> throw new IllegalArgumentException("Invalid column letter: " + l);
         };
     }
+
     private int getRowFromString(String s) {
         try {
             return Integer.parseInt(s);

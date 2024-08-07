@@ -496,4 +496,17 @@ Multithreading: Types:
 + concurrent: with one CPU/core, the OS gives each task a chance to run. It swaps between different tasks.
   + the number of cores determines how many tasks/threads your computer can run at a time
 + parallel: each core runs a different thread (only possible with multiple cores)
-+ sequential: each task has to run to completion before another task can start
++ sequential: each task has to run to completion before another task can start.
+
+in reality, most computers are both parallel and concurrent
+
+you can make threads wait for each other
+
+thread pool: you can submit a task/function, it gets added to a queue, which offloads tasks into a thread when possible
+
+make your function runnable or callable to execute the thread pool thingy
+
+race condition: the correctness of a program depends on the relative timing/interleaving of multiple process
++ can make code sometimes work, sometimes not work...this is a bug
++ caused by shared resources accessed concurrently my multiple threads
+
