@@ -155,10 +155,10 @@ public class GameSQLDAO implements GameDAO {
         try (var conn = DatabaseManager.getConnection()) {
             if (!isBlackToRemove){
                 try {
-                    var statement = "UPDATE gameDatatable SET whiteUsername = ? WHERE gameID = ?";
+                    var statement = "UPDATE gameDatatable SET whiteUsername = NULL WHERE gameID = ?";
                     var preparedStatement = conn.prepareStatement(statement);
-                    preparedStatement.setInt(2, gameID);
-                    preparedStatement.setString(1, null);
+                    preparedStatement.setInt(1, gameID);
+//                    preparedStatement.setString(1, null);
                     var id = preparedStatement.executeUpdate();
                 }
                 catch (SQLException ignore) {
@@ -166,10 +166,10 @@ public class GameSQLDAO implements GameDAO {
             }
             if (isBlackToRemove){
                 try {
-                    var statement = "UPDATE gameDatatable SET blackUsername = ? WHERE gameID = ?";
+                    var statement = "UPDATE gameDatatable SET blackUsername = NULL WHERE gameID = ?";
                     var preparedStatement = conn.prepareStatement(statement);
-                    preparedStatement.setInt(2, gameID);
-                    preparedStatement.setString(1, null);
+                    preparedStatement.setInt(1, gameID);
+//                    preparedStatement.setString(1, null);
                     var id = preparedStatement.executeUpdate();
                 }
                 catch (SQLException ex) {

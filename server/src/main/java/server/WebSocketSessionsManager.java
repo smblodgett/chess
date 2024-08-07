@@ -27,8 +27,8 @@ public class WebSocketSessionsManager {
         }
     }
 
-    public void remove(int gameID) {
-        connections.remove(gameID);
+    public void remove(int gameID,Session session) {
+        connections.get(gameID).remove(session);
     }
 
     public ConcurrentHashMap<Integer, Set<Session>> getAllSessions() {

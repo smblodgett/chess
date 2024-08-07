@@ -34,7 +34,7 @@ public class JoinGameHandler implements Route {
             String username = auth.username();
             var gameData = service.findGame(gameID);
             if (color.equals("BLACK") && gameData.blackUsername()!=null) {throw new AlreadyTakenException("Error: already taken");}
-            if (color.equals("WHITE") && gameData.blackUsername()!=null) {throw new AlreadyTakenException("Error: already taken");}
+            if (color.equals("WHITE") && gameData.whiteUsername()!=null) {throw new AlreadyTakenException("Error: already taken");}
             GameData addedGame = service.addPlayer(gameData,color, username);
             res.status(200);
             return "";

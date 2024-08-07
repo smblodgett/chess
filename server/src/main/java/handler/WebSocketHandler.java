@@ -144,7 +144,7 @@ public class WebSocketHandler {
                     if (Objects.equals(usernameCurrent, usernameWhite)){colorSwitch="w";}
                     else if (Objects.equals(usernameCurrent, usernameBlack)){colorSwitch="b";}
                     try {
-                        if (colorSwitch!=null) {service.leaveGame(leaveCommand,data,colorSwitch);}
+                        if (colorSwitch!=null) {service.leaveGame(leaveCommand,data,colorSwitch,session);}
 //                        send(session,new Gson().toJson(new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,"you left the game!"),NotificationMessage.class));
                         var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,leaveCommand.username+" left the game!");
                         broadcast(notification,session,gameID);
